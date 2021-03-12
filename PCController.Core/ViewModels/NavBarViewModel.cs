@@ -6,20 +6,33 @@ using System.Collections.ObjectModel;
 
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
+using MvvmCross.Commands;
+using MvvmCross.Logging;
+using MvvmCross.Navigation;
+using MvvmCross.ViewModels;
 
 using PCController.Core.Models;
 
 namespace PCController.Core.ViewModels
 {
-    public class NavBarViewModel : MvxViewModel
+    public class NavBarViewModel : MvxNavigationViewModel<WindowChildParam>
     {
+        private WindowChildParam _param;
+
+        public int ParentNo => _param.ParentNo;
+        public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
+
+        public IMvxAsyncCommand CloseCommand => new MvxAsyncCommand(async () => await NavigationService.Close(this));
+
+        public override void Prepare(WindowChildParam param) => _param = param;
+
         private string _firstName;
 
         private string _lastName;
 
         private ObservableCollection<LogModel> _loggy = new();
 
-        public NavBarViewModel()
+        public NavBarViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
             this.AddLogCommand = new MvxCommand(this.AddLoggyLog);
         }
