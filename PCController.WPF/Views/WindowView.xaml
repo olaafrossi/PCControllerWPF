@@ -20,6 +20,7 @@
 
     <views:MvxWindow.ContentTemplate>
         <DataTemplate>
+            <DataTemplate.Resources />
             <Grid x:Name="LayoutRoot">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -81,41 +82,48 @@
                         <ui:AutoSuggestBox
                             x:Name="ControlsSearchBox"
                             Width="176"
-                            HorizontalAlignment="Left"
                             Margin="12,6,6,6"
+                            HorizontalAlignment="Left"
                             DockPanel.Dock="Top"
                             PlaceholderText="Search"
                             QueryIcon="Find" />
-                        <ui:ListView
-                            x:Name="PagesList"
-                            DockPanel.Dock="Top">
+                        <ui:ListView x:Name="PagesList" DockPanel.Dock="Top">
                             <Button
-                                HorizontalAlignment="Center"
                                 Width="200"
                                 Margin="0,5,0,5"
                                 Padding="5"
+                                HorizontalAlignment="Center"
                                 Command="{Binding ShowWindowChildCommand}"
                                 CommandParameter="1"
                                 Content="Show 1st Child"
-                                Style="{StaticResource AccentButtonStyle}"/>
+                                Style="{StaticResource AccentButtonStyle}" />
                             <Button
-                                HorizontalAlignment="Center"
                                 Width="200"
                                 Margin="0,5,0,5"
                                 Padding="5"
+                                HorizontalAlignment="Center"
                                 Command="{Binding ShowWindowChildCommand}"
                                 CommandParameter="2"
                                 Content="Show 2st Child"
-                                Style="{StaticResource AccentButtonStyle}"/>
+                                Style="{StaticResource AccentButtonStyle}" />
                             <Button
-                                HorizontalAlignment="Center"
                                 Width="200"
                                 Margin="0,5,0,5"
                                 Padding="5"
+                                HorizontalAlignment="Center"
                                 Command="{Binding ShowNavBarCommand}"
                                 CommandParameter="2"
                                 Content="Show Nav View"
-                                Style="{StaticResource AccentButtonStyle}"/>
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowPCControllerInfoCommand}"
+                                CommandParameter="2"
+                                Content="Show PC Controller View"
+                                Style="{StaticResource AccentButtonStyle}" />
                         </ui:ListView>
                     </DockPanel>
                 </Grid>
@@ -126,6 +134,7 @@
                     BorderBrush="{DynamicResource SystemAccentColorDark1Brush}"
                     BorderThickness="2" />
                 <ContentPresenter
+                    x:Name="contentPresenter"
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="0,40,0,0"

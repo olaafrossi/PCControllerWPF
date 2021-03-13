@@ -9,10 +9,23 @@
     xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+    x:Name="mvxWpfView"
     d:DesignHeight="450"
     d:DesignWidth="800"
     ui:ThemeManager.RequestedTheme="Dark"
     mc:Ignorable="d">
+    <views:MvxWpfView.Resources>
+        <Storyboard x:Key="Storyboard">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="mvxWpfView" Storyboard.TargetProperty="(UIElement.Opacity)">
+                <EasingDoubleKeyFrame KeyTime="00:00:00" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="00:00:02" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseIn" />
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </views:MvxWpfView.Resources>
 
 
     <Grid>

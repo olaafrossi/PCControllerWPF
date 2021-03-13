@@ -60,7 +60,7 @@ namespace PCController.Core.ViewModels
                 var testIfReturn = result;
             });
 
-            ShowModalCommand = new MvxAsyncCommand(Navigate);
+            //ShowModalCommand = new MvxAsyncCommand(Navigate);
 
             //ShowModalNavCommand =
             //    new MvxAsyncCommand(async () => await NavigationService.Navigate<ModalNavViewModel>());
@@ -83,8 +83,8 @@ namespace PCController.Core.ViewModels
             //ShowMixedNavigationCommand =
             //    new MvxAsyncCommand(async () => await NavigationService.Navigate<MixedNavFirstViewModel>());
 
-            ShowDictionaryBindingCommand = new MvxAsyncCommand(async () =>
-                await NavigationService.Navigate<DictionaryBindingViewModel>());
+            //ShowDictionaryBindingCommand = new MvxAsyncCommand(async () =>
+            //    await NavigationService.Navigate<DictionaryBindingViewModel>());
 
             //ShowCollectionViewCommand =
             //    new MvxAsyncCommand(async () => await NavigationService.Navigate<CollectionViewModel>());
@@ -92,11 +92,11 @@ namespace PCController.Core.ViewModels
             //ShowSharedElementsCommand = new MvxAsyncCommand(async () =>
             //    await NavigationService.Navigate<SharedElementRootChildViewModel>());
 
-            ShowCustomBindingCommand =
-                new MvxAsyncCommand(async () => await NavigationService.Navigate<CustomBindingViewModel>());
+            //ShowCustomBindingCommand =
+            //    new MvxAsyncCommand(async () => await NavigationService.Navigate<CustomBindingViewModel>());
 
-            ShowFluentBindingCommand =
-                new MvxAsyncCommand(async () => await NavigationService.Navigate<FluentBindingViewModel>());
+            //ShowFluentBindingCommand =
+            //    new MvxAsyncCommand(async () => await NavigationService.Navigate<FluentBindingViewModel>());
 
             //RegisterAndResolveWithReflectionCommand = new MvxAsyncCommand(RegisterAndResolveWithReflection);
             //RegisterAndResolveWithNoReflectionCommand = new MvxAsyncCommand(RegisterAndResolveWithNoReflection);
@@ -163,9 +163,9 @@ namespace PCController.Core.ViewModels
 
         public IMvxAsyncCommand ShowFluentBindingCommand { get; }
 
-        public IMvxAsyncCommand RegisterAndResolveWithReflectionCommand { get; }
+        //public IMvxAsyncCommand RegisterAndResolveWithReflectionCommand { get; }
 
-        public IMvxAsyncCommand RegisterAndResolveWithNoReflectionCommand { get; }
+        //public IMvxAsyncCommand RegisterAndResolveWithNoReflectionCommand { get; }
 
         public IMvxCommand TriggerVisibilityCommand { get; }
 
@@ -244,16 +244,16 @@ namespace PCController.Core.ViewModels
             _counter = int.Parse(state.Data["MyKey"]);
         }
 
-        private async Task Navigate()
-        {
-            try
-            {
-                await NavigationService.Navigate<ModalViewModel>();
-            }
-            catch (Exception)
-            {
-            }
-        }
+        //private async Task Navigate()
+        //{
+        //    try
+        //    {
+        //        await NavigationService.Navigate<ModalViewModel>();
+        //    }
+        //    catch (Exception)
+        //    {
+        //    }
+        //}
 
         //private async Task RegisterAndResolveWithReflection()
         //{
