@@ -5,54 +5,131 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PCController.WPF.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
     xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
-    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="{Binding Title}"
+    d:DesignHeight="900"
+    d:DesignWidth="1300"
     ui:ThemeManager.RequestedTheme="Dark"
     ui:TitleBar.IsIconVisible="True"
     ui:WindowHelper.UseModernWindowStyle="True"
     ResizeMode="CanResizeWithGrip"
-    Title="{Binding Title}"
-    Width="300"
-    Height="300"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
     mc:Ignorable="d">
+
+
     <views:MvxWindow.ContentTemplate>
         <DataTemplate>
-            <Grid>
+            <Grid x:Name="LayoutRoot">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid
+                    x:Name="Nav"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button
-                        Margin="5"
-                        Padding="5"
-                        Command="{Binding ShowWindowChildCommand}"
-                        CommandParameter="1"
-                        Content="Show 1st Child" />
-                    <Button
-                        Grid.Column="1"
-                        Margin="5"
-                        Padding="5"
-                        Command="{Binding ShowWindowChildCommand}"
-                        CommandParameter="2"
-                        Content="Show 2st Child" />
-                    <Button
-                        Grid.Column="2"
-                        Margin="5"
-                        Padding="5"
-                        Command="{Binding ShowNavBarCommand}"
-                        CommandParameter="2"
-                        Content="Show Nav View" />
+
+                    <Menu
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="0">
+                        <MenuItem Header="Settings">
+                            <MenuItem Header="Automatically hide scroll bars">
+                                <ui:RadioMenuItem
+                                    x:Name="AutoHideScrollBarsAuto"
+                                    Header="Use system setting"
+                                    IsChecked="True" />
+                                <ui:RadioMenuItem x:Name="AutoHideScrollBarsOn" Header="On" />
+                                <ui:RadioMenuItem x:Name="AutoHideScrollBarsOff" Header="Off" />
+                            </MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="Sizing">
+                            <ui:RadioMenuItem Header="Standard" IsChecked="True" />
+                            <ui:RadioMenuItem Header="Compact" Tag="Compact" />
+                        </MenuItem>
+                        <MenuItem
+                            x:Name="DebugMenuItem"
+                            Header="Debug"
+                            Visibility="Collapsed">
+                            <MenuItem Header="Force GC" />
+                            <MenuItem
+                                x:Name="NewWindowMenuItem"
+                                Header="New window"
+                                Visibility="Collapsed" />
+                        </MenuItem>
+                    </Menu>
+
+                    <DockPanel
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Background="{DynamicResource NavigationViewExpandedPaneBackground}">
+                        <ui:AutoSuggestBox
+                            x:Name="ControlsSearchBox"
+                            Width="176"
+                            HorizontalAlignment="Left"
+                            Margin="12,6,6,6"
+                            DockPanel.Dock="Top"
+                            PlaceholderText="Search"
+                            QueryIcon="Find" />
+                        <ui:ListView
+                            x:Name="PagesList"
+                            DockPanel.Dock="Top">
+                            <Button
+                                HorizontalAlignment="Center"
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                Command="{Binding ShowWindowChildCommand}"
+                                CommandParameter="1"
+                                Content="Show 1st Child"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                            <Button
+                                HorizontalAlignment="Center"
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                Command="{Binding ShowWindowChildCommand}"
+                                CommandParameter="2"
+                                Content="Show 2st Child"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                            <Button
+                                HorizontalAlignment="Center"
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                Command="{Binding ShowNavBarCommand}"
+                                CommandParameter="2"
+                                Content="Show Nav View"
+                                Style="{StaticResource AccentButtonStyle}"/>
+                        </ui:ListView>
+                    </DockPanel>
                 </Grid>
-                <ContentPresenter Grid.Row="1" Content="{Binding}" />
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,40,0,0"
+                    BorderBrush="{DynamicResource SystemAccentColorDark1Brush}"
+                    BorderThickness="2" />
+                <ContentPresenter
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,40,0,0"
+                    Content="{Binding}" />
             </Grid>
         </DataTemplate>
     </views:MvxWindow.ContentTemplate>

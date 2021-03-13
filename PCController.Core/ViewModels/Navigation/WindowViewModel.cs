@@ -21,7 +21,13 @@ namespace PCController.Core.ViewModels
     {
         private static int _count;
 
-        public string Title => $"No.{Count} Window View";
+        public string Title
+        {
+            get
+            {
+                return $"No.{this.Count} Window View";
+            }
+        }
 
         private Modes _mode = Modes.Blue;
         public Modes Mode
