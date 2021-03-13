@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PCController.Core.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AppSettingsFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</Value>
+    </Setting>
+    <Setting Name="ConnectionStringLogs" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCManager\Logs\log.db;Version=3;Read Only=True;</Value>
+    </Setting>
+    <Setting Name="ConnectionStringNetwork" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCManager\Logs\network.db;Version=3;</Value>
+    </Setting>
+    <Setting Name="LocalDataFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\</Value>
+    </Setting>
+    <Setting Name="LocalDataFolderFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</Value>
+    </Setting>
+    <Setting Name="SQLiteDBPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Logs\log.db</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

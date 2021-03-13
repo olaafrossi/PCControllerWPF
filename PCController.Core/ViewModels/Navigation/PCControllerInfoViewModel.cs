@@ -4,6 +4,18 @@ using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using PCController.Core.Managers;
 using System;
+using System.Windows.Threading;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Navigation;
+using System.Windows.Threading;
+using Serilog;
+
+using PCController.DataAccess;
+using PCController.DataAccess.Models;
 
 namespace PCController.Core.ViewModels
 {
@@ -11,6 +23,8 @@ namespace PCController.Core.ViewModels
     {
         private WindowChildParam _param;
         public override void Prepare(WindowChildParam param) => _param = param;
+
+        private readonly Stopwatch stopwatch;
 
         public int ParentNo => _param.ParentNo;
         public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
@@ -22,6 +36,81 @@ namespace PCController.Core.ViewModels
         {
             this.GetAppInfo();
         }
+
+        private void GetDataLogs()
+        {
+            this.stopwatch.Restart();
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
+            string logComboBoxSelection = string.Empty;
+
+            // get the number of logs from the user
+            //this.Dispatcher.Invoke(() => { return logComboBoxSelection = this.LogSelectComboBox.SelectionBoxItem.ToString(); });
+            int numOfLogs = 20;
+            try
+            {
+                //numOfLogs = int.Parse(logComboBoxSelection);
+                //Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
+            }
+            catch (Exception e)
+            {
+                //Log.Logger.Error("Didn't parse the number in the Log ComboBox (this is impossible) {numOfLogs}", numOfLogs);
+            }
+
+            var rows = sql.GetSomeLogs(20);
+
+            LogGridRows = rows;
+
+            // insert the rows into the LogGrid
+            //this.Dispatcher.Invoke(() => { this.LogGrid.ItemsSource = rows; }, DispatcherPriority.DataBind);
+
+            //_ = this.Dispatcher.BeginInvoke(() => { this.LoadTimeTextBlock.Text = $" DB query time: {this.stopwatch.ElapsedMilliseconds} ms"; }, DispatcherPriority.DataBind);
+            //Log.Logger.Information("Inserted DB rows into the LogGrid in {this.stopwatch.ElapsedMilliseconds}", this.stopwatch.ElapsedMilliseconds);
+            this.stopwatch.Stop();
+        }
+
+        public IList<LogModel> LogGridRows { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void GetAppInfo()
         {
