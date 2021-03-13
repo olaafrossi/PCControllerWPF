@@ -12,8 +12,6 @@ namespace PCController.Core.ViewModels
         private WindowChildParam _param;
         public override void Prepare(WindowChildParam param) => _param = param;
 
-
-
         public int ParentNo => _param.ParentNo;
         public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
 

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCController.Core", "PCController.Core\PCController.Core.csproj", "{B47C32CC-D9FA-46ED-9481-F2FA15B08A21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCController.Core", "PCController.Core\PCController.Core.csproj", "{B47C32CC-D9FA-46ED-9481-F2FA15B08A21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCController.WPF", "PCController.WPF\PCController.WPF.csproj", "{895B269C-3A1D-4841-8448-1105F5AAB826}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PCController.WPF", "PCController.WPF\PCController.WPF.csproj", "{895B269C-3A1D-4841-8448-1105F5AAB826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCController.DataAccess", "PCController.DataAccess\PCController.DataAccess.csproj", "{2142B20E-EDA8-41DA-8C77-A22F72BDB40B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{895B269C-3A1D-4841-8448-1105F5AAB826}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{895B269C-3A1D-4841-8448-1105F5AAB826}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{895B269C-3A1D-4841-8448-1105F5AAB826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2142B20E-EDA8-41DA-8C77-A22F72BDB40B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2142B20E-EDA8-41DA-8C77-A22F72BDB40B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2142B20E-EDA8-41DA-8C77-A22F72BDB40B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2142B20E-EDA8-41DA-8C77-A22F72BDB40B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
