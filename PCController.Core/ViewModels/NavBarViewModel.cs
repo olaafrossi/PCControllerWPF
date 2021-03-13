@@ -32,7 +32,8 @@ namespace PCController.Core.ViewModels
 
         private ObservableCollection<LogModel> _loggy = new();
 
-        public NavBarViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
+        public NavBarViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : 
+            base(logProvider, navigationService)
         {
             this.AddLogCommand = new MvxCommand(this.AddLoggyLog);
         }

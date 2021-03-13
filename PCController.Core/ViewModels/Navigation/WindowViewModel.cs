@@ -2,12 +2,12 @@
 // The .NET Foundation licenses this file to you under the MS-PL license.
 // See the LICENSE file in the project root for more information.
 
-using PCController.Core.Models;
-using System.Threading.Tasks;
-using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
+using MvvmCross.Navigation;
+using MvvmCross.ViewModels;
+using PCController.Core.Models;
+using System.Threading.Tasks;
 
 namespace PCController.Core.ViewModels
 {
@@ -24,9 +24,11 @@ namespace PCController.Core.ViewModels
         public string Title => $"No.{Count} Window View";
 
         private Modes _mode = Modes.Blue;
-        public Modes Mode {
+        public Modes Mode
+        {
             get { return _mode; }
-            set {
+            set
+            {
                 if (value == _mode) return;
                 _mode = value;
                 RaisePropertyChanged(() => Mode);
@@ -34,9 +36,11 @@ namespace PCController.Core.ViewModels
         }
 
         private bool _isItem1 = true;
-        public bool IsItem1 {
+        public bool IsItem1
+        {
             get { return _isItem1; }
-            set { 
+            set
+            {
                 if (value == _isItem1) return;
                 _isItem1 = value;
                 RaisePropertyChanged(() => IsItem1);
@@ -95,9 +99,19 @@ namespace PCController.Core.ViewModels
                 });
             });
 
+            ShowNavBarCommand = new MvxAsyncCommand<int>(async no =>
+                {
+                    await NavigationService.Navigate<NavBarViewModel, WindowChildParam>(new WindowChildParam
+                    {
+                        ParentNo = Count,
+                        ChildNo = no
+                    });
+                });
+
+
             CloseCommand = new MvxAsyncCommand(async () => await NavigationService.Close(this));
 
-            ToggleSettingCommand = new MvxAsyncCommand(async () => 
+            ToggleSettingCommand = new MvxAsyncCommand(async () =>
             {
                 await Task.Run(() =>
                 {
@@ -109,6 +123,8 @@ namespace PCController.Core.ViewModels
         public IMvxAsyncCommand CloseCommand { get; private set; }
         public IMvxAsyncCommand<int> ShowWindowChildCommand { get; private set; }
 
-        public IMvxAsyncCommand ToggleSettingCommand { get; private set; }    
+        public IMvxAsyncCommand<int> ShowNavBarCommand { get; set; }
+
+        public IMvxAsyncCommand ToggleSettingCommand { get; private set; }
     }
 }
