@@ -9,9 +9,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
+using OSVersionHelper;
 using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
-using OSVersionHelper;
 
 namespace PCController.Core.Managers
 {
@@ -37,7 +37,7 @@ namespace PCController.Core.Managers
 
             if (ApiInformation.IsMethodPresent("Windows.ApplicationModel.Package", "GetAppInstallerInfo"))
             {
-                var aiUri = this.GetAppInstallerInfoUri(Package.Current);
+                var aiUri = GetAppInstallerInfoUri(Package.Current);
                 if (aiUri != null)
                 {
                     result = $"MSIX Installer URL: {aiUri}";
@@ -76,7 +76,7 @@ namespace PCController.Core.Managers
             catch (Exception e)
             {
                 return e.ToString();
-                //throw;
+                // throw;
             }
         }
 

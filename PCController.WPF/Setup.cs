@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using MvvmCross.Core;
-
-using Serilog;
-using Serilog.Sinks.SystemConsole;
-using MvvmCross.Logging;
-using MvvmCross.Platforms.Wpf.Core;
-using MvvmCross.ViewModels;
-
-namespace PCController.WPF
+﻿namespace PCController.WPF
 {
+    using System;
+    using System.IO;
+    using MvvmCross.Logging;
+    using MvvmCross.Platforms.Wpf.Core;
+    using MvvmCross.ViewModels;
+    using Serilog;
+
     public class Setup : MvxWpfSetup
     {
         public override MvxLogProviderType GetDefaultLogProviderType() => MvxLogProviderType.Serilog;

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using MvvmCross;
 using MvvmCross.Commands;
@@ -13,13 +7,7 @@ using MvvmCross.Logging;
 using MvvmCross.Navigation;
 using MvvmCross.Plugin.Messenger;
 using MvvmCross.ViewModels;
-using MvvmCross.ViewModels;
-using MvvmCross.Commands;
-using MvvmCross.Logging;
-using MvvmCross.Navigation;
-using PCController.Core.Services;
 using PCController.Core.Models;
-using PCController.Core.ViewModels.Bindings;
 using PCController.Core.ViewModels.Navigation;
 
 namespace PCController.Core.ViewModels

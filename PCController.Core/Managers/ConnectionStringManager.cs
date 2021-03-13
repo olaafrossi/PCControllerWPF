@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Serilog;
+﻿using Serilog;
 
 namespace PCController.Core.Managers
 {
@@ -11,6 +6,10 @@ namespace PCController.Core.Managers
     {
         public enum DataBases
         {
+            /// <summary>
+            /// These are the tables in the Logs.db database
+            /// Should probably clean this up a bit
+            /// </summary>
             Logs,
             Network,
         }

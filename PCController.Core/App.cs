@@ -3,9 +3,6 @@ using MvvmCross;
 using MvvmCross.IoC;
 using MvvmCross.Localization;
 using MvvmCross.ViewModels;
-using MvvmCross.Platforms.Wpf.Core;
-
-
 using PCController.Core.Services;
 using PCController.Core.ViewModels;
 

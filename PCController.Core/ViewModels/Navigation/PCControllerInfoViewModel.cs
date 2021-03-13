@@ -1,19 +1,11 @@
-﻿using MvvmCross.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using PCController.Core.Managers;
-using System;
-using System.Windows.Threading;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Navigation;
-using System.Windows.Threading;
-using Serilog;
-
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 
@@ -58,7 +50,6 @@ namespace PCController.Core.ViewModels
             }
 
             var rows = sql.GetSomeLogs(20);
-
             LogGridRows = rows;
 
             // insert the rows into the LogGrid

@@ -6,11 +6,8 @@ using System.Collections.ObjectModel;
 
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
-using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
-
 using PCController.Core.Models;
 
 namespace PCController.Core.ViewModels

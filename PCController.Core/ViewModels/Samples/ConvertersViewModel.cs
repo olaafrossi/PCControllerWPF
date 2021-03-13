@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MvvmCross.ViewModels;
+﻿using MvvmCross.ViewModels;
 
 namespace Playground.Core.ViewModels.Samples
 {
