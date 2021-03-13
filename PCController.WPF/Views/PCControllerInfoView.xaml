@@ -26,37 +26,15 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MaxHeight="450" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="453.42" />
-            <RowDefinition Height="120.477" />
-            <RowDefinition Height="136.103" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <GridSplitter
-            Grid.Row="2"
-            Grid.Column="1"
-            MinWidth="700"
-            MinHeight="12"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            HorizontalContentAlignment="Center"
-            Background="#FFDEA504"
-            Foreground="#FFDEA504"
-            ResizeDirection="Rows" />
-        <Label
-            Grid.Row="2"
-            Grid.Column="1"
-            Height="13"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Content="--------------------------------------------------------------"
-            FontSize="12"
-            FontWeight="Bold"
-            Foreground="White"
-            IsHitTestVisible="False" />
 
         <TextBlock
-            Margin="5,5,5,5"
+            Grid.Row="0" Grid.Column="0" Margin="5,5,5,5"
             FontSize="24"
             FontWeight="Normal"
             Foreground="#FFDEA504"
@@ -65,8 +43,9 @@
         <StackPanel
             Grid.Row="1"
             Grid.RowSpan="2"
-            Grid.ColumnSpan="2"
+            Grid.Column="0"
             MinWidth="250"
+            MaxWidth="450"
             Margin="270,0,0,42">
             <TextBox
                 Margin="5,5,5,5"
@@ -220,9 +199,11 @@
 
         <ui:SimpleStackPanel
             Grid.Row="1"
-            Grid.Column="2"
-            Width="250"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Width="Auto"
             Height="410"
+            Margin="0,0,2,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
@@ -264,12 +245,12 @@
         </ui:SimpleStackPanel>
 
         <ui:SimpleStackPanel
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.RowSpan="3"
             Grid.Column="2"
             Width="250"
-            Height="700"
-            Margin="0,5,0,0"
+            Height="Auto"
+            Margin="0,100,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
@@ -367,13 +348,13 @@
 
         <DataGrid
             x:Name="LogGrid"
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.RowSpan="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             MinWidth="400"
             MinHeight="100"
-            MaxHeight="700"
+            MaxHeight="500"
             Margin="5,5,5,5"
             AutoGenerateColumns="True"
             BorderBrush="Gray"
@@ -391,16 +372,9 @@
             UseLayoutRounding="True"
             VerticalScrollBarVisibility="Visible"
             VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-            VirtualizingPanel.VirtualizationMode="Standard">
-            <DataGrid.CellStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    <Style.Triggers>
-                        <Trigger Property="Content" Value="Error">
-                            <Setter Property="Foreground" Value="Red" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.CellStyle>
+            VirtualizingPanel.VirtualizationMode="Standard"
+            ItemsSource="{Binding LogGridRows}">
+            
         </DataGrid>
 
     </Grid>

@@ -35,11 +35,12 @@ namespace PCController.Core.ViewModels
             base(logProvider, navigationService)
         {
             this.GetAppInfo();
+            this.GetDataLogs();
         }
 
         private void GetDataLogs()
         {
-            this.stopwatch.Restart();
+            //this.stopwatch.Restart();
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
             string logComboBoxSelection = string.Empty;
 
@@ -65,7 +66,7 @@ namespace PCController.Core.ViewModels
 
             //_ = this.Dispatcher.BeginInvoke(() => { this.LoadTimeTextBlock.Text = $" DB query time: {this.stopwatch.ElapsedMilliseconds} ms"; }, DispatcherPriority.DataBind);
             //Log.Logger.Information("Inserted DB rows into the LogGrid in {this.stopwatch.ElapsedMilliseconds}", this.stopwatch.ElapsedMilliseconds);
-            this.stopwatch.Stop();
+            //this.stopwatch.Stop();
         }
 
         public IList<LogModel> LogGridRows { get; set; }
