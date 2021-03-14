@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PCController.DataAccess\PCController.DataAccess.csproj" />
+    <ProjectReference Include="..\ThreeByteLibrary\ThreeByteLibrary.Dotnet\ThreeByteLibrary.Dotnet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

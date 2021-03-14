@@ -23,5 +23,8 @@
     <Setting Name="LocalLogFolderFile" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Logs\PCControllerLogs.json</Value>
     </Setting>
+    <Setting Name="PCListenerUDPPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">16009</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

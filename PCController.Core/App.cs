@@ -1,10 +1,14 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MvvmCross;
 using MvvmCross.IoC;
 using MvvmCross.Localization;
 using MvvmCross.ViewModels;
 using PCController.Core.Services;
 using PCController.Core.ViewModels;
+using Serilog;
+using Serilog.Core;
+using ThreeByteLibrary.Dotnet;
 
 namespace PCController.Core
 {
@@ -22,9 +26,18 @@ namespace PCController.Core
                 .RegisterAsLazySingleton();
 
             Mvx.IoCProvider.RegisterSingleton<IMvxTextProvider>(new TextProviderBuilder().TextProvider);
+            
+            // setup info for the network listener
+            int portNum = Properties.Settings.Default.PCListenerUDPPort;
+            ILogger netLogger = Log.Logger;
 
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IPcNetworkListener>(new PcNetworkListener(netLogger, portNum));
+            
+            // start the app
             RegisterAppStart<RootViewModel>();
         }
+
+
 
         /// <summary>
         /// Do any UI bound startup actions here

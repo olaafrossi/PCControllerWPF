@@ -107,5 +107,17 @@ namespace PCController.Core.Properties {
                 this["LocalLogFolderFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("16009")]
+        public int PCListenerUDPPort {
+            get {
+                return ((int)(this["PCListenerUDPPort"]));
+            }
+            set {
+                this["PCListenerUDPPort"] = value;
+            }
+        }
     }
 }

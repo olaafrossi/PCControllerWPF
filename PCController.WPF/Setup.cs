@@ -1,20 +1,22 @@
-﻿using System.Globalization;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCController |
+// Created: 2021 03 12
+// by Olaaf Rossi
+
+using MvvmCross.Logging;
+using MvvmCross.Platforms.Wpf.Core;
+using MvvmCross.ViewModels;
+using PCController.Core.Properties;
+using Serilog;
 
 namespace PCController.WPF
 {
-    using MvvmCross.Logging;
-    using MvvmCross.Platforms.Wpf.Core;
-    using MvvmCross.ViewModels;
-    using Serilog;
-    using System.IO;
-
     public class Setup : MvxWpfSetup
     {
         public override MvxLogProviderType GetDefaultLogProviderType() => MvxLogProviderType.Serilog;
 
         protected override IMvxApplication CreateApp()
         {
-            return (IMvxApplication)new Core.App();
+            return new Core.App();
         }
 
         protected override IMvxLogProvider CreateLogProvider()
@@ -26,8 +28,8 @@ namespace PCController.WPF
                 .Enrich.WithAssemblyVersion()
                 .Enrich.WithEnvironmentUserName()
                 .Enrich.WithProcessId()
-                .WriteTo.SQLite(PCController.Core.Properties.Settings.Default.SQLiteDBPath)
-                .WriteTo.File(PCController.Core.Properties.Settings.Default.LocalLogFolderFile)
+                .WriteTo.SQLite(Settings.Default.SQLiteDBPath)
+                .WriteTo.File(Settings.Default.LocalLogFolderFile)
                 .WriteTo.Console()
                 .CreateLogger();
 
