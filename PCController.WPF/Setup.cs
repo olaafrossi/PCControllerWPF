@@ -27,7 +27,6 @@ namespace PCController.WPF
                 .Enrich.WithEnvironmentUserName()
                 .Enrich.WithProcessId()
                 .WriteTo.SQLite(PCController.Core.Properties.Settings.Default.SQLiteDBPath)
-                .WriteTo.File($"{Directory.GetCurrentDirectory()}\\Logs\\PCControllerLog.log")
                 .WriteTo.File(PCController.Core.Properties.Settings.Default.LocalLogFolderFile)
                 .WriteTo.Console()
                 .CreateLogger();
