@@ -20,5 +20,8 @@
     <Setting Name="SQLiteDBPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Logs\log.db</Value>
     </Setting>
+    <Setting Name="LocalLogFolderFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Logs\PCControllerLogs.json</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

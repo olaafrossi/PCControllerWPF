@@ -11,7 +11,7 @@ namespace PCController.WPF
     {
         protected override void RegisterSetup()
         {
-            //MvxWpfSetupSingleton.EnsureSingletonAvailable(Dispatcher, MainWindow);
+            MvxWpfSetupSingleton.EnsureSingletonAvailable(Dispatcher, MainWindow);
             this.RegisterSetupType<MvxWpfSetup<Core.App>>();
 
         }

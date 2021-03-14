@@ -1,11 +1,12 @@
-﻿namespace PCController.WPF
+﻿using System.Globalization;
+
+namespace PCController.WPF
 {
-    using System;
-    using System.IO;
     using MvvmCross.Logging;
     using MvvmCross.Platforms.Wpf.Core;
     using MvvmCross.ViewModels;
     using Serilog;
+    using System.IO;
 
     public class Setup : MvxWpfSetup
     {
@@ -13,16 +14,24 @@
 
         protected override IMvxApplication CreateApp()
         {
-            throw new NotImplementedException();
+            return (IMvxApplication)new Core.App();
         }
 
         protected override IMvxLogProvider CreateLogProvider()
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
-                .WriteTo.File($"{Directory.GetCurrentDirectory()}\\my_log.log")
+                .Enrich.FromLogContext()
+                .Enrich.WithThreadId()
+                .Enrich.WithAssemblyVersion()
+                .Enrich.WithEnvironmentUserName()
+                .Enrich.WithProcessId()
+                .WriteTo.SQLite(PCController.Core.Properties.Settings.Default.SQLiteDBPath)
+                .WriteTo.File($"{Directory.GetCurrentDirectory()}\\Logs\\PCControllerLog.log")
+                .WriteTo.File(PCController.Core.Properties.Settings.Default.LocalLogFolderFile)
                 .WriteTo.Console()
                 .CreateLogger();
+
             return base.CreateLogProvider();
         }
     }

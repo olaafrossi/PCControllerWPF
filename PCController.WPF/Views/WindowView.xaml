@@ -17,11 +17,10 @@
     ResizeMode="CanResizeWithGrip"
     mc:Ignorable="d">
 
-
     <views:MvxWindow.ContentTemplate>
         <DataTemplate>
             <DataTemplate.Resources />
-            <Grid x:Name="LayoutRoot">
+            <Grid x:Name="LayoutRoot" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -29,12 +28,12 @@
                     <ColumnDefinition Width="200" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
                 <Grid
+                    DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
                     x:Name="Nav"
                     Grid.Row="0"
-                    Grid.Column="0"
-                    DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                    Grid.Column="0">
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -142,4 +141,5 @@
             </Grid>
         </DataTemplate>
     </views:MvxWindow.ContentTemplate>
+
 </views:MvxWindow>

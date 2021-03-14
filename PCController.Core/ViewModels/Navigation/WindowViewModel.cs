@@ -8,6 +8,8 @@ using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using PCController.Core.Models;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Sinks.RichTextBox;
 
 namespace PCController.Core.ViewModels
 {
@@ -95,6 +97,8 @@ namespace PCController.Core.ViewModels
         {
             _count++;
             Count = _count;
+
+            Serilog.Log.Information("Hello, world! from serilog");
 
             ShowWindowChildCommand = new MvxAsyncCommand<int>(async no =>
             {

@@ -3,6 +3,8 @@ using MvvmCross.Presenters;
 using MvvmCross.Presenters.Attributes;
 using MvvmCross.ViewModels;
 using PCController.Core.ViewModels;
+using Serilog;
+using Serilog.Sinks.RichTextBox;
 
 namespace PCController.WPF.Views
 {
@@ -25,6 +27,7 @@ namespace PCController.WPF.Views
                        {
                            Identifier = $"{nameof(WindowView)}.{viewModel}"
                        };
+            
         }
     }
 }
