@@ -2,18 +2,20 @@
     x:Class="PCController.WPF.Views.PCControllerInfoView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ViewModels="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PCController.WPF.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+    xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
     x:Name="mvxWView"
-    d:DesignHeight="1250"
-    d:DesignWidth="800"
+    d:DesignHeight="1120"
+    d:DesignWidth="810"
     ui:ThemeManager.RequestedTheme="Dark"
+    SnapsToDevicePixels="True"
     mc:Ignorable="d">
+
     <Grid
         x:Name="LayoutRoot"
         MinWidth="500"
@@ -22,15 +24,12 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock
@@ -40,304 +39,222 @@
             FontSize="24"
             FontWeight="Normal"
             Foreground="#FFDEA504"
-            Text="PC Manager Information" />
+            Text="PC Controller Information" />
 
-        <StackPanel
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Grid.Column="0"
-            MinWidth="250"
-            MaxWidth="450"
-            Margin="270,0,0,42">
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                HorizontalScrollBarVisibility="Auto"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding AssemblyVersion}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding AssemblyFileVersion}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding AssemblyInformationVersion}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding DotNetInfo}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="False"
-                SnapsToDevicePixels="True"
-                Text="{Binding InstallLocation}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding PackageVersion}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding AppInstallerUri}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding PackageChannel}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding DisplayName}" />
-            <TextBox
-                Margin="5,5,5,5"
-                Focusable="True"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="{Binding MSIXVersionNumber}" />
-        </StackPanel>
-        <StackPanel
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Grid.Column="0"
-            MinWidth="50"
-            Margin="0,0,0,42">
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Assembly Version" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Assembly File Version" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Assembly Information Version" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text=".NET Info" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Installation Location" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="MSIX Package Version (MSIX only)" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Installer URI (MSIX only)" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Package Channel (MSIX Only)" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="Display Name (MSIX Only" />
-            <TextBlock
-                MinHeight="32"
-                Margin="5"
-                Focusable="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="MSIX Version Number (MSIX Only)" />
-        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ui:SimpleStackPanel
+                Grid.Row="0"
+                Grid.Column="1"
+                MinWidth="250"
+                MaxWidth="450"
+                Margin="5,5,0,5">
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding AssemblyVersion}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding AssemblyFileVersion}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding AssemblyInformationVersion}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding DotNetInfo}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="False"
+                    Text="{Binding InstallLocation}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding PackageVersion}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding AppInstallerUri}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding PackageChannel}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding DisplayName}" />
+                <TextBox
+                    Margin="5,5,5,5"
+                    Focusable="True"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="{Binding MSIXVersionNumber}" />
+            </ui:SimpleStackPanel>
+            <ui:SimpleStackPanel
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="5">
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Assembly Version" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Assembly File Version" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Assembly Information Version" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text=".NET Info" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Installation Location" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="MSIX Package Version (MSIX only)" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Installer URI (MSIX only)" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Package Channel (MSIX Only)" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="Display Name (MSIX Only" />
+                <TextBlock
+                    MinHeight="32"
+                    Margin="5"
+                    Focusable="True"
+                    ScrollViewer.CanContentScroll="True"
+                    SnapsToDevicePixels="True"
+                    Text="MSIX Version Number (MSIX Only)" />
+            </ui:SimpleStackPanel>
 
-        <ui:SimpleStackPanel
-            Grid.Row="1"
-            Grid.Column="1"
-            Grid.ColumnSpan="2"
-            Width="Auto"
-            Height="410"
-            Margin="0,0,2,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-
-            <TextBlock Margin="5,5,5,5" Text="PC Manager Options" />
-            <Button
-                x:Name="CheckForUpdate"
-                MinWidth="165"
-                MinHeight="40"
-                Margin="5,10,5,5"
+            <ui:SimpleStackPanel
+                Grid.Row="0"
+                Grid.Column="2"
+                Width="823"
+                Height="410"
+                Margin="0,10,2,0"
                 HorizontalAlignment="Left"
-                Content="Check for Update (MSIX)"
-                Style="{StaticResource AccentButtonStyle}" />
-            <TextBlock Margin="5" FontSize="14">
-                <Hyperlink x:Name="LinkTo3Byte" NavigateUri="https://www.3-byte.com" />
-            </TextBlock>
-            <TextBlock Margin="5" FontSize="14">
-                <Hyperlink x:Name="LinkToGitHubProject" NavigateUri="https://www.3-byte.com" />
-            </TextBlock>
-            <TextBlock Margin="5" FontSize="14">
-                <Hyperlink x:Name="LinkToProjectInstaller" NavigateUri="https://www.3-byte.com" />
-            </TextBlock>
-            <TextBlock
-                Margin="5"
-                FontSize="14"
-                Text="Location of Application Config File" />
-            <TextBox
-                Margin="5,5,5,5"
-                VerticalAlignment="Stretch"
-                VerticalContentAlignment="Center"
-                Focusable="True"
-                FontSize="8"
-                HorizontalScrollBarVisibility="Auto"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json" />
+                VerticalAlignment="Top"
+                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
-        </ui:SimpleStackPanel>
+                <TextBlock Margin="5,5,5,5" Text="PC Manager Options" />
+                <Button
+                    x:Name="CheckForUpdate"
+                    Width="250"
+                    MinHeight="40"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    Content="Check for Update (MSIX)"
+                    Style="{StaticResource AccentButtonStyle}" />
+                <TextBlock Margin="5" FontSize="14">
+                    <Hyperlink
+                        x:Name="LinkTo3Byte"
+                        NavigateUri="https://www.3-byte.com"
+                        RequestNavigate="LinkTo3ByteOnRequestNavigate">
+                        Three Byte Intermedia
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="5" FontSize="14">
+                    <Hyperlink
+                        x:Name="LinkToGitHubProject"
+                        NavigateUri="https://www.3-byte.com"
+                        RequestNavigate="LinkToGitHubProjectOnRequestNavigate">
+                        GitHub Project (Code)
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Margin="5" FontSize="14">
+                    <Hyperlink
+                        x:Name="LinkToProjectInstaller"
+                        NavigateUri="https://www.3-byte.com"
+                        RequestNavigate="LinkToProjectInstallerOnRequestNavigate">
+                        Project Installer URL
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock
+                    Margin="5"
+                    FontSize="14"
+                    Text="Location of Application Config File" />
+                <TextBox
+                    Width="300"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Left"
+                    VerticalContentAlignment="Center"
+                    Focusable="True"
+                    FontSize="10"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="C:\ThreeByteIntermedia\PCController\Settings\appsettings.json" />
 
-        <ui:SimpleStackPanel
-            Grid.Row="2"
-            Grid.RowSpan="3"
-            Grid.Column="2"
-            Width="250"
-            Height="Auto"
-            Margin="0,100,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-
-            <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
-            <Button
-                x:Name="RefreshLog"
-                MinWidth="165"
-                MinHeight="40"
-                Margin="5,10,5,5"
-                HorizontalAlignment="Left"
-                Content="Refresh Log"
-                Style="{StaticResource AccentButtonStyle}" />
-            <TextBlock
-                x:Name="LoadTimeTextBlock"
-                Margin="5,10,5,5"
-                Text="Hello" />
-            <ComboBox
-                x:Name="LogSelectComboBox"
-                MinWidth="165"
-                Margin="5,10,5,5"
-                ui:ControlHelper.Header="Number of Logs to Fetch"
-                SelectedIndex="0">
-                <ComboBoxItem>20</ComboBoxItem>
-                <ComboBoxItem>50</ComboBoxItem>
-                <ComboBoxItem>100</ComboBoxItem>
-                <ComboBoxItem>200</ComboBoxItem>
-            </ComboBox>
-            <ComboBox
-                MinWidth="165"
-                Margin="5,10,5,5"
-                ui:ControlHelper.Header="GridLinesVisibility"
-                ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
-                SelectedItem="{Binding ElementName=LogGrid, Path=GridLinesVisibility}" />
-            <ComboBox
-                MinWidth="165"
-                Margin="5,10,5,5"
-                ui:ControlHelper.Header="ClipboardCopyMode"
-                ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
-                SelectedItem="{Binding ElementName=LogGrid, Path=ClipboardCopyMode}" />
-            <ComboBox
-                MinWidth="165"
-                Margin="5,10,5,5"
-                ui:ControlHelper.Header="SelectionUnit"
-                ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
-                SelectedItem="{Binding ElementName=LogGrid, Path=SelectionUnit}" />
-            <ComboBox
-                MinWidth="165"
-                Margin="5,10,5,5"
-                ui:ControlHelper.Header="SelectionMode"
-                ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
-                SelectedItem="{Binding ElementName=LogGrid, Path=SelectionMode}" />
-            <TextBlock
-                Margin="5"
-                FontSize="14"
-                Text="Location of SQLite Log DB" />
-            <TextBox
-                Margin="5,5,5,5"
-                VerticalAlignment="Stretch"
-                VerticalContentAlignment="Center"
-                Focusable="True"
-                FontSize="9"
-                HorizontalScrollBarVisibility="Auto"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="C:\ThreeByteIntermedia\PCManager\Logs\Log.db" />
-            <TextBlock
-                Margin="5"
-                FontSize="14"
-                Text="Location of JSON formatted Logs" />
-            <TextBox
-                Margin="5,5,5,5"
-                VerticalAlignment="Stretch"
-                VerticalContentAlignment="Center"
-                Focusable="True"
-                FontSize="9"
-                HorizontalScrollBarVisibility="Auto"
-                IsReadOnly="True"
-                ScrollViewer.CanContentScroll="True"
-                SnapsToDevicePixels="True"
-                Text="C:\ThreeByteIntermedia\PCManager\Logs\Log.json" />
-
-        </ui:SimpleStackPanel>
-
+            </ui:SimpleStackPanel>
+        </Grid>
 
         <TextBlock
             Grid.Row="2"
@@ -346,41 +263,148 @@
             FontSize="24"
             FontWeight="Normal"
             Foreground="#FFDEA504"
-            Text="PC Manager Log" />
+            Text="PC Controller Log" />
 
-        <DataGrid
-            x:Name="LogGrid"
-            Grid.Row="2"
-            Grid.RowSpan="3"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            MinWidth="400"
-            MinHeight="100"
-            MaxHeight="500"
-            Margin="5,5,5,5"
-            AutoGenerateColumns="True"
-            BorderBrush="Gray"
-            BorderThickness="1"
-            CanUserAddRows="False"
-            CanUserDeleteRows="False"
-            EnableColumnVirtualization="True"
-            EnableRowVirtualization="True"
-            GridLinesVisibility="Horizontal"
-            HeadersVisibility="Column"
-            HorizontalScrollBarVisibility="Visible"
-            IsReadOnly="True"
-            ItemsSource="{Binding LogGridRows}"
-            RowDetailsVisibilityMode="Visible"
-            SnapsToDevicePixels="True"
-            UseLayoutRounding="True"
-            VerticalScrollBarVisibility="Visible"
-            VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-            VirtualizingPanel.VirtualizationMode="Standard" />
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
+            <DataGrid
+                x:Name="LogGrid"
+                Grid.Row="0"
+                Grid.Column="0"
+                Height="605"
+                MinWidth="500"
+                MaxWidth="1200"
+                Margin="5,0,0,0"
+                VerticalAlignment="Top"
+                AutoGenerateColumns="True"
+                BorderBrush="Gray"
+                BorderThickness="1"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                EnableColumnVirtualization="True"
+                EnableRowVirtualization="True"
+                GridLinesVisibility="Horizontal"
+                HeadersVisibility="Column"
+                HorizontalScrollBarVisibility="Visible"
+                IsReadOnly="True"
+                ItemsSource="{Binding LogGridRows}"
+                RowDetailsVisibilityMode="Visible"
+                SnapsToDevicePixels="True"
+                UseLayoutRounding="True"
+                VerticalScrollBarVisibility="Visible"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                VirtualizingPanel.VirtualizationMode="Standard" />
+
+            <ui:SimpleStackPanel
+                Grid.Row="0"
+                Grid.Column="1"
+                Width="300"
+                Height="605"
+                Margin="5,0,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+
+                <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
+                <Button
+                    x:Name="RefreshLog"
+                    Width="250"
+                    MinHeight="40"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    mvx:Bi.nd="Command RefreshLogCommand"
+                    Content="Refresh Log"
+                    Style="{StaticResource AccentButtonStyle}" />
+                <TextBlock
+                    x:Name="LoadTimeTextBlock"
+                    Margin="5,10,5,5"
+                    Text="{Binding DataBaseQueryTime}" />
+                <ComboBox
+                    x:Name="LogSelectComboBox"
+                    Width="250"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    ui:ControlHelper.Header="Number of Logs to Fetch"
+                    SelectedIndex="1"
+                    SelectedItem="{Binding NumberOfLogsToFetch}">
+                    <ComboBoxItem>20</ComboBoxItem>
+                    <ComboBoxItem>50</ComboBoxItem>
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>200</ComboBoxItem>
+                    <ComboBoxItem>500</ComboBoxItem>
+                    <ComboBoxItem>1000</ComboBoxItem>
+                    <ComboBoxItem>2000</ComboBoxItem>
+                    <ComboBoxItem>All</ComboBoxItem>
+
+                </ComboBox>
+                <ComboBox
+                    Width="250"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    ui:ControlHelper.Header="GridLinesVisibility"
+                    ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=GridLinesVisibility}" />
+                <ComboBox
+                    Width="250"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    ui:ControlHelper.Header="ClipboardCopyMode"
+                    ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=ClipboardCopyMode}" />
+                <ComboBox
+                    Width="250"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    ui:ControlHelper.Header="SelectionUnit"
+                    ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=SelectionUnit}" />
+                <ComboBox
+                    Width="250"
+                    Margin="5,10,5,5"
+                    HorizontalAlignment="Left"
+                    ui:ControlHelper.Header="SelectionMode"
+                    ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
+                    SelectedItem="{Binding ElementName=LogGrid, Path=SelectionMode}" />
+                <TextBlock
+                    Margin="5"
+                    FontSize="14"
+                    Text="Location of SQLite Log DB" />
+                <TextBox
+                    Width="250"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="True"
+                    FontSize="10"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="C:\ThreeByteIntermedia\PCController\Logs\Log.db" />
+                <TextBlock
+                    Margin="5"
+                    FontSize="14"
+                    Text="Location of JSON formatted Logs" />
+                <TextBox
+                    Width="250"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="True"
+                    FontSize="10"
+                    HorizontalScrollBarVisibility="Auto"
+                    IsReadOnly="True"
+                    ScrollViewer.CanContentScroll="True"
+                    Text="C:\ThreeByteIntermedia\PCController\Logs\Log.json" />
+            </ui:SimpleStackPanel>
+        </Grid>
     </Grid>
-
-
-
-
-
 </views:MvxWpfView>

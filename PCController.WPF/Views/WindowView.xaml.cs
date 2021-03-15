@@ -16,6 +16,7 @@ namespace PCController.WPF.Views
         public WindowView()
         {
             InitializeComponent();
+
         }
 
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)

@@ -37,8 +37,8 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=C:\\ThreeByteIntermedia\\PCManager\\Logs\\log.db;Version=3;Read Only=True" +
-            ";")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=C:\\ThreeByteIntermedia\\PCController\\Logs\\log.db;Version=3;Read Only=T" +
+            "rue;")]
         public string ConnectionStringLogs {
             get {
                 return ((string)(this["ConnectionStringLogs"]));
@@ -50,7 +50,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=C:\\ThreeByteIntermedia\\PCManager\\Logs\\network.db;Version=3;")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=C:\\ThreeByteIntermedia\\PCController\\Logs\\network.db;Version=3;")]
         public string ConnectionStringNetwork {
             get {
                 return ((string)(this["ConnectionStringNetwork"]));
@@ -86,7 +86,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCManager\\Logs\\log.db")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCController\\Logs\\log.db")]
         public string SQLiteDBPath {
             get {
                 return ((string)(this["SQLiteDBPath"]));
@@ -98,7 +98,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCManager\\Logs\\PCControllerLogs.json")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCController\\Logs\\PCControllerLogs.json")]
         public string LocalLogFolderFile {
             get {
                 return ((string)(this["LocalLogFolderFile"]));

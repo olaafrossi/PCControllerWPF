@@ -9,8 +9,8 @@
     xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
     xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
     Title="{Binding Title}"
-    d:DesignHeight="900"
-    d:DesignWidth="1300"
+    Width="1750"
+    Height="1250"
     ui:ThemeManager.RequestedTheme="Dark"
     ui:TitleBar.IsIconVisible="True"
     ui:WindowHelper.UseModernWindowStyle="True"
@@ -20,7 +20,7 @@
     <views:MvxWindow.ContentTemplate>
         <DataTemplate>
             <DataTemplate.Resources />
-            <Grid x:Name="LayoutRoot" >
+            <Grid x:Name="LayoutRoot">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -29,10 +29,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid
-                    DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
                     x:Name="Nav"
                     Grid.Row="0"
-                    Grid.Column="0">
+                    Grid.Column="0"
+                    DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -121,7 +121,16 @@
                                 HorizontalAlignment="Center"
                                 Command="{Binding ShowPCControllerInfoCommand}"
                                 CommandParameter="2"
-                                Content="Show PC Controller View"
+                                Content="PC Controller"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowPCNetworkListenerCommand}"
+                                CommandParameter="2"
+                                Content="Network Listener"
                                 Style="{StaticResource AccentButtonStyle}" />
                         </ui:ListView>
                     </DockPanel>

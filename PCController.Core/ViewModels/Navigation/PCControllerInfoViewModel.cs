@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCController |
+// Created: 2021 03 13
+// by Olaaf Rossi
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using MvvmCross.Commands;
@@ -13,112 +17,35 @@ namespace PCController.Core.ViewModels
 {
     public class PCControllerInfoViewModel : MvxNavigationViewModel<WindowChildParam>
     {
-        private WindowChildParam _param;
-        public override void Prepare(WindowChildParam param) => _param = param;
-
         private readonly Stopwatch stopwatch;
 
-        public int ParentNo => _param.ParentNo;
-        public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
-
-        public IMvxAsyncCommand CloseCommand => new MvxAsyncCommand(async () => await NavigationService.Close(this));
+        private WindowChildParam _param;
 
         public PCControllerInfoViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
             base(logProvider, navigationService)
         {
-            this.GetAppInfo();
-            this.GetDataLogs();
+            RefreshLogCommand = new MvxCommand(GetDataLogs);
+
+            Serilog.Log.Logger.Information("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+
+            GetAppInfo();
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
+            GetDataLogs();
         }
 
-        private void GetDataLogs()
-        {
-            //this.stopwatch.Restart();
-            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
-            string logComboBoxSelection = string.Empty;
+        public int ParentNo => _param.ParentNo;
+        public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
 
-            // get the number of logs from the user
-            //this.Dispatcher.Invoke(() => { return logComboBoxSelection = this.LogSelectComboBox.SelectionBoxItem.ToString(); });
-            int numOfLogs = 20;
-            try
-            {
-                //numOfLogs = int.Parse(logComboBoxSelection);
-                //Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
-            }
-            catch (Exception e)
-            {
-                //Log.Logger.Error("Didn't parse the number in the Log ComboBox (this is impossible) {numOfLogs}", numOfLogs);
-            }
+        public IMvxCommand RefreshLogCommand { get; set; }
 
-            var rows = sql.GetSomeLogs(20);
-            LogGridRows = rows;
-
-            // insert the rows into the LogGrid
-            //this.Dispatcher.Invoke(() => { this.LogGrid.ItemsSource = rows; }, DispatcherPriority.DataBind);
-
-            //_ = this.Dispatcher.BeginInvoke(() => { this.LoadTimeTextBlock.Text = $" DB query time: {this.stopwatch.ElapsedMilliseconds} ms"; }, DispatcherPriority.DataBind);
-            //Log.Logger.Information("Inserted DB rows into the LogGrid in {this.stopwatch.ElapsedMilliseconds}", this.stopwatch.ElapsedMilliseconds);
-            //this.stopwatch.Stop();
-        }
+        public IMvxAsyncCommand CloseCommand => new MvxAsyncCommand(async () => await NavigationService.Close(this));
 
         public IList<LogModel> LogGridRows { get; set; }
 
+        public string DataBaseQueryTime { get; set; }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private void GetAppInfo()
-        {
-            AppInfoManager appInfo = new AppInfoManager();
-            AssemblyFileVersion = appInfo.GetAssemblyFileVersion();
-            AssemblyInformationVersion = appInfo.GetAssemblyInformationVersion();
-            AssemblyVersion = appInfo.GetAssemblyVersion();
-            DotNetInfo = appInfo.GetDotNetInfo();
-            InstallLocation = appInfo.GetInstallLocation();
-            PackageVersion = appInfo.GetPackageVersion();
-            AppInstallerUri = appInfo.GetAppInstallerUri();
-            PackageChannel = appInfo.GetPackageChannel();
-            DisplayName = appInfo.GetDisplayName();
-            MSIXVersionNumber = appInfo.GetMsixPackageVersion().ToString();
-            //AppInfoInstallerUri = appInfo.GetAppInstallerInfoUri()
-        }
+        public string NumberOfLogsToFetch { get; set; }
 
         public string AssemblyFileVersion { get; set; }
 
@@ -141,5 +68,76 @@ namespace PCController.Core.ViewModels
         public string MSIXVersionNumber { get; set; }
 
         public Uri AppInfoInstallerUri { get; set; }
+        public override void Prepare(WindowChildParam param) => _param = param;
+
+        private void GetDataLogs()
+        {
+            stopwatch.Start();
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
+            int numOfLogs = 20;
+
+            try
+            {
+                RaisePropertyChanged(() => NumberOfLogsToFetch);
+                if (NumberOfLogsToFetch is null)
+                {
+                    numOfLogs = 20;
+                }
+                else if (NumberOfLogsToFetch.Contains("All"))
+                {
+                    // All
+                    numOfLogs = 100000000;
+                }
+                else if (NumberOfLogsToFetch.Length == 40)
+                {
+                    // 20, 50
+                    string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 2);
+                    numOfLogs = int.Parse(logComboBoxSelected);
+                }
+                else if (NumberOfLogsToFetch.Length == 41)
+                {
+                    // hundred
+                    string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 3);
+                    numOfLogs = int.Parse(logComboBoxSelected);
+                }
+                else if (NumberOfLogsToFetch.Length == 42)
+                {
+                    // thousand
+                    string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 4);
+                    numOfLogs = int.Parse(logComboBoxSelected);
+                }
+
+                Serilog.Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
+            }
+            catch (Exception e)
+            {
+                Serilog.Log.Logger.Error("Didn't parse the number in the Log ComboBox {numOfLogs}", numOfLogs, e);
+            }
+
+            var rows = sql.GetSomeLogs(numOfLogs);
+            LogGridRows = rows;
+
+            stopwatch.Stop();
+            string timeToFetchFromDB = $" DB query time: {stopwatch.ElapsedMilliseconds} ms";
+            DataBaseQueryTime = timeToFetchFromDB;
+            RaisePropertyChanged(() => LogGridRows);
+            RaisePropertyChanged(() => DataBaseQueryTime);
+        }
+
+        private void GetAppInfo()
+        {
+            AppInfoManager appInfo = new AppInfoManager();
+            AssemblyFileVersion = appInfo.GetAssemblyFileVersion();
+            AssemblyInformationVersion = appInfo.GetAssemblyInformationVersion();
+            AssemblyVersion = appInfo.GetAssemblyVersion();
+            DotNetInfo = appInfo.GetDotNetInfo();
+            InstallLocation = appInfo.GetInstallLocation();
+            PackageVersion = appInfo.GetPackageVersion();
+            AppInstallerUri = appInfo.GetAppInstallerUri();
+            PackageChannel = appInfo.GetPackageChannel();
+            DisplayName = appInfo.GetDisplayName();
+            MSIXVersionNumber = appInfo.GetMsixPackageVersion().ToString();
+            //AppInfoInstallerUri = appInfo.GetAppInstallerInfoUri()
+        }
     }
 }

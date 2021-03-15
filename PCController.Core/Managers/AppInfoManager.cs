@@ -61,7 +61,7 @@ namespace PCController.Core.Managers
             var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             string output = fileVersionInfo.FileVersion;
             
-            return $"Assembly File Version: {output}";
+            return $"{output}";
         }
 
         public string GetAssemblyInformationVersion()
@@ -71,7 +71,7 @@ namespace PCController.Core.Managers
                 var assembly = Assembly.GetExecutingAssembly();
                 string output = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
                 
-                return $"Assembly Information Version: {output}";
+                return $"{output}";
             }
             catch (Exception e)
             {
@@ -86,14 +86,14 @@ namespace PCController.Core.Managers
             var assemblyVersion = assembly.GetName().Version;
             string output = assemblyVersion.ToString();
 
-            return $"Assembly Version: {output}";
+            return $"{output}";
         }
 
         public string GetDisplayName()
         {
             if (WindowsVersionHelper.HasPackageIdentity)
             {
-                return $"MSIX Package Display Name: {Package.Current.DisplayName}";
+                return $"{Package.Current.DisplayName}";
             }
 
             return "No Display Name, Not MSIX packaged";
@@ -120,7 +120,7 @@ namespace PCController.Core.Managers
 
         public string GetInstallLocation()
         {
-            return $"Application is installed at this location: {Assembly.GetExecutingAssembly().Location}";
+            return $"{Assembly.GetExecutingAssembly().Location}";
         }
 
         public Version GetMsixPackageVersion()
@@ -140,7 +140,7 @@ namespace PCController.Core.Managers
         {
             if (WindowsVersionHelper.HasPackageIdentity)
             {
-                return $"Package Channel: {Package.Current.Id.Name.Substring(Package.Current.Id.Name.LastIndexOf('.') + 1)}";
+                return $"{Package.Current.Id.Name.Substring(Package.Current.Id.Name.LastIndexOf('.') + 1)}";
             }
 
             return "No Package Channel";
@@ -151,7 +151,7 @@ namespace PCController.Core.Managers
             if (WindowsVersionHelper.HasPackageIdentity)
             {
                 return
-                    $"MSIX Package Version: {Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}.{Package.Current.Id.Version.Build}.{Package.Current.Id.Version.Revision}";
+                    $"{Package.Current.Id.Version.Major}.{Package.Current.Id.Version.Minor}.{Package.Current.Id.Version.Build}.{Package.Current.Id.Version.Revision}";
             }
 
             return "Not MSIX packaged";

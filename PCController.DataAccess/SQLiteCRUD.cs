@@ -16,7 +16,7 @@ namespace PCController.DataAccess
 
         public IList<LogModel> GetAllLogs()
         {
-            string sql = "Select ID, Timestamp, Level, Exception, RenderedMessage, Properties from Logs";
+            string sql = $"SELECT * FROM Logs ORDER BY ID DESC LIMIT";
             return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
         }
 

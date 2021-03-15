@@ -6,10 +6,10 @@
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</Value>
     </Setting>
     <Setting Name="ConnectionStringLogs" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCManager\Logs\log.db;Version=3;Read Only=True;</Value>
+      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Logs\log.db;Version=3;Read Only=True;</Value>
     </Setting>
     <Setting Name="ConnectionStringNetwork" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCManager\Logs\network.db;Version=3;</Value>
+      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Logs\network.db;Version=3;</Value>
     </Setting>
     <Setting Name="LocalDataFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\</Value>
@@ -18,10 +18,10 @@
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</Value>
     </Setting>
     <Setting Name="SQLiteDBPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Logs\log.db</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Logs\log.db</Value>
     </Setting>
     <Setting Name="LocalLogFolderFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Logs\PCControllerLogs.json</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Logs\PCControllerLogs.json</Value>
     </Setting>
     <Setting Name="PCListenerUDPPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">16009</Value>

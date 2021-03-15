@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MvvmCross;
 using MvvmCross.IoC;
@@ -32,12 +33,14 @@ namespace PCController.Core
             ILogger netLogger = Log.Logger;
 
             Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IPcNetworkListener>(new PcNetworkListener(netLogger, portNum));
+
             
+
             // start the app
             RegisterAppStart<RootViewModel>();
         }
-
-
+        
+        //public event EventHandler<NetworkMessagesEventArgs> MessageHit;
 
         /// <summary>
         /// Do any UI bound startup actions here

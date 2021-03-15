@@ -127,6 +127,15 @@ namespace PCController.Core.ViewModels
                     });
                 });
 
+            ShowPCNetworkListenerCommand = new MvxAsyncCommand<int>(async no =>
+            {
+                await NavigationService.Navigate<PCNetworkListenerViewModel, WindowChildParam>(new WindowChildParam
+                {
+                    ParentNo = Count,
+                    ChildNo = no
+                });
+            });
+
 
             CloseCommand = new MvxAsyncCommand(async () => await NavigationService.Close(this));
 
@@ -145,6 +154,8 @@ namespace PCController.Core.ViewModels
         public IMvxAsyncCommand<int> ShowNavBarCommand { get; set; }
 
         public IMvxAsyncCommand<int> ShowPCControllerInfoCommand { get; set; }
+
+        public IMvxAsyncCommand<int> ShowPCNetworkListenerCommand { get; set; }
 
         public IMvxAsyncCommand ToggleSettingCommand { get; private set; }
     }

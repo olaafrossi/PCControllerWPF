@@ -13,7 +13,6 @@ namespace PCController.WPF
         {
             MvxWpfSetupSingleton.EnsureSingletonAvailable(Dispatcher, MainWindow);
             this.RegisterSetupType<MvxWpfSetup<Core.App>>();
-
         }
     }
 }

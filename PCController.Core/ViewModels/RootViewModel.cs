@@ -9,12 +9,16 @@ using MvvmCross.Plugin.Messenger;
 using MvvmCross.ViewModels;
 using PCController.Core.Models;
 using PCController.Core.ViewModels.Navigation;
+using Serilog;
+using Serilog.Core;
 
 namespace PCController.Core.ViewModels
 {
     public class RootViewModel : MvxNavigationViewModel
     {
         private readonly IMvxViewModelLoader _mvxViewModelLoader;
+
+        private readonly IMvxLog log;
 
         private int _counter = 2;
 
@@ -28,10 +32,12 @@ namespace PCController.Core.ViewModels
         public RootViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, IMvxViewModelLoader mvxViewModelLoader) : base(logProvider, navigationService)
         {
             _mvxViewModelLoader = mvxViewModelLoader;
+            log = logProvider.GetLogFor<RootViewModel>();
             try
             {
                 var messenger = Mvx.IoCProvider.Resolve<IMvxMessenger>();
                 var str = messenger.ToString();
+                log.InfoFormat("this is from the root, Does it get to Serilog? {messenger}", messenger);
             }
             catch (Exception e)
             {
