@@ -20,7 +20,10 @@
     <views:MvxWindow.ContentTemplate>
         <DataTemplate>
             <DataTemplate.Resources />
-            <Grid x:Name="LayoutRoot">
+            <Grid
+                x:Name="LayoutRoot"
+                Column="1"
+                Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -36,7 +39,7 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="500" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" />
@@ -132,10 +135,14 @@
                                 CommandParameter="2"
                                 Content="Network Listener"
                                 Style="{StaticResource AccentButtonStyle}" />
-                            <TextBox
-                                Width="100"
-                                Height="400"
-                                Text="{Binding LoggingEvents}" />
+                            <RichTextBox
+                                x:Name="MyRichTextBox"
+                                Background="Black"
+                                Foreground="LightGray"
+                                FontFamily="Cascadia Mono, Consolas, Courier New, monospace"
+                                VerticalScrollBarVisibility="Auto"
+                            />
+
                         </ui:ListView>
                     </DockPanel>
                 </Grid>
@@ -155,4 +162,5 @@
         </DataTemplate>
     </views:MvxWindow.ContentTemplate>
 
+   
 </views:MvxWindow>

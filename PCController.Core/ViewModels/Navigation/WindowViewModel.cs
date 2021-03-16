@@ -16,9 +16,11 @@ using Serilog.Events;
 using Serilog.Sinks.RichTextBox;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Sinks.RichTextBox;
 
 namespace PCController.Core.ViewModels
 {
@@ -105,14 +107,15 @@ namespace PCController.Core.ViewModels
         public WindowViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
 
-            _logEvents = new List<String>();
-
-            _logEvents.Add("sd");
-
             _count++;
             Count = _count;
-
+            
             Serilog.Log.Information("Hello, world! from serilog");
+            Serilog.Log.Logger.Information("hello");
+
+
+            
+
 
             ShowWindowChildCommand = new MvxAsyncCommand<int>(async no =>
             {
@@ -160,21 +163,9 @@ namespace PCController.Core.ViewModels
                     IsItemSetting = !IsItemSetting;
                 });
             });
-
-
         }
 
-        private readonly List<String> _logEvents;
 
-        
-
-
-        public void Dispose()
-        {
-            _logEvents.Clear();
-        }
-
-        public IList<String> LoggingEvents { get; set; }
         public IMvxAsyncCommand CloseCommand { get; private set; }
         public IMvxAsyncCommand<int> ShowWindowChildCommand { get; private set; }
 

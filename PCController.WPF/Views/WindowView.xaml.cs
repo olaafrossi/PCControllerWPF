@@ -22,12 +22,15 @@ namespace PCController.WPF.Views
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
         {
             var instanceRequest = request as MvxViewModelInstanceRequest;
-            var viewModel = instanceRequest?.ViewModelInstance as NavBarViewModel;
+            var viewModel = instanceRequest?.ViewModelInstance as WindowViewModel;
+
 
             return new MvxWindowPresentationAttribute
                        {
                            Identifier = $"{nameof(WindowView)}.{viewModel}"
+
                        };
+
             
         }
     }
