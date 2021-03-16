@@ -132,6 +132,10 @@
                                 CommandParameter="2"
                                 Content="Network Listener"
                                 Style="{StaticResource AccentButtonStyle}" />
+                            <TextBox
+                                Width="100"
+                                Height="400"
+                                Text="{Binding LoggingEvents}" />
                         </ui:ListView>
                     </DockPanel>
                 </Grid>

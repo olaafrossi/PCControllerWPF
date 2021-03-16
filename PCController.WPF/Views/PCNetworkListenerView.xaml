@@ -212,7 +212,7 @@
                 <TextBlock
                     x:Name="LoadTimeTextBlock"
                     Margin="5,10,5,5"
-                    Text="Hello" />
+                    Text="{Binding DataBaseQueryTime}" />
                 <ComboBox
                     x:Name="NetSelectComboBox"
                     MinWidth="240"

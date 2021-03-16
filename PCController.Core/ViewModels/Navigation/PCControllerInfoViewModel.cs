@@ -30,7 +30,6 @@ namespace PCController.Core.ViewModels
 
             GetAppInfo();
             stopwatch = new Stopwatch();
-            stopwatch.Start();
             GetDataLogs();
         }
 

@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MS-PL license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
+using System.Threading;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
@@ -9,7 +11,14 @@ using MvvmCross.ViewModels;
 using PCController.Core.Models;
 using System.Threading.Tasks;
 using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using Serilog.Sinks.RichTextBox;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using Serilog.Core;
+using Serilog.Events;
 
 namespace PCController.Core.ViewModels
 {
@@ -95,6 +104,11 @@ namespace PCController.Core.ViewModels
 
         public WindowViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
+
+            _logEvents = new List<String>();
+
+            _logEvents.Add("sd");
+
             _count++;
             Count = _count;
 
@@ -146,8 +160,21 @@ namespace PCController.Core.ViewModels
                     IsItemSetting = !IsItemSetting;
                 });
             });
+
+
         }
 
+        private readonly List<String> _logEvents;
+
+        
+
+
+        public void Dispose()
+        {
+            _logEvents.Clear();
+        }
+
+        public IList<String> LoggingEvents { get; set; }
         public IMvxAsyncCommand CloseCommand { get; private set; }
         public IMvxAsyncCommand<int> ShowWindowChildCommand { get; private set; }
 

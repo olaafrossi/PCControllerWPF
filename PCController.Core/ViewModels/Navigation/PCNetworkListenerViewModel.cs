@@ -35,7 +35,6 @@ namespace PCController.Core.ViewModels
             pcNetworkListener.MessageHit += PCNetworkManagerOnMessage;
 
             stopwatch = new Stopwatch();
-            stopwatch.Start();
             GetNetLogs();
         }
 
@@ -57,7 +56,7 @@ namespace PCController.Core.ViewModels
 
         private void GetNetLogs()
         {
-
+            stopwatch.Start();
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             int numOfMsgs = 20;
 
