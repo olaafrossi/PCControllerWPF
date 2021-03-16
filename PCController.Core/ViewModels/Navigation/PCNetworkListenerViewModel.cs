@@ -5,7 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using MvvmCross;
+using MvvmCross.Base;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
@@ -21,6 +23,8 @@ namespace PCController.Core.ViewModels
     {
         private readonly Stopwatch stopwatch;
 
+        public Stopwatch NetStopwatch = new Stopwatch();
+
         private WindowChildParam _param;
 
         public PCNetworkListenerViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
@@ -31,12 +35,27 @@ namespace PCController.Core.ViewModels
             Serilog.Log.Logger.Information("PCNetworkListenerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             var pcNetworkListener = Mvx.IoCProvider.Resolve<IPcNetworkListener>();
+            
+            int listeningPort = pcNetworkListener.GetAppSettingsDataUdpPort();
+            ListeningUDPPort = listeningPort.ToString();
 
             pcNetworkListener.MessageHit += PCNetworkManagerOnMessage;
 
             stopwatch = new Stopwatch();
             GetNetLogs();
         }
+
+        public string ListeningUDPPort { get; set; }
+
+        public string RemoteControlIP { get; set; }
+
+        public string RemoteControlPort { get; set; }
+
+        public string RemoteControlTimeStamp { get; set; }
+
+        public string RemoteControlLastMessage { get; set; }
+
+        public string RemoteControlTimeSinceLastMessage { get; set; }
 
         public IList<NetworkMessageModel> NetGridRows { get; set; }
 
@@ -51,7 +70,40 @@ namespace PCController.Core.ViewModels
 
         private void PCNetworkManagerOnMessage(object sender, NetworkMessagesEventArgs e)
         {
+            NetStopwatch.Start();
+            
             PCNetworkManager pc = new PCNetworkManager(e);
+
+            RemoteControlIP = e.RemoteIP;
+            RaisePropertyChanged(() => RemoteControlIP);
+            
+            RemoteControlPort = e.RemotePort;
+            RaisePropertyChanged(() => RemoteControlPort);
+           
+            RemoteControlTimeStamp = e.Timestamp;
+            RaisePropertyChanged(() => RemoteControlTimeStamp);
+            
+            RemoteControlLastMessage = e.IncomingMessage;
+            RaisePropertyChanged(() => RemoteControlLastMessage);
+            
+            string t = $"{NetStopwatch.ElapsedMilliseconds.ToString()} ms";
+            RemoteControlTimeSinceLastMessage = t;
+            RaisePropertyChanged(() => RemoteControlTimeSinceLastMessage);
+            
+            NetStopwatch.Stop();
+            NetStopwatch.Reset();
+
+        }
+
+        private async Task StartNetWorkTimer()
+        {
+            
+            do
+            {
+
+            } 
+            while (NetStopwatch.IsRunning);
+
         }
 
         private void GetNetLogs()

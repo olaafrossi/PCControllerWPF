@@ -1,5 +1,5 @@
 ﻿<views:MvxWpfView
-    x:Class="PCController.WPF.Views.PCNetworkListenerView"
+    x:Class="PCController.WPF.Views.WatchdogView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
     xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
-    x:Name="mvxWView"
+    x:Name="MvxWView"
     d:DesignHeight="1120"
     d:DesignWidth="810"
     ui:ThemeManager.RequestedTheme="Dark"
@@ -306,3 +306,4 @@
 
 
 </views:MvxWpfView>
+
