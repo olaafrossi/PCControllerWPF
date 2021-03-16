@@ -25,7 +25,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCManager\\Settings\\appsettings.json")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCController\\Settings\\appsettings.json")]
         public string AppSettingsFile {
             get {
                 return ((string)(this["AppSettingsFile"]));
@@ -62,7 +62,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCManager\\Settings\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCController\\Settings\\")]
         public string LocalDataFolder {
             get {
                 return ((string)(this["LocalDataFolder"]));
@@ -74,7 +74,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCManager\\Settings\\appsettings.json")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCController\\Settings\\appsettings.json")]
         public string LocalDataFolderFile {
             get {
                 return ((string)(this["LocalDataFolderFile"]));

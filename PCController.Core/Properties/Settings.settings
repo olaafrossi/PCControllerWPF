@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="AppSettingsFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Settings\appsettings.json</Value>
     </Setting>
     <Setting Name="ConnectionStringLogs" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Logs\log.db;Version=3;Read Only=True;</Value>
@@ -12,10 +12,10 @@
       <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Logs\network.db;Version=3;</Value>
     </Setting>
     <Setting Name="LocalDataFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Settings\</Value>
     </Setting>
     <Setting Name="LocalDataFolderFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Settings\appsettings.json</Value>
     </Setting>
     <Setting Name="SQLiteDBPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Logs\log.db</Value>

@@ -106,14 +106,13 @@ namespace PCController.Core.ViewModels
                     string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 4);
                     numOfLogs = int.Parse(logComboBoxSelected);
                 }
-
-                Serilog.Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
             }
             catch (Exception e)
             {
                 Serilog.Log.Logger.Error("Didn't parse the number in the Log ComboBox {numOfLogs}", numOfLogs, e);
             }
 
+            Serilog.Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
             var rows = sql.GetSomeLogs(numOfLogs);
             LogGridRows = rows;
 

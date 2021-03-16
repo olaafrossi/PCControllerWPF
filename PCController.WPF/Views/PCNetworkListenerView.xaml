@@ -29,7 +29,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" MaxHeight="450" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -40,74 +40,84 @@
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
                 Text="Network Listener" />
-
-            <StackPanel
-                Grid.Row="1"
-                Grid.Column="1"
-                MinWidth="250">
-                <TextBox
-                    Margin="5,5,5,5"
-                    Focusable="True"
-                    HorizontalScrollBarVisibility="Auto"
-                    IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="TBD" />
-                <TextBox
-                    Margin="5,5,5,5"
-                    Focusable="True"
-                    IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="TBD" />
-                <TextBox
-                    Margin="5,5,5,5"
-                    Focusable="True"
-                    IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="TBD" />
-            </StackPanel>
-            <StackPanel
+            <Grid
+                x:Name="InfoBar"
                 Grid.Row="1"
                 Grid.Column="0"
-                MinWidth="50">
-                <TextBlock
-                    MinHeight="32"
-                    Margin="5"
-                    Focusable="True"
-                    ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="UDP Port Listening On" />
-                <TextBlock
-                    MinHeight="32"
-                    Margin="5"
-                    Focusable="True"
-                    ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="TBD" />
-                <TextBlock
-                    MinHeight="32"
-                    Margin="5"
-                    Focusable="True"
-                    ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="TBD" />
-            </StackPanel>
+                Margin="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    MinWidth="200">
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="UDP Port Listening On" />
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="TBD" />
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="TBD" />
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    MinWidth="200">
+                    <TextBox
+                        Margin="5,5,5,5"
+                        Focusable="True"
+                        HorizontalScrollBarVisibility="Auto"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="TBD" />
+                    <TextBox
+                        Margin="5,5,5,5"
+                        Focusable="True"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="TBD" />
+                    <TextBox
+                        Margin="5,5,5,5"
+                        Focusable="True"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="TBD" />
+                </StackPanel>
+
+            </Grid>
+           
 
             <ui:SimpleStackPanel
                 Grid.Row="1"
-                Grid.Column="2"
-                Width="250"
+                Grid.Column="1"
+                Grid.ColumnSpan="2"
                 Height="250"
+                MinWidth="600"
                 Margin="5,5,5,5"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
                 <TextBlock Margin="5,5,5,5" Text="Network Options" />
                 <Button
-                    x:Name="CheckForUpdate"
+                    x:Name="SendUDPFrame"
                     MinWidth="165"
                     MinHeight="40"
                     Margin="5,10,5,5"
@@ -116,6 +126,7 @@
                     Style="{StaticResource AccentButtonStyle}" />
                 <TextBlock
                     Margin="5"
+
                     FontSize="14"
                     Text="Some Text" />
                 <TextBlock
@@ -133,16 +144,17 @@
                 <TextBox
                     Margin="5,5,5,5"
                     VerticalAlignment="Stretch"
+                    HorizontalAlignment="Left"
                     VerticalContentAlignment="Center"
                     Focusable="True"
-                    FontSize="8"
-                    HorizontalScrollBarVisibility="Auto"
+                    FontSize="10"
+                    HorizontalScrollBarVisibility="Hidden"
+                    MaxWidth="350"
                     IsReadOnly="True"
                     ScrollViewer.CanContentScroll="True"
-                    SnapsToDevicePixels="True"
-                    Text="C:\ThreeByteIntermedia\PCManager\Settings\appsettings.json" />
-
+                    Text="C:\ThreeByteIntermedia\PCController\Settings\appsettings.json" />
             </ui:SimpleStackPanel>
+
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
@@ -172,22 +184,13 @@
                 HeadersVisibility="Column"
                 HorizontalScrollBarVisibility="Auto"
                 IsReadOnly="True"
+                ItemsSource="{Binding NetGridRows}"
                 RowDetailsVisibilityMode="Visible"
                 SnapsToDevicePixels="True"
                 UseLayoutRounding="True"
                 VerticalScrollBarVisibility="Visible"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                VirtualizingPanel.VirtualizationMode="Standard">
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Style.Triggers>
-                            <Trigger Property="Content" Value="Error">
-                                <Setter Property="Foreground" Value="Red" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.CellStyle>
-            </DataGrid>
+                VirtualizingPanel.VirtualizationMode="Standard" />
 
             <ui:SimpleStackPanel
                 Grid.Row="3"
@@ -202,12 +205,12 @@
                 <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
                 <Button
                     x:Name="RefreshLog"
-                    MinWidth="165"
+                    Width="250"
                     MinHeight="40"
                     Margin="5,10,5,5"
                     HorizontalAlignment="Left"
-                    
-                    Content="Refresh Log"
+                    mvx:Bi.nd="Command RefreshNetMsgCommand"
+                    Content="Refresh Network Log"
                     Style="{StaticResource AccentButtonStyle}" />
                 <TextBlock
                     x:Name="LoadTimeTextBlock"
@@ -215,35 +218,40 @@
                     Text="Hello" />
                 <ComboBox
                     x:Name="NetSelectComboBox"
-                    MinWidth="165"
+                    MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="Number of Logs to Fetch"
-                    SelectedIndex="0">
+                    SelectedIndex="1"
+                    SelectedItem="{Binding NumberOfNetMsgToFetch}">
                     <ComboBoxItem>20</ComboBoxItem>
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>100</ComboBoxItem>
                     <ComboBoxItem>200</ComboBoxItem>
+                    <ComboBoxItem>500</ComboBoxItem>
+                    <ComboBoxItem>1000</ComboBoxItem>
+                    <ComboBoxItem>2000</ComboBoxItem>
+                    <ComboBoxItem>All</ComboBoxItem>
                 </ComboBox>
                 <ComboBox
-                    MinWidth="165"
+                    MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="GridLinesVisibility"
                     ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
                     SelectedItem="{Binding ElementName=NetworkGrid, Path=GridLinesVisibility}" />
                 <ComboBox
-                    MinWidth="165"
+                    MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="ClipboardCopyMode"
                     ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
                     SelectedItem="{Binding ElementName=NetworkGrid, Path=ClipboardCopyMode}" />
                 <ComboBox
-                    MinWidth="165"
+                    MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="SelectionUnit"
                     ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
                     SelectedItem="{Binding ElementName=NetworkGrid, Path=SelectionUnit}" />
                 <ComboBox
-                    MinWidth="165"
+                    MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="SelectionMode"
                     ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
@@ -258,13 +266,10 @@
                     VerticalContentAlignment="Center"
                     Focusable="True"
                     FontSize="9"
-                    HorizontalScrollBarVisibility="Auto"
                     IsReadOnly="True"
                     ScrollViewer.CanContentScroll="True"
                     SnapsToDevicePixels="True"
-                    Text="C:\ThreeByteIntermedia\PCManager\Logs\network.db" />
-
-
+                    Text="C:\ThreeByteIntermedia\PCController\Logs\network.db" />
             </ui:SimpleStackPanel>
 
 
