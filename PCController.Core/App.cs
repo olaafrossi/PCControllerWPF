@@ -28,13 +28,16 @@ namespace PCController.Core
 
             Mvx.IoCProvider.RegisterSingleton<IMvxTextProvider>(new TextProviderBuilder().TextProvider);
             
-            // setup info for the network listener
+            // setup info for the 3Byte network listener
             int portNum = Properties.Settings.Default.PCListenerUDPPort;
             ILogger netLogger = Log.Logger;
-
             Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IPcNetworkListener>(new PcNetworkListener(netLogger, portNum));
 
-            
+            // setup info for the 3Byte watchdog/process monitor
+            string processName = Properties.Settings.Default.ProcessName;
+            string exeString = Properties.Settings.Default.ExecutionString;
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IProcessMonitor>(new ProcessMonitor(processName, exeString));
+
 
             // start the app
             RegisterAppStart<RootViewModel>();

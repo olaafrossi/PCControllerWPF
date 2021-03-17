@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <FileVersion>0.0.0.0</FileVersion>
+    <Version>0.0.0.0-xyz</Version>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+      <Authors>Chris Keitel, Olaaf Rossi</Authors>
+    <Company>Three Byte Intermedia, Inc</Company>
+    <Copyright>Three Byte Intermedia, Inc 2021</Copyright>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="3.1.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.EventLog" Version="3.1.0" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+
+  </ItemGroup>
+</Project>

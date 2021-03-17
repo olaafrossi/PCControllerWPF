@@ -119,5 +119,29 @@ namespace PCController.Core.Properties {
                 this["PCListenerUDPPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("notepad")]
+        public string ProcessName {
+            get {
+                return ((string)(this["ProcessName"]));
+            }
+            set {
+                this["ProcessName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("notepad.exe")]
+        public string ExecutionString {
+            get {
+                return ((string)(this["ExecutionString"]));
+            }
+            set {
+                this["ExecutionString"] = value;
+            }
+        }
     }
 }

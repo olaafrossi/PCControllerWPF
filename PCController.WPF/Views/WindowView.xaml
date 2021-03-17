@@ -135,13 +135,30 @@
                                 CommandParameter="2"
                                 Content="Network Listener"
                                 Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowWatchdogCommand}"
+                                CommandParameter="2"
+                                Content="Watchdog"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowSCSTesterCommand}"
+                                CommandParameter="2"
+                                Content="SCS Tester UDP/TCP"
+                                Style="{StaticResource AccentButtonStyle}" />
                             <RichTextBox
                                 x:Name="MyRichTextBox"
                                 Background="Black"
-                                Foreground="LightGray"
                                 FontFamily="Cascadia Mono, Consolas, Courier New, monospace"
-                                VerticalScrollBarVisibility="Auto"
-                            />
+                                Foreground="LightGray"
+                                VerticalScrollBarVisibility="Auto" />
 
                         </ui:ListView>
                     </DockPanel>
@@ -162,5 +179,5 @@
         </DataTemplate>
     </views:MvxWindow.ContentTemplate>
 
-   
+
 </views:MvxWindow>
