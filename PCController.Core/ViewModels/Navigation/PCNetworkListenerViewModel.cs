@@ -16,6 +16,7 @@ using PCController.Core.Managers;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
+using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.ViewModels
 {

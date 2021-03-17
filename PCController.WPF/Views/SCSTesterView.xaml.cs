@@ -18,6 +18,7 @@ namespace PCController.WPF.Views
         {
             InitializeComponent();
         }
+
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
         {
             var instanceRequest = request as MvxViewModelInstanceRequest;

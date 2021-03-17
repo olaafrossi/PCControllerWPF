@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
+using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.Managers
 {

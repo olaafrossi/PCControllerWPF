@@ -10,6 +10,7 @@ using PCController.Core.ViewModels;
 using Serilog;
 using Serilog.Core;
 using ThreeByteLibrary.Dotnet;
+using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core
 {
@@ -31,7 +32,7 @@ namespace PCController.Core
             // setup info for the 3Byte network listener
             int portNum = Properties.Settings.Default.PCListenerUDPPort;
             ILogger netLogger = Log.Logger;
-            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IPcNetworkListener>(new PcNetworkListener(netLogger, portNum));
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.NetworkUtils.IPcNetworkListener>(new PcNetworkListener(netLogger, portNum));
 
             // setup info for the 3Byte watchdog/process monitor
             string processName = Properties.Settings.Default.ProcessName;

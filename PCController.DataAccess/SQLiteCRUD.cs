@@ -32,6 +32,24 @@ namespace PCController.DataAccess
             return this.db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, this.connectionString);
         }
 
+        public IList<string> GetUdpUsedIPAddresses(int ipCount)
+        {
+            string sql = $"SELECT IPAddress FROM UDPSender ORDER BY ID DESC LIMIT {ipCount}";
+            return this.db.LoadData<string, dynamic>(sql, new { }, this.connectionString);
+        }
+
+        public void InsertUdpSentData(UdpSenderModel udp)
+        {
+            string sql = "insert into UDPSender (IPAddress, PortNum, MessageSent) values(@IPAddress, @UDPPort, @PortNum, @MessageSent);";
+            this.db.SaveData(sql, new
+                {
+                    udp.IPAddress,
+                    udp.PortNum,
+                    udp.MessageSent
+                },
+                this.connectionString);
+        }
+
         public void InsertNetMessage(NetworkMessageModel msg)
         {
             string sql =
