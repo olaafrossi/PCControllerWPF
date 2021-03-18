@@ -29,8 +29,8 @@ namespace ThreeByteLibrary.Dotnet.NetworkUtils
         /// <returns>null if the link is not Enabled or there is no data currently queued to return, an array of bytes otherwise.</returns>
         byte[] GetMessage();
 
-        string Address { get; set; }
-        int Port { get; set; }
+        string Address { get; }
+        int Port { get; }
         int LocalPort { get; set; }
         bool HasData { get; }
 
