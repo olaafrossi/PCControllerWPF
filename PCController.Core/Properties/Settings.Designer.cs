@@ -143,5 +143,53 @@ namespace PCController.Core.Properties {
                 this["ExecutionString"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string AsyncUdpIPAddress {
+            get {
+                return ((string)(this["AsyncUdpIPAddress"]));
+            }
+            set {
+                this["AsyncUdpIPAddress"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
+        public int AsyncUdpRemotePort {
+            get {
+                return ((int)(this["AsyncUdpRemotePort"]));
+            }
+            set {
+                this["AsyncUdpRemotePort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("660")]
+        public int AsyncUdpLocalPort {
+            get {
+                return ((int)(this["AsyncUdpLocalPort"]));
+            }
+            set {
+                this["AsyncUdpLocalPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Setting {
+            get {
+                return ((int)(this["Setting"]));
+            }
+            set {
+                this["Setting"] = value;
+            }
+        }
     }
 }

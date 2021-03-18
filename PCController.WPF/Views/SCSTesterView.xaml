@@ -91,14 +91,14 @@
                         x:Name="AddCarriageReturn"
                         Width="180"
                         Margin="5"
-                        IsChecked="{Binding CarriageReturnTrue}"
-                        Content="Add a Carriage Return" />
+                        Content="Add a Carriage Return"
+                        IsChecked="{Binding CarriageReturnTrue, UpdateSourceTrigger=PropertyChanged}" />
                     <CheckBox
                         x:Name="AddCLineFeed"
                         Width="180"
                         Margin="5"
-                        IsChecked="{Binding LineFeedTrue}"
-                        Content="Add a Line Feed" />
+                        Content="Add a Line Feed"
+                        IsChecked="{Binding LineFeedTrue, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBlock
                         MinHeight="32"
                         Margin="5"
@@ -111,25 +111,26 @@
                     Grid.Row="0"
                     Grid.Column="1"
                     MinWidth="260"
-                    Margin="5,40,5,5">
+                    Margin="5,50,5,5">
+
                     <TextBox
                         Margin="5"
                         Focusable="True"
                         IsReadOnly="False"
                         ScrollViewer.CanContentScroll="True"
-                        Text="{Binding IPAddress}" />
+                        Text="{Binding IPAddress, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
                         Margin="5"
                         Focusable="True"
                         IsReadOnly="False"
                         ScrollViewer.CanContentScroll="True"
-                        Text="{Binding PortNum}" />
+                        Text="{Binding PortNum, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
                         Margin="5"
                         Focusable="True"
                         IsReadOnly="False"
                         ScrollViewer.CanContentScroll="True"
-                        Text="{Binding LocalPortNum}" />
+                        Text="{Binding LocalPortNum, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
                         Margin="5,5,5,5"
                         Focusable="True"
@@ -213,7 +214,7 @@
                 Text="Network Log" />
 
             <DataGrid
-                x:Name="NetworkGrid"
+                x:Name="UdpGrid"
                 Grid.Row="3"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
@@ -231,7 +232,7 @@
                 HeadersVisibility="Column"
                 HorizontalScrollBarVisibility="Auto"
                 IsReadOnly="True"
-                ItemsSource="{Binding NetGridRows}"
+                ItemsSource="{Binding UdpGridRows}"
                 RowDetailsVisibilityMode="Visible"
                 SnapsToDevicePixels="True"
                 UseLayoutRounding="True"
@@ -255,7 +256,7 @@
                     MinHeight="40"
                     Margin="5,10,5,5"
                     HorizontalAlignment="Left"
-                    mvx:Bi.nd="Command RefreshNetMsgCommand"
+                    mvx:Bi.nd="Command RefreshUdpMsgCommand"
                     Content="Refresh Network Log"
                     Style="{StaticResource AccentButtonStyle}" />
                 <TextBlock
@@ -268,7 +269,7 @@
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="Number of Logs to Fetch"
                     SelectedIndex="0"
-                    SelectedItem="{Binding NumberOfNetMsgToFetch}">
+                    SelectedItem="{Binding NumberOfUdpMsgToFetch}">
                     <ComboBoxItem>20</ComboBoxItem>
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>100</ComboBoxItem>
@@ -283,25 +284,25 @@
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="GridLinesVisibility"
                     ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=GridLinesVisibility}" />
+                    SelectedItem="{Binding ElementName=UdpGrid, Path=GridLinesVisibility}" />
                 <ComboBox
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="ClipboardCopyMode"
                     ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=ClipboardCopyMode}" />
+                    SelectedItem="{Binding ElementName=UdpGrid, Path=ClipboardCopyMode}" />
                 <ComboBox
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="SelectionUnit"
                     ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=SelectionUnit}" />
+                    SelectedItem="{Binding ElementName=UdpGrid, Path=SelectionUnit}" />
                 <ComboBox
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="SelectionMode"
                     ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=SelectionMode}" />
+                    SelectedItem="{Binding ElementName=UdpGrid, Path=SelectionMode}" />
                 <TextBlock
                     Margin="5"
                     FontSize="14"

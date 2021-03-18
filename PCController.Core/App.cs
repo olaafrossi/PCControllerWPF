@@ -39,6 +39,12 @@ namespace PCController.Core
             string exeString = Properties.Settings.Default.ExecutionString;
             Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IProcessMonitor>(new ProcessMonitor(processName, exeString));
 
+            // setup info for the 3Byte AsyncUDP Link for SCS Testing
+
+            string iPAddress = Properties.Settings.Default.AsyncUdpIPAddress;
+            int remotePort = Properties.Settings.Default.AsyncUdpRemotePort;
+            int localPort = Properties.Settings.Default.AsyncUdpLocalPort;
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.NetworkUtils.IAsyncUdpLink>(new AsyncUdpLink(iPAddress, remotePort, localPort));
 
             // start the app
             RegisterAppStart<RootViewModel>();

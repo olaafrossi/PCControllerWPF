@@ -10,13 +10,21 @@ namespace PCController.DataAccess.Models
     {
         public int ID { get; set; }
 
-        public string IPAddress { get; set; }
+        public string IncomingMessage { get; set; }
 
-        public int PortNum { get; set; }
+        public string OutgoingMessage { get; set; }
 
         public string RemoteIP { get; set; }
 
-        public string MessageSent { get; set; }
+        public string MyIP { get; set; }
+
+        public int LocalPort { get; set; }
+
+        public int RemotePort { get; set; }
+
+        public string Timestamp { get; set; }
+
+        public int UDPPort { get; set; }
 
     }
 }

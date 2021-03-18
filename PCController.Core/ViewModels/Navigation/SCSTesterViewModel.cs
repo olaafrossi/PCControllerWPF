@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCController |
+// Created: 2021 03 17
+// by Olaaf Rossi
+
 using MvvmCross;
-using MvvmCross.Base;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
@@ -12,105 +10,204 @@ using MvvmCross.ViewModels;
 using PCController.Core.Managers;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
-using ThreeByteLibrary.Dotnet;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Text;
 using ThreeByteLibrary.Dotnet.NetworkUtils;
-using LogModel = PCController.Core.Models.LogModel;
 
 namespace PCController.Core.ViewModels
 {
     public class SCSTesterViewModel : MvxNavigationViewModel<WindowChildParam>
     {
+        private IAsyncUdpLink _asyncUdpLink;
+
         private readonly Stopwatch stopwatch;
 
-        public Stopwatch NetStopwatch = new Stopwatch();
+        private WindowChildParam _param;
+
+        private bool carriageReturnTrue;
+
+        private string frameToSend;
+
+        private string iPAddress;
+
+        private bool lineFeedTrue;
+
+        private string messageSent;
+
+        public Stopwatch NetStopwatch = new();
 
         private ObservableCollection<UdpSenderModel> udpSender = new();
-
-        private WindowChildParam _param;
 
         public SCSTesterViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
             base(logProvider, navigationService)
         {
-            
-            this.SendUdpCommand = new MvxCommand(this.AddUdpFrame);
-            this.IPBoxTextChangeCommand = new MvxCommand(this.GetIpSuggestionsFromDb);
+            RefreshUdpMsgCommand = new MvxCommand(GetUdpLogs);
+
+            //this.StartUdpDriverCommand = new MvxCommand(this.StartUdpDriver);
+            SendUdpCommand = new MvxCommand(AddUdpFrame);
+            IPBoxTextChangeCommand = new MvxCommand(GetIpSuggestionsFromDb);
 
             stopwatch = new Stopwatch();
+
+            IAsyncUdpLink asyncUdpLink = Mvx.IoCProvider.Resolve<IAsyncUdpLink>();
+
+            _asyncUdpLink = asyncUdpLink;
+
+            _asyncUdpLink.DataReceived += LinkOnDataReceived;
+
+            GetUdpLogs();
 
             GetIpSuggestionsFromDb();
         }
 
-        public int ParentNo => _param.ParentNo;
-        public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
-
-        public override void Prepare(WindowChildParam param) => _param = param;
-
-        public IMvxCommand SendUdpCommand { get; set; }
-
-        public ObservableCollection<UdpSenderModel> UdpSender
-        {
-            get
-            {
-                return this.udpSender;
-            }
-            set
-            {
-                this.SetProperty(ref this.udpSender, value);
-            }
-        }
-
         public void AddUdpFrame()
         {
+            
+            UdpShowControlManager udpManager = new UdpShowControlManager(new AsyncUdpLinkEvents
+            {
+                OutgoingMessage = MessageSent,
+                RemoteIP = _asyncUdpLink.Address,
+                UDPPort = _asyncUdpLink.Port,
+                RemotePort = _asyncUdpLink.LocalPort,
+                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+
+            });
+
             try
             {
-                //log this
-                Console.WriteLine("creating the UPD link");
-                ThreeByteLibrary.Dotnet.NetworkUtils.AsyncUdpLink link = new AsyncUdpLink(IPAddress, PortNum, LocalPortNum);
 
-                string inputFrame = String.Empty;
-                //byte[] bytesToSend = Parse(inputFrame);
-                
-                UdpSenderModel u = new UdpSenderModel { IPAddress = this.IPAddress, PortNum = this.PortNum, MessageSent = this.MessageSent };
-                this.UdpSender.Add(u);
-
-                //link.SendMessage(bytesToSend);
-                link.Dispose();
+                string inputFrame = MessageSent;
+                byte[] inputBytes = Encoding.ASCII.GetBytes(MessageSent); // new byte array and feed it the input string
+                _asyncUdpLink.SendMessage(inputBytes);
             }
             catch (Exception e)
             {
                 //Log this
-                Console.WriteLine(e);
+                Log.Error("this is bad {e}", e);
                 //throw;
             }
 
-
         }
 
-        public bool CanSendMsg => this.IPAddress?.Length > 0 && this.MessageSent?.Length > 0;
+        public void LinkOnDataReceived(object sender, EventArgs e)
+        {
+            Console.WriteLine($"this might be a message from the controlller {e}");
+            Console.WriteLine(_asyncUdpLink.GetMessage());
+        }
 
+        private void GetUdpLogs()
+        {
+            stopwatch.Start();
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            int numOfMsgs = 20;
 
-        private string iPAddress;
+            try
+            {
+                RaisePropertyChanged(() => NumberOfUdpMsgToFetch);
+                if (NumberOfUdpMsgToFetch is null)
+                {
+                    numOfMsgs = 20;
+                }
+                else if (NumberOfUdpMsgToFetch.Contains("All"))
+                {
+                    // All
+                    numOfMsgs = 100000000;
+                }
+                else if (NumberOfUdpMsgToFetch.Length == 40)
+                {
+                    // 20, 50
+                    string logComboBoxSelected = NumberOfUdpMsgToFetch.Substring(38, 2);
+                    numOfMsgs = int.Parse(logComboBoxSelected);
+                }
+                else if (NumberOfUdpMsgToFetch.Length == 41)
+                {
+                    // hundred
+                    string logComboBoxSelected = NumberOfUdpMsgToFetch.Substring(38, 3);
+                    numOfMsgs = int.Parse(logComboBoxSelected);
+                }
+                else if (NumberOfUdpMsgToFetch.Length == 42)
+                {
+                    // thousand
+                    string logComboBoxSelected = NumberOfUdpMsgToFetch.Substring(38, 4);
+                    numOfMsgs = int.Parse(logComboBoxSelected);
+                }
+            }
+            catch (Exception e)
+            {
+                Serilog.Log.Logger.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
+            }
+
+            Serilog.Log.Logger.Information("Getting Data Logs{numOfMsgs}", numOfMsgs);
+            var rows = sql.GetSomeUdpData(numOfMsgs);
+            UdpGridRows = rows;
+
+            stopwatch.Stop();
+            string timeToFetchFromDB = $" DB query time: {stopwatch.ElapsedMilliseconds} ms";
+            DataBaseQueryTime = timeToFetchFromDB;
+            RaisePropertyChanged(() => UdpGridRows);
+            RaisePropertyChanged(() => DataBaseQueryTime);
+        }
+
+        public IList<UdpSenderModel> UdpGridRows { get; set; }
+
+        public int ParentNo => _param.ParentNo;
+        public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
+
+        public IMvxCommand SendUdpCommand { get; set; }
+
+        public string NumberOfUdpMsgToFetch { get; set; }
+
+        public IMvxCommand RefreshUdpMsgCommand { get; set; }
+
+        //public ObservableCollection<UdpSenderModel> UdpSender
+        //{
+        //    get { return udpSender; }
+        //    set { SetProperty(ref udpSender, value); }
+        //}
+
+        public bool CanSendMsg => IPAddress?.Length > 0 && MessageSent?.Length > 0;
 
         public string IPAddress
         {
             get { return iPAddress; }
             set
             {
-                this.SetProperty(ref iPAddress, value);
+                SetProperty(ref iPAddress, value);
                 RaisePropertyChanged(() => CanSendMsg);
                 RaisePropertyChanged(() => FrameToSend);
             }
         }
-
-        private string messageSent;
 
         public string MessageSent
         {
             get { return messageSent; }
             set
             {
-                this.SetProperty(ref messageSent, value);
+                SetProperty(ref messageSent, value);
                 RaisePropertyChanged(() => CanSendMsg);
+                RaisePropertyChanged(() => FrameToSend);
+            }
+        }
+
+        public bool CarriageReturnTrue
+        {
+            get { return carriageReturnTrue; }
+            set
+            {
+                SetProperty(ref carriageReturnTrue, value);
+                RaisePropertyChanged(() => FrameToSend);
+            }
+        }
+
+        public bool LineFeedTrue
+        {
+            get { return lineFeedTrue; }
+            set
+            {
+                SetProperty(ref lineFeedTrue, value);
                 RaisePropertyChanged(() => FrameToSend);
             }
         }
@@ -118,11 +215,55 @@ namespace PCController.Core.ViewModels
         public int PortNum { get; set; }
         public int LocalPortNum { get; set; }
 
-        public bool CarriageReturnTrue { get; set; }
+        public string FrameToSend
+        {
+            get
+            {
+                if (CarriageReturnTrue is false && LineFeedTrue is false)
+                {
+                    FrameToSend = $"{MessageSent}";
+                    RaisePropertyChanged(() => MessageSent);
+                    return frameToSend;
+                }
 
-        public bool LineFeedTrue { get; set; }
+                if (CarriageReturnTrue is true && LineFeedTrue is false)
+                {
+                    FrameToSend = $"{MessageSent}!0D";
+                    RaisePropertyChanged(() => MessageSent);
+                    return frameToSend;
+                }
 
-        public string FrameToSend => $"{this.messageSent}";
+                if (LineFeedTrue is true && CarriageReturnTrue is false)
+                {
+                    FrameToSend = $"{MessageSent}!0A";
+                    RaisePropertyChanged(() => MessageSent);
+                    return frameToSend;
+                }
+
+                if (CarriageReturnTrue is true && LineFeedTrue is true)
+                {
+                    FrameToSend = $"{MessageSent}!0D!0A";
+                    RaisePropertyChanged(() => MessageSent);
+                    return frameToSend;
+                }
+
+                RaisePropertyChanged(() => MessageSent);
+                return frameToSend;
+            }
+            set { SetProperty(ref frameToSend, value); }
+        }
+
+        public bool UdpDriverClosed { get; set; }
+
+        public IList<string> IpList { get; set; }
+
+        public string DataBaseQueryTime { get; set; }
+
+        public IMvxCommand IPBoxTextChangeCommand { get; set; }
+
+        public IMvxCommand StartUdpDriverCommand { get; set; }
+
+        public override void Prepare(WindowChildParam param) => _param = param;
 
 
 
@@ -149,18 +290,25 @@ namespace PCController.Core.ViewModels
 
         private void IpSuggestionBoxChanged()
         {
-
         }
+    }
 
+    public class AsyncUdpLinkEvents : EventArgs
+    {
+        public string IncomingMessage { get; set; }
 
-        public IList<string> IpList { get; set; }
+        public string OutgoingMessage { get; set; }
 
-        public string DataBaseQueryTime { get; set; }
+        public string RemoteIP { get; set; }
 
-        public IMvxCommand IPBoxTextChangeCommand { get; set; }
+        public string MyIP { get; set; }
 
+        public int LocalPort { get; set; }
 
+        public int RemotePort { get; set; }
 
+        public string Timestamp { get; set; }
 
+        public int UDPPort { get; set; }
     }
 }

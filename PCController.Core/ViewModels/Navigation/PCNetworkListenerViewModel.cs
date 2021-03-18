@@ -35,7 +35,7 @@ namespace PCController.Core.ViewModels
 
             Serilog.Log.Logger.Information("PCNetworkListenerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
-            var pcNetworkListener = Mvx.IoCProvider.Resolve<IPcNetworkListener>();
+            IPcNetworkListener pcNetworkListener = Mvx.IoCProvider.Resolve<IPcNetworkListener>();
             
             int listeningPort = pcNetworkListener.GetAppSettingsDataUdpPort();
             ListeningUDPPort = listeningPort.ToString();

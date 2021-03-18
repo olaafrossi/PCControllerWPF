@@ -32,21 +32,32 @@ namespace PCController.DataAccess
             return this.db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, this.connectionString);
         }
 
+        public IList<UdpSenderModel> GetSomeUdpData(int msgCount)
+        {
+            string sql = $"SELECT * FROM UDPSender ORDER BY iD DESC LIMIT {msgCount}";
+            return this.db.LoadData<UdpSenderModel, dynamic>(sql, new { }, this.connectionString);
+        }
+
         public IList<string> GetUdpUsedIPAddresses(int ipCount)
         {
-            string sql = $"SELECT IPAddress FROM UDPSender ORDER BY ID DESC LIMIT {ipCount}";
+            string sql = $"SELECT MyIP FROM UDPSender ORDER BY ID DESC LIMIT {ipCount}";
             return this.db.LoadData<string, dynamic>(sql, new { }, this.connectionString);
         }
 
         public void InsertUdpSentData(UdpSenderModel udp)
         {
-            string sql = "insert into UDPSender (IPAddress, PortNum, MessageSent) values(@IPAddress, @UDPPort, @PortNum, @MessageSent);";
+            string sql = "insert into UDPSender (IncomingMessage, OutgoingMessage, RemoteIP, MyIP, LocalPort, RemotePort, Timestamp, UDPPort) values(@IncomingMessage, @OutgoingMessage, @RemoteIP, @MyIP, @LocalPort, @RemotePort, @Timestamp, @UDPPort);";
             this.db.SaveData(sql, new
                 {
-                    udp.IPAddress,
-                    udp.PortNum,
-                    udp.MessageSent
-                },
+                    udp.IncomingMessage,
+                    udp.OutgoingMessage,
+                    udp.RemoteIP,
+                    udp.MyIP,
+                    udp.LocalPort,
+                    udp.RemotePort,
+                    udp.Timestamp,
+                    udp.UDPPort
+            },
                 this.connectionString);
         }
 
