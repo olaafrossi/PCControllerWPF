@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using ThreeByteLibrary.Dotnet.NetworkUtils;
 
@@ -65,23 +67,34 @@ namespace PCController.Core.ViewModels
 
         public void AddUdpFrame()
         {
-            
-            UdpShowControlManager udpManager = new UdpShowControlManager(new AsyncUdpLinkEvents
-            {
-                OutgoingMessage = MessageSent,
-                RemoteIP = _asyncUdpLink.Address,
-                UDPPort = _asyncUdpLink.Port,
-                RemotePort = _asyncUdpLink.LocalPort,
-                Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-
-            });
-
             try
             {
+                string message = FrameToSend;
 
-                string inputFrame = MessageSent;
-                byte[] inputBytes = Encoding.ASCII.GetBytes(MessageSent); // new byte array and feed it the input string
-                _asyncUdpLink.SendMessage(inputBytes);
+                if (message.Contains("!0D!0A"))
+                {
+                    message.Replace("!0D!0A", "\r\n");
+                    byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
+                    _asyncUdpLink.SendMessage(inputBytes);
+                }
+                else if (message.Contains("!0D"))
+                {
+                    message.Replace("!0D", "\r");
+                    byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
+                    _asyncUdpLink.SendMessage(inputBytes);
+                }
+                else if (message.Contains("!0A"))
+                {
+                    message.Replace("!0D", "\n");
+                    byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
+                    _asyncUdpLink.SendMessage(inputBytes);
+                }
+                else
+                {
+                    byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
+                    _asyncUdpLink.SendMessage(inputBytes);
+                }
+                
             }
             catch (Exception e)
             {
@@ -90,7 +103,52 @@ namespace PCController.Core.ViewModels
                 //throw;
             }
 
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            UdpSenderModel udpFrame = new UdpSenderModel();
+
+            udpFrame.OutgoingMessage = FrameToSend;
+            udpFrame.IncomingMessage = "some string from SCS";
+            udpFrame.RemoteIP = _asyncUdpLink.Address;
+            udpFrame.MyIP = MyIP;
+            udpFrame.LocalPort = _asyncUdpLink.LocalPort;
+            udpFrame.RemotePort = _asyncUdpLink.Port;
+            udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+            sql.InsertUdpSentData(udpFrame);
+
         }
+
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+
+        public int ID { get; set; }
+
+        public string IncomingMessage { get; set; }
+
+        public string OutgoingMessage { get; set; }
+
+        public string RemoteIP { get; set; }
+
+        public string MyIP { get; set; } = GetLocalIPAddress();
+
+        public int LocalPort { get; set; }
+
+        public int RemotePort { get; set; }
+
+        public string Timestamp { get; set; }
+
+        public int UDPPort { get; set; }
+
 
         public void LinkOnDataReceived(object sender, EventArgs e)
         {
@@ -170,16 +228,7 @@ namespace PCController.Core.ViewModels
 
         public bool CanSendMsg => IPAddress?.Length > 0 && MessageSent?.Length > 0;
 
-        public string IPAddress
-        {
-            get { return iPAddress; }
-            set
-            {
-                SetProperty(ref iPAddress, value);
-                RaisePropertyChanged(() => CanSendMsg);
-                RaisePropertyChanged(() => FrameToSend);
-            }
-        }
+        public string IPAddress { get; set; } = Properties.Settings.Default.AsyncUdpIPAddress;
 
         public string MessageSent
         {
@@ -212,8 +261,8 @@ namespace PCController.Core.ViewModels
             }
         }
 
-        public int PortNum { get; set; }
-        public int LocalPortNum { get; set; }
+        public int PortNum { get; set; } = Properties.Settings.Default.AsyncUdpRemotePort;
+        public int LocalPortNum { get; set; } = Properties.Settings.Default.AsyncUdpLocalPort;
 
         public string FrameToSend
         {
