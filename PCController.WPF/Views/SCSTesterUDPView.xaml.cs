@@ -11,11 +11,11 @@ using Serilog;
 namespace PCController.WPF.Views
 {
     /// <summary>
-    /// Interaction logic for SCSTesterView.xaml
+    /// Interaction logic for SCSTesterUDPView.xaml
     /// </summary>
-    public partial class SCSTesterView : IMvxOverridePresentationAttribute
+    public partial class SCSTesterUDPView : IMvxOverridePresentationAttribute
     {
-        public SCSTesterView()
+        public SCSTesterUDPView()
         {
             InitializeComponent();
         }
@@ -23,7 +23,7 @@ namespace PCController.WPF.Views
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
         {
             var instanceRequest = request as MvxViewModelInstanceRequest;
-            var viewModel = instanceRequest?.ViewModelInstance as SCSTesterViewModel;
+            var viewModel = instanceRequest?.ViewModelInstance as SCSTesterUDPViewModel;
             return new MvxContentPresentationAttribute
             {
                 WindowIdentifier = $"{nameof(RootView)}.{viewModel?.ParentNo}",

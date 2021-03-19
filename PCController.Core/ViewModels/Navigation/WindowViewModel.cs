@@ -163,9 +163,9 @@ namespace PCController.Core.ViewModels
                 });
             });
 
-            ShowSCSTesterCommand = new MvxAsyncCommand<int>(async no =>
+            ShowSCSUDPTesterCommand = new MvxAsyncCommand<int>(async no =>
             {
-                await NavigationService.Navigate<SCSTesterViewModel, WindowChildParam>(new WindowChildParam
+                await NavigationService.Navigate<SCSTesterUDPViewModel, WindowChildParam>(new WindowChildParam
                 {
                     ParentNo = Count,
                     ChildNo = no
@@ -196,7 +196,7 @@ namespace PCController.Core.ViewModels
 
         public IMvxAsyncCommand<int> ShowWatchdogCommand { get; set; }
 
-        public IMvxAsyncCommand<int> ShowSCSTesterCommand { get; set; }
+        public IMvxAsyncCommand<int> ShowSCSUDPTesterCommand { get; set; }
 
         public IMvxAsyncCommand ToggleSettingCommand { get; private set; }
     }

@@ -95,33 +95,6 @@
                                 Margin="0,5,0,5"
                                 Padding="5"
                                 HorizontalAlignment="Center"
-                                Command="{Binding ShowWindowChildCommand}"
-                                CommandParameter="1"
-                                Content="Show 1st Child"
-                                Style="{StaticResource AccentButtonStyle}" />
-                            <Button
-                                Width="200"
-                                Margin="0,5,0,5"
-                                Padding="5"
-                                HorizontalAlignment="Center"
-                                Command="{Binding ShowWindowChildCommand}"
-                                CommandParameter="2"
-                                Content="Show 2st Child"
-                                Style="{StaticResource AccentButtonStyle}" />
-                            <Button
-                                Width="200"
-                                Margin="0,5,0,5"
-                                Padding="5"
-                                HorizontalAlignment="Center"
-                                Command="{Binding ShowNavBarCommand}"
-                                CommandParameter="2"
-                                Content="Show Nav View"
-                                Style="{StaticResource AccentButtonStyle}" />
-                            <Button
-                                Width="200"
-                                Margin="0,5,0,5"
-                                Padding="5"
-                                HorizontalAlignment="Center"
                                 Command="{Binding ShowPCControllerInfoCommand}"
                                 CommandParameter="2"
                                 Content="PC Controller"
@@ -149,9 +122,18 @@
                                 Margin="0,5,0,5"
                                 Padding="5"
                                 HorizontalAlignment="Center"
-                                Command="{Binding ShowSCSTesterCommand}"
+                                Command="{Binding ShowSCSUDPTesterCommand}"
                                 CommandParameter="2"
-                                Content="SCS Tester UDP/TCP"
+                                Content="SCS Tester (UDP)"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowSCSUDPTesterCommand}"
+                                CommandParameter="2"
+                                Content="SCS Tester (TCP)"
                                 Style="{StaticResource AccentButtonStyle}" />
                             <RichTextBox
                                 x:Name="MyRichTextBox"

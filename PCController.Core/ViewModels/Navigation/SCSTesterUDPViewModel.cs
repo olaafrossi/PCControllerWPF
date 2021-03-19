@@ -22,7 +22,7 @@ using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.ViewModels
 {
-    public class SCSTesterViewModel : MvxNavigationViewModel<WindowChildParam>
+    public class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly Stopwatch stopwatch;
         private readonly IAsyncUdpLink _asyncUdpLink;
@@ -43,7 +43,7 @@ namespace PCController.Core.ViewModels
 
         private ObservableCollection<UdpSenderModel> udpSender = new();
 
-        public SCSTesterViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
+        public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
             base(logProvider, navigationService)
         {
             // Setup UI Commands
