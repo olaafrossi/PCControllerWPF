@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows.Data;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -39,9 +40,10 @@ namespace PCController.Core.ViewModels
 
         private string messageSent;
 
-        public Stopwatch NetStopwatch = new();
-
         private ObservableCollection<UdpSenderModel> udpSender = new();
+
+        private ObservableCollection<string> _uDPRealTimeCollection = new();
+
 
         public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
             base(logProvider, navigationService)
@@ -50,6 +52,8 @@ namespace PCController.Core.ViewModels
             RefreshUdpMsgCommand = new MvxCommand(GetUdpLogs);
             SendUdpCommand = new MvxCommand(AddUdpFrame);
             IPBoxTextChangeCommand = new MvxCommand(GetIpSuggestionsFromDb);
+            OpenUdpCommand = new MvxCommand(CreateUDPAsyncManager);
+            CloseUdpCommand = new MvxCommand(DisposeUDPAsyncManager);
 
             // Fetch Initial Data
             stopwatch = new Stopwatch();
@@ -60,6 +64,19 @@ namespace PCController.Core.ViewModels
             IAsyncUdpLink asyncUdpLink = Mvx.IoCProvider.Resolve<IAsyncUdpLink>();
             _asyncUdpLink = asyncUdpLink;
             _asyncUdpLink.DataReceived += LinkOnDataReceived;
+            
+            UDPRealTimeCollection = _uDPRealTimeCollection;
+            BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _asyncUdpLink);
+        }
+
+        private void DisposeUDPAsyncManager()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CreateUDPAsyncManager()
+        {
+            throw new NotImplementedException();
         }
 
         public int ID { get; set; }
@@ -111,6 +128,18 @@ namespace PCController.Core.ViewModels
                 RaisePropertyChanged(() => FrameToSend);
             }
         }
+
+        private ObservableCollection<string> uDPRealTimeCollection;
+
+        public ObservableCollection<string> UDPRealTimeCollection
+        {
+            get { return uDPRealTimeCollection; }
+            set
+            {
+                SetProperty(ref uDPRealTimeCollection, value);
+            }
+        }
+        //public ObservableCollection<string> UDPRealTimeCollection { get; set; }
 
         public bool CarriageReturnTrue
         {
@@ -184,7 +213,8 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand IPBoxTextChangeCommand { get; set; }
 
-        public IMvxCommand StartUdpDriverCommand { get; set; }
+        public IMvxCommand OpenUdpCommand { get; set; }
+        public IMvxCommand CloseUdpCommand { get; set; }
 
         public void AddUdpFrame()
         {
@@ -229,6 +259,7 @@ namespace PCController.Core.ViewModels
         {
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             UdpSenderModel udpFrame = new UdpSenderModel();
+            string udpFrameCombine = string.Empty;
 
             if (sendMessage is true)
             {
@@ -240,6 +271,9 @@ namespace PCController.Core.ViewModels
                 udpFrame.RemotePort = _asyncUdpLink.Port;
                 udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 sql.InsertUdpSentData(udpFrame);
+
+                udpFrameCombine = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
             else
             {
@@ -251,6 +285,10 @@ namespace PCController.Core.ViewModels
                 udpFrame.RemotePort = _asyncUdpLink.Port;
                 udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 sql.InsertUdpSentData(udpFrame);
+
+                // {IncomingMessage}
+                udpFrameCombine = $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
         }
 

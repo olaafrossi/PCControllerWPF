@@ -199,5 +199,11 @@ namespace PCController.Core.ViewModels
         public IMvxAsyncCommand<int> ShowSCSUDPTesterCommand { get; set; }
 
         public IMvxAsyncCommand ToggleSettingCommand { get; private set; }
+
+        public IMvxCommand OpenUdpCommand { get; set; }
+
+        public IMvxCommand CloseUdpCommand { get; set; }
+
+
     }
 }

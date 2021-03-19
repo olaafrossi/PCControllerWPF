@@ -11,7 +11,7 @@
     xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
     x:Name="MvxWView"
     d:DesignHeight="1120"
-    d:DesignWidth="810"
+    d:DesignWidth="1210"
     ui:ThemeManager.RequestedTheme="Dark"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
@@ -32,37 +32,54 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+
             </Grid.RowDefinitions>
 
-            <TextBlock
-                Margin="5"
-                FontSize="24"
-                FontWeight="Normal"
-                Foreground="#FFDEA504"
-                Text="Show Control Tester" />
+
             <Grid
                 x:Name="InfoBar"
                 Grid.Row="1"
                 Grid.Column="0"
+                Grid.ColumnSpan="3"
                 Margin="1">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="260" />
                 </Grid.RowDefinitions>
-                <StackPanel
+                <TextBlock
                     Grid.Row="0"
                     Grid.Column="0"
+                    Margin="5"
+                    FontSize="24"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="SCS UDP Driver" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="5"
+                    FontSize="24"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="Frame Details" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="5"
+                    FontSize="24"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="Realtime Log" />
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="0"
                     MinWidth="200">
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        FontSize="20"
-                        FontWeight="Normal"
-                        Foreground="#FFDEA504"
-                        Text="UDP Sender" />
                     <TextBlock
                         MinHeight="32"
                         Margin="5"
@@ -94,24 +111,19 @@
                         Content="Add a Carriage Return"
                         IsChecked="{Binding CarriageReturnTrue, UpdateSourceTrigger=PropertyChanged}" />
                     <CheckBox
-                        x:Name="AddCLineFeed"
+                        x:Name="AddLineFeed"
                         Width="180"
                         Margin="5"
                         Content="Add a Line Feed"
                         IsChecked="{Binding LineFeedTrue, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Time Since Last Message" />
                 </StackPanel>
 
                 <StackPanel
-                    Grid.Row="0"
+                    Grid.Row="1"
                     Grid.Column="1"
                     MinWidth="260"
-                    Margin="5,50,5,5">
+                    MaxWidth="400"
+                    Margin="5,0,5,5">
 
                     <TextBox
                         Margin="5"
@@ -137,72 +149,118 @@
                         IsReadOnly="False"
                         ScrollViewer.CanContentScroll="True"
                         Text="{Binding MessageSent, UpdateSourceTrigger=PropertyChanged}" />
-
+                    <StackPanel
+                        Margin="5,0,5,0"
+                        HorizontalAlignment="Stretch"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="OpenUDPDriver"
+                            MinWidth="165"
+                            MinHeight="40"
+                            Margin="0,5,5,5"
+                            HorizontalAlignment="Left"
+                            mvx:Bi.nd="Command OpenUdpCommand"
+                            Content="Open UDP Driver"
+                            Style="{StaticResource AccentButtonStyle}" />
+                        <Button
+                            x:Name="CloseUDPDriver"
+                            MinWidth="165"
+                            MinHeight="40"
+                            Margin="0,5,0,5"
+                            HorizontalAlignment="Right"
+                            mvx:Bi.nd="Command CloseUdpCommand"
+                            Content="Close UDP Driver"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    </StackPanel>
                 </StackPanel>
+                <ui:SimpleStackPanel
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Width="Auto"
+                    Height="250"
+                    MinWidth="400"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+
+                    <TextBlock
+                        Margin="5"
+                        FontSize="20"
+                        Foreground="#FF962F2F"
+                        Text="Frame to Send" />
+                    <TextBlock
+                        MaxWidth="250"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        FontSize="28"
+                        Foreground="#FF962F2F"
+                        Text="{Binding FrameToSend}"
+                        TextAlignment="Left"
+                        TextWrapping="Wrap" />
+                    <Button
+                        x:Name="SendUDPFrame"
+                        Width="250"
+                        MinHeight="40"
+                        Margin="5,10,5,5"
+                        HorizontalAlignment="Left"
+                        mvx:Bi.nd="Command SendUdpCommand"
+                        Content="Send UDP Frame"
+                        IsEnabled="{Binding CanSendMsg}"
+                        Style="{StaticResource AccentButtonStyle}" />
+                    <TextBlock
+                        Margin="5"
+                        FontSize="14"
+                        Text="Some Text" />
+                    <TextBlock
+                        Margin="5"
+                        FontSize="14"
+                        Text="Some Text" />
+                    <TextBlock
+                        Margin="5"
+                        FontSize="14"
+                        Text="Some Text" />
+                    <TextBlock
+                        Margin="5"
+                        FontSize="14"
+                        Text="Location of Application Config File" />
+                    <TextBox
+                        MaxWidth="350"
+                        Margin="5,5,5,5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Focusable="True"
+                        FontSize="10"
+                        HorizontalScrollBarVisibility="Hidden"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="C:\ThreeByteIntermedia\PCController\Settings\appsettings.json" />
+                </ui:SimpleStackPanel>
+
+                <ui:SimpleStackPanel
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    Width="Auto"
+                    Margin="5,5,5,5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    <ListBox
+                        x:Name="RealTimeLog"
+                        MaxHeight="250"
+                        AlternationCount="1"
+                        BorderThickness="1"
+                        ItemsSource="{Binding UDPRealTimeCollection}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                        ScrollViewer.CanContentScroll="True" UseLayoutRounding="True" />
+                </ui:SimpleStackPanel>
 
             </Grid>
 
 
-            <ui:SimpleStackPanel
-                Grid.Row="1"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Height="250"
-                MinWidth="600"
-                Margin="0,5,0,5"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
-                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
 
-                <TextBlock
-                    Margin="5"
-                    FontSize="20"
-                    Foreground="#FF962F2F"
-                    Text="Frame to Send" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="28"
-                    Foreground="#FF962F2F"
-                    Text="{Binding FrameToSend}" />
-                <Button
-                    x:Name="SendUDPFrame"
-                    MinWidth="165"
-                    MinHeight="40"
-                    Margin="5,10,5,5"
-                    HorizontalAlignment="Left"
-                    mvx:Bi.nd="Command SendUdpCommand"
-                    Content="Send UDP Frame"
-                    IsEnabled="{Binding CanSendMsg}"
-                    Style="{StaticResource AccentButtonStyle}" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Location of Application Config File" />
-                <TextBox
-                    MaxWidth="350"
-                    Margin="5,5,5,5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center"
-                    Focusable="True"
-                    FontSize="10"
-                    HorizontalScrollBarVisibility="Hidden"
-                    IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
-                    Text="C:\ThreeByteIntermedia\PCController\Settings\appsettings.json" />
-            </ui:SimpleStackPanel>
 
             <TextBlock
                 Grid.Row="2"
@@ -211,7 +269,7 @@
                 FontSize="24"
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
-                Text="Network Log" />
+                Text="UDP Message Log" />
 
             <DataGrid
                 x:Name="UdpGrid"
@@ -257,7 +315,7 @@
                     Margin="5,10,5,5"
                     HorizontalAlignment="Left"
                     mvx:Bi.nd="Command RefreshUdpMsgCommand"
-                    Content="Refresh Network Log"
+                    Content="Refresh UDP Message Log"
                     Style="{StaticResource AccentButtonStyle}" />
                 <TextBlock
                     x:Name="LoadTimeTextBlock"
