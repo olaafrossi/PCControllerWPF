@@ -25,10 +25,12 @@ namespace PCController.Core.ViewModels
 {
     public class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
     {
-        private readonly Stopwatch stopwatch;
         private readonly IAsyncUdpLink _asyncUdpLink;
+        private readonly Stopwatch stopwatch;
 
         private WindowChildParam _param;
+
+        private readonly ObservableCollection<string> _uDPRealTimeCollection = new();
 
         private bool carriageReturnTrue;
 
@@ -40,9 +42,9 @@ namespace PCController.Core.ViewModels
 
         private string messageSent;
 
-        private ObservableCollection<UdpSenderModel> udpSender = new();
+        private ObservableCollection<string> uDPRealTimeCollection;
 
-        private ObservableCollection<string> _uDPRealTimeCollection = new();
+        private ObservableCollection<UdpSenderModel> udpSender = new();
 
 
         public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
@@ -64,19 +66,10 @@ namespace PCController.Core.ViewModels
             IAsyncUdpLink asyncUdpLink = Mvx.IoCProvider.Resolve<IAsyncUdpLink>();
             _asyncUdpLink = asyncUdpLink;
             _asyncUdpLink.DataReceived += LinkOnDataReceived;
-            
+
+            // Setup the binding and thread safety when msg's come in from _asyncUdpLink
             UDPRealTimeCollection = _uDPRealTimeCollection;
             BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _asyncUdpLink);
-        }
-
-        private void DisposeUDPAsyncManager()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void CreateUDPAsyncManager()
-        {
-            throw new NotImplementedException();
         }
 
         public int ID { get; set; }
@@ -108,15 +101,7 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand RefreshUdpMsgCommand { get; set; }
 
-        //public ObservableCollection<UdpSenderModel> UdpSender
-        //{
-        //    get { return udpSender; }
-        //    set { SetProperty(ref udpSender, value); }
-        //}
-
         public bool CanSendMsg => IPAddress?.Length > 0 && MessageSent?.Length > 0;
-
-
 
         public string MessageSent
         {
@@ -129,17 +114,11 @@ namespace PCController.Core.ViewModels
             }
         }
 
-        private ObservableCollection<string> uDPRealTimeCollection;
-
         public ObservableCollection<string> UDPRealTimeCollection
         {
             get { return uDPRealTimeCollection; }
-            set
-            {
-                SetProperty(ref uDPRealTimeCollection, value);
-            }
+            set { SetProperty(ref uDPRealTimeCollection, value); }
         }
-        //public ObservableCollection<string> UDPRealTimeCollection { get; set; }
 
         public bool CarriageReturnTrue
         {
@@ -172,7 +151,7 @@ namespace PCController.Core.ViewModels
             {
                 if (CarriageReturnTrue is false && LineFeedTrue is false)
                 {
-                    FrameToSend = $"{MessageSent}";
+                    FrameToSend = MessageSent;
                     RaisePropertyChanged(() => MessageSent);
                     return frameToSend;
                 }
@@ -200,7 +179,7 @@ namespace PCController.Core.ViewModels
 
                 RaisePropertyChanged(() => MessageSent);
                 return frameToSend;
-                FrameToSend = String.Empty;
+                //FrameToSend = string.Empty;
             }
             set { SetProperty(ref frameToSend, value); }
         }
@@ -216,6 +195,18 @@ namespace PCController.Core.ViewModels
         public IMvxCommand OpenUdpCommand { get; set; }
         public IMvxCommand CloseUdpCommand { get; set; }
 
+        private void DisposeUDPAsyncManager()
+        {
+            //throw new NotImplementedException();
+            //TODO move much of this logic into the UdpManager class
+        }
+
+        private void CreateUDPAsyncManager()
+        {
+            //throw new NotImplementedException();
+            //TODO move much of this logic into the UdpManager class
+        }
+
         public void AddUdpFrame()
         {
             try
@@ -224,19 +215,19 @@ namespace PCController.Core.ViewModels
 
                 if (message.Contains("!0D!0A"))
                 {
-                    message.Replace("!0D!0A", "\r\n");
+                    message = message.Replace("!0D!0A", "\r\n");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
                 }
                 else if (message.Contains("!0D"))
                 {
-                    message.Replace("!0D", "\r");
+                    message = message.Replace("!0D", "\r");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
                 }
                 else if (message.Contains("!0A"))
                 {
-                    message.Replace("!0D", "\n");
+                    message = message.Replace("!0A", "\n");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
                 }
@@ -252,7 +243,6 @@ namespace PCController.Core.ViewModels
             }
 
             WriteUDPDataToDataBase(true);
-
         }
 
         public void WriteUDPDataToDataBase(bool sendMessage)
@@ -272,7 +262,8 @@ namespace PCController.Core.ViewModels
                 udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 sql.InsertUdpSentData(udpFrame);
 
-                udpFrameCombine = $"SENT: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                udpFrameCombine =
+                    $"SENT: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
             else
@@ -287,7 +278,8 @@ namespace PCController.Core.ViewModels
                 sql.InsertUdpSentData(udpFrame);
 
                 // {IncomingMessage}
-                udpFrameCombine = $"RECEIVED: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                udpFrameCombine =
+                    $"RECEIVED: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
         }

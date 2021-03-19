@@ -194,7 +194,7 @@
                         Margin="5"
                         HorizontalAlignment="Left"
                         FontSize="28"
-                        Foreground="Red"
+                        Foreground="#FFDEA504"
                         Text="{Binding FrameToSend}"
                         TextAlignment="Left"
                         TextWrapping="Wrap" />
@@ -250,22 +250,22 @@
                         x:Name="RealTimeLog"
                         MaxHeight="250"
                         AlternationCount="2"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
                         BorderThickness="1"
                         ItemsSource="{Binding UDPRealTimeCollection}"
                         ScrollViewer.CanContentScroll="True"
                         ScrollViewer.HorizontalScrollBarVisibility="Visible"
                         ScrollViewer.VerticalScrollBarVisibility="Visible"
-                        UseLayoutRounding="True" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" 
-                        />
+                        UseLayoutRounding="True" />
                 </ui:SimpleStackPanel>
                 <Grid.Resources>
-                    <Style  TargetType="{x:Type ListBoxItem}">
+                    <Style TargetType="{x:Type ListBoxItem}">
                         <Style.Triggers>
                             <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                <Setter Property="Foreground" Value="#CCF7FFFF"></Setter>
+                                <Setter Property="Foreground" Value="#CCF7FFFF" />
                             </Trigger>
                             <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                <Setter Property="Foreground" Value="#FFC2DB65"></Setter>
+                                <Setter Property="Foreground" Value="#FFDEA504" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -282,7 +282,7 @@
                 FontSize="24"
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
-                Text="UDP Message Log (All logs from Database" />
+                Text="UDP Message Log (All logs from Database)" />
 
             <DataGrid
                 x:Name="UdpGrid"
