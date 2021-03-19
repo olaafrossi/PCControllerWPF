@@ -75,7 +75,7 @@
                     FontSize="24"
                     FontWeight="Normal"
                     Foreground="#FFDEA504"
-                    Text="Realtime Log" />
+                    Text="Realtime Log (This session only)" />
                 <StackPanel
                     Grid.Row="1"
                     Grid.Column="0"
@@ -187,14 +187,14 @@
                     <TextBlock
                         Margin="5"
                         FontSize="20"
-                        Foreground="#FF962F2F"
+                        Foreground="#CCF7FFFF"
                         Text="Frame to Send" />
                     <TextBlock
                         MaxWidth="250"
                         Margin="5"
                         HorizontalAlignment="Left"
                         FontSize="28"
-                        Foreground="#FF962F2F"
+                        Foreground="Red"
                         Text="{Binding FrameToSend}"
                         TextAlignment="Left"
                         TextWrapping="Wrap" />
@@ -249,14 +249,27 @@
                     <ListBox
                         x:Name="RealTimeLog"
                         MaxHeight="250"
-                        AlternationCount="1"
+                        AlternationCount="2"
                         BorderThickness="1"
                         ItemsSource="{Binding UDPRealTimeCollection}"
+                        ScrollViewer.CanContentScroll="True"
                         ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                        ScrollViewer.VerticalScrollBarVisibility="Visible" 
-                        ScrollViewer.CanContentScroll="True" UseLayoutRounding="True" />
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        UseLayoutRounding="True" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" 
+                        />
                 </ui:SimpleStackPanel>
-
+                <Grid.Resources>
+                    <Style  TargetType="{x:Type ListBoxItem}">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                <Setter Property="Foreground" Value="#CCF7FFFF"></Setter>
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter Property="Foreground" Value="#FFC2DB65"></Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Resources>
             </Grid>
 
 
@@ -269,7 +282,7 @@
                 FontSize="24"
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
-                Text="UDP Message Log" />
+                Text="UDP Message Log (All logs from Database" />
 
             <DataGrid
                 x:Name="UdpGrid"
