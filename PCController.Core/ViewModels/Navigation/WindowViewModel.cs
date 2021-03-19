@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
+using PCController.Core.ViewModels.Navigation;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.RichTextBox;

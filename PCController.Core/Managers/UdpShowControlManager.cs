@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PCController.Core.ViewModels;
+using PCController.Core.ViewModels.Navigation;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
