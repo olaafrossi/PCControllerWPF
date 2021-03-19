@@ -26,11 +26,12 @@ namespace PCController.Core.ViewModels
     public class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly IAsyncUdpLink _asyncUdpLink;
+
+        private readonly ObservableCollection<string> _uDPRealTimeCollection = new();
+
         private readonly Stopwatch stopwatch;
 
         private WindowChildParam _param;
-
-        private readonly ObservableCollection<string> _uDPRealTimeCollection = new();
 
         private bool carriageReturnTrue;
 
@@ -179,12 +180,9 @@ namespace PCController.Core.ViewModels
 
                 RaisePropertyChanged(() => MessageSent);
                 return frameToSend;
-                //FrameToSend = string.Empty;
             }
             set { SetProperty(ref frameToSend, value); }
         }
-
-        public bool UdpDriverClosed { get; set; }
 
         public IList<string> IpList { get; set; }
 
@@ -239,19 +237,19 @@ namespace PCController.Core.ViewModels
             }
             catch (Exception e)
             {
-                Log.Error("this is bad {e}", e);
+                Log.Error("Parsing the FrameToSend has failed {e}", e);
             }
 
             WriteUDPDataToDataBase(true);
         }
 
-        public void WriteUDPDataToDataBase(bool sendMessage)
+        public void WriteUDPDataToDataBase(bool sentTypeMessage)
         {
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             UdpSenderModel udpFrame = new UdpSenderModel();
             string udpFrameCombine = string.Empty;
 
-            if (sendMessage is true)
+            if (sentTypeMessage is true)
             {
                 udpFrame.OutgoingMessage = FrameToSend;
                 udpFrame.IncomingMessage = IncomingMessage;
@@ -263,7 +261,7 @@ namespace PCController.Core.ViewModels
                 sql.InsertUdpSentData(udpFrame);
 
                 udpFrameCombine =
-                    $"SENT: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                    $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
             else
@@ -277,39 +275,43 @@ namespace PCController.Core.ViewModels
                 udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 sql.InsertUdpSentData(udpFrame);
 
-                // {IncomingMessage}
                 udpFrameCombine =
-                    $"RECEIVED: {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                    $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
         }
 
-        public static string GetLocalIPAddress()
+        private static string GetLocalIPAddress()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            try
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
                 {
-                    return ip.ToString();
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return ip.ToString();
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Serilog.Log.Logger.Error("No network adapters with an IPv4 address in the system!{e}", e);
+            }
 
-            throw new Exception("No network adapters with an IPv4 address in the system!");
+            Serilog.Log.Logger.Error("No network adapters with an IPv4 address in the system!");
+            return "No network adapters with an IPv4 address in the system!";
         }
 
 
         public void LinkOnDataReceived(object sender, EventArgs e)
         {
-            Console.WriteLine($"this might be a message from the controlller {e}");
-
-            byte[] dataBytes;
-            dataBytes = _asyncUdpLink.GetMessage();
+            byte[] dataBytes = _asyncUdpLink.GetMessage();
             string messageFromController = Encoding.ASCII.GetString(dataBytes); // new byte array and feed it the input string
-            Console.WriteLine(messageFromController);
+            Log.Info("Message from Remote {messageFromController}", messageFromController);
             IncomingMessage = messageFromController;
             WriteUDPDataToDataBase(false);
-            IncomingMessage = string.Empty;
+            IncomingMessage = string.Empty; // clear the prop
         }
 
         private void GetUdpLogs()
@@ -351,10 +353,10 @@ namespace PCController.Core.ViewModels
             }
             catch (Exception e)
             {
-                Serilog.Log.Logger.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
+                Log.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
             }
 
-            Serilog.Log.Logger.Information("Getting Data Logs{numOfMsgs}", numOfMsgs);
+            Log.Info("Getting Data Logs{numOfMsgs}", numOfMsgs);
             var rows = sql.GetSomeUdpData(numOfMsgs);
             UdpGridRows = rows;
 
@@ -366,9 +368,6 @@ namespace PCController.Core.ViewModels
         }
 
         public override void Prepare(WindowChildParam param) => _param = param;
-
-
-        // Auto SuggestBox
 
         private void GetIpSuggestionsFromDb()
         {
@@ -389,6 +388,7 @@ namespace PCController.Core.ViewModels
         }
 
         private void IpSuggestionBoxChanged()
+
         {
         }
     }
