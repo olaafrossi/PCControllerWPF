@@ -40,24 +40,23 @@ namespace PCController.DataAccess
 
         public IList<string> GetUdpUsedIPAddresses(int ipCount)
         {
-            string sql = $"SELECT MyIP FROM UDPSender ORDER BY ID DESC LIMIT {ipCount}";
+            string sql = $"SELECT LocalIP FROM UDPSender ORDER BY ID DESC LIMIT {ipCount}";
             return this.db.LoadData<string, dynamic>(sql, new { }, this.connectionString);
         }
 
         public void InsertUdpSentData(UdpSenderModel udp)
         {
-            string sql = "insert into UDPSender (IncomingMessage, OutgoingMessage, RemoteIP, MyIP, LocalPort, RemotePort, Timestamp, UDPPort) values(@IncomingMessage, @OutgoingMessage, @RemoteIP, @MyIP, @LocalPort, @RemotePort, @Timestamp, @UDPPort);";
+            string sql = "insert into UDPSender (IncomingMessage, OutgoingMessage, RemoteIP, LocalIP, LocalPort, RemotePort, Timestamp) values(@IncomingMessage, @OutgoingMessage, @RemoteIP, @LocalIP, @LocalPort, @RemotePort, @Timestamp);";
             this.db.SaveData(sql, new
                 {
                     udp.IncomingMessage,
                     udp.OutgoingMessage,
                     udp.RemoteIP,
-                    udp.MyIP,
+                    udp.LocalIP,
                     udp.LocalPort,
                     udp.RemotePort,
-                    udp.Timestamp,
-                    udp.UDPPort
-            },
+                    udp.Timestamp
+                },
                 this.connectionString);
         }
 

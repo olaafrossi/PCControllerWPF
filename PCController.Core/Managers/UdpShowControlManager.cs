@@ -46,13 +46,13 @@ namespace PCController.Core.Managers
                 udpFrame.RemoteIP = incomingMsg.RemoteIP;
             }
 
-            if (udpFrame.MyIP is null)
+            if (udpFrame.LocalIP is null)
             {
-                udpFrame.MyIP = string.Empty;
+                udpFrame.LocalIP = string.Empty;
             }
             else
             {
-                udpFrame.MyIP = incomingMsg.MyIP;
+                udpFrame.LocalIP = incomingMsg.LocalIP;
             }
 
             if (udpFrame.Timestamp is null)

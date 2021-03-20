@@ -27,21 +27,21 @@ namespace PCController.Core.ViewModels
     {
         private readonly IAsyncUdpLink _asyncUdpLink;
 
+        private readonly Stopwatch _stopwatch;
+
         private readonly ObservableCollection<string> _uDPRealTimeCollection = new();
 
-        private readonly Stopwatch stopwatch;
+        private bool _carriageReturnTrue;
+
+        private string _frameToSend;
+
+        private bool _lineFeedTrue;
+
+        private string _messageSent;
 
         private WindowChildParam _param;
 
-        private bool carriageReturnTrue;
-
-        private string frameToSend;
-
         private string iPAddress;
-
-        private bool lineFeedTrue;
-
-        private string messageSent;
 
         private ObservableCollection<string> uDPRealTimeCollection;
 
@@ -59,7 +59,7 @@ namespace PCController.Core.ViewModels
             CloseUdpCommand = new MvxCommand(DisposeUDPAsyncManager);
 
             // Fetch Initial Data
-            stopwatch = new Stopwatch();
+            _stopwatch = new Stopwatch();
             GetUdpLogs();
             GetIpSuggestionsFromDb();
 
@@ -81,7 +81,7 @@ namespace PCController.Core.ViewModels
 
         public string RemoteIP { get; set; }
 
-        public string MyIP { get; set; } = GetLocalIPAddress();
+        public string LocalIP { get; set; } = GetLocalIPAddress();
 
         public int LocalPort { get; set; }
 
@@ -93,8 +93,15 @@ namespace PCController.Core.ViewModels
 
         public IList<UdpSenderModel> UdpGridRows { get; set; }
 
-        public int ParentNo => _param.ParentNo;
-        public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
+        public int ParentNo
+        {
+            get { return _param.ParentNo; }
+        }
+
+        public string Text
+        {
+            get { return $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}"; }
+        }
 
         public IMvxCommand SendUdpCommand { get; set; }
 
@@ -102,14 +109,18 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand RefreshUdpMsgCommand { get; set; }
 
-        public bool CanSendMsg => IPAddress?.Length > 0 && MessageSent?.Length > 0;
+        public bool CanSendMsg
+        {
+            get { return IPAddress?.Length > 0 && MessageSent?.Length > 0; }
+        }
 
         public string MessageSent
         {
-            get { return messageSent; }
+            get { return _messageSent; }
+
             set
             {
-                SetProperty(ref messageSent, value);
+                SetProperty(ref _messageSent, value);
                 RaisePropertyChanged(() => CanSendMsg);
                 RaisePropertyChanged(() => FrameToSend);
             }
@@ -123,27 +134,31 @@ namespace PCController.Core.ViewModels
 
         public bool CarriageReturnTrue
         {
-            get { return carriageReturnTrue; }
+            get { return _carriageReturnTrue; }
+
             set
             {
-                SetProperty(ref carriageReturnTrue, value);
+                SetProperty(ref _carriageReturnTrue, value);
                 RaisePropertyChanged(() => FrameToSend);
             }
         }
 
         public bool LineFeedTrue
         {
-            get { return lineFeedTrue; }
+            get { return _lineFeedTrue; }
+
             set
             {
-                SetProperty(ref lineFeedTrue, value);
+                SetProperty(ref _lineFeedTrue, value);
                 RaisePropertyChanged(() => FrameToSend);
             }
         }
 
         // UDP settings
         public string IPAddress { get; set; } = Settings.Default.AsyncUdpIPAddress;
+
         public int PortNum { get; set; } = Settings.Default.AsyncUdpRemotePort;
+
         public int LocalPortNum { get; set; } = Settings.Default.AsyncUdpLocalPort;
 
         public string FrameToSend
@@ -154,34 +169,35 @@ namespace PCController.Core.ViewModels
                 {
                     FrameToSend = MessageSent;
                     RaisePropertyChanged(() => MessageSent);
-                    return frameToSend;
+                    return _frameToSend;
                 }
 
                 if (CarriageReturnTrue is true && LineFeedTrue is false)
                 {
                     FrameToSend = $"{MessageSent}!0D";
                     RaisePropertyChanged(() => MessageSent);
-                    return frameToSend;
+                    return _frameToSend;
                 }
 
                 if (LineFeedTrue is true && CarriageReturnTrue is false)
                 {
                     FrameToSend = $"{MessageSent}!0A";
                     RaisePropertyChanged(() => MessageSent);
-                    return frameToSend;
+                    return _frameToSend;
                 }
 
                 if (CarriageReturnTrue is true && LineFeedTrue is true)
                 {
                     FrameToSend = $"{MessageSent}!0D!0A";
                     RaisePropertyChanged(() => MessageSent);
-                    return frameToSend;
+                    return _frameToSend;
                 }
 
                 RaisePropertyChanged(() => MessageSent);
-                return frameToSend;
+                return _frameToSend;
             }
-            set { SetProperty(ref frameToSend, value); }
+
+            set { SetProperty(ref _frameToSend, value); }
         }
 
         public IList<string> IpList { get; set; }
@@ -191,6 +207,7 @@ namespace PCController.Core.ViewModels
         public IMvxCommand IPBoxTextChangeCommand { get; set; }
 
         public IMvxCommand OpenUdpCommand { get; set; }
+
         public IMvxCommand CloseUdpCommand { get; set; }
 
         private void DisposeUDPAsyncManager()
@@ -247,21 +264,20 @@ namespace PCController.Core.ViewModels
         {
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             UdpSenderModel udpFrame = new UdpSenderModel();
-            string udpFrameCombine = string.Empty;
 
             if (sentTypeMessage is true)
             {
                 udpFrame.OutgoingMessage = FrameToSend;
                 udpFrame.IncomingMessage = IncomingMessage;
                 udpFrame.RemoteIP = _asyncUdpLink.Address;
-                udpFrame.MyIP = MyIP;
+                udpFrame.LocalIP = LocalIP;
                 udpFrame.LocalPort = _asyncUdpLink.LocalPort;
                 udpFrame.RemotePort = _asyncUdpLink.Port;
                 udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 sql.InsertUdpSentData(udpFrame);
 
-                udpFrameCombine =
-                    $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                string udpFrameCombine =
+                    $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {FrameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {LocalIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
             else
@@ -269,14 +285,14 @@ namespace PCController.Core.ViewModels
                 udpFrame.OutgoingMessage = string.Empty;
                 udpFrame.IncomingMessage = IncomingMessage;
                 udpFrame.RemoteIP = _asyncUdpLink.Address;
-                udpFrame.MyIP = MyIP;
+                udpFrame.LocalIP = LocalIP;
                 udpFrame.LocalPort = _asyncUdpLink.LocalPort;
                 udpFrame.RemotePort = _asyncUdpLink.Port;
                 udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
                 sql.InsertUdpSentData(udpFrame);
 
-                udpFrameCombine =
-                    $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {MyIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                string udpFrameCombine =
+                    $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {LocalIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 UDPRealTimeCollection.Insert(0, udpFrameCombine);
             }
         }
@@ -316,7 +332,7 @@ namespace PCController.Core.ViewModels
 
         private void GetUdpLogs()
         {
-            stopwatch.Start();
+            _stopwatch.Start();
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             int numOfMsgs = 20;
 
@@ -360,29 +376,32 @@ namespace PCController.Core.ViewModels
             var rows = sql.GetSomeUdpData(numOfMsgs);
             UdpGridRows = rows;
 
-            stopwatch.Stop();
-            string timeToFetchFromDB = $" DB query time: {stopwatch.ElapsedMilliseconds} ms";
-            DataBaseQueryTime = timeToFetchFromDB;
+            _stopwatch.Stop();
+            string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
+            DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => UdpGridRows);
             RaisePropertyChanged(() => DataBaseQueryTime);
         }
 
-        public override void Prepare(WindowChildParam param) => _param = param;
+        public override void Prepare(WindowChildParam param)
+        {
+            _param = param;
+        }
 
         private void GetIpSuggestionsFromDb()
         {
-            stopwatch.Start();
+            _stopwatch.Start();
             SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             int numOfSuggestions = 20;
 
-            Serilog.Log.Logger.Information("Getting IP Address Suggestions {numOfSuggestions}", numOfSuggestions);
+            Log.Info("Getting IP Address Suggestions {numOfSuggestions}", numOfSuggestions);
 
             var rows = sql.GetUdpUsedIPAddresses(numOfSuggestions);
             IpList = rows;
 
-            stopwatch.Stop();
-            string timeToFetchFromDB = $" DB query time: {stopwatch.ElapsedMilliseconds} ms";
-            DataBaseQueryTime = timeToFetchFromDB;
+            _stopwatch.Stop();
+            string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
+            DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => IpList);
             RaisePropertyChanged(() => DataBaseQueryTime);
         }
@@ -401,7 +420,7 @@ namespace PCController.Core.ViewModels
 
         public string RemoteIP { get; set; }
 
-        public string MyIP { get; set; }
+        public string LocalIP { get; set; }
 
         public int LocalPort { get; set; }
 

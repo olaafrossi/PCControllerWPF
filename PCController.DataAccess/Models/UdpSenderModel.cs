@@ -16,15 +16,12 @@ namespace PCController.DataAccess.Models
 
         public string RemoteIP { get; set; }
 
-        public string MyIP { get; set; }
+        public string LocalIP { get; set; }
 
         public int LocalPort { get; set; }
 
         public int RemotePort { get; set; }
 
         public string Timestamp { get; set; }
-
-        public int UDPPort { get; set; }
-
     }
 }
