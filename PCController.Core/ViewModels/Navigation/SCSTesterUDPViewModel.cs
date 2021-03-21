@@ -37,7 +37,6 @@ namespace PCController.Core.ViewModels
             // Setup UI Commands
             RefreshUdpMsgCommand = new MvxCommand(GetUdpLogs);
             SendUdpCommand = new MvxCommand(SendUDPMessage);
-            IPBoxTextChangeCommand = new MvxCommand(GetIpSuggestionsFromDb);
             OpenUdpCommand = new MvxCommand(CreateUDPAsyncManager);
             CloseUdpCommand = new MvxCommand(DisposeUDPAsyncManager);
             UDPDriverOpenButtonStatus = true;
@@ -46,7 +45,6 @@ namespace PCController.Core.ViewModels
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
             GetUdpLogs();
-            GetIpSuggestionsFromDb();
 
             //set initial UI Fields
             IPAddress = Settings.Default.AsyncUdpIPAddress;
@@ -57,8 +55,6 @@ namespace PCController.Core.ViewModels
         public IMvxCommand OpenUdpCommand { get; set; }
 
         public IMvxCommand CloseUdpCommand { get; set; }
-
-        public IMvxCommand IPBoxTextChangeCommand { get; set; }
 
         public IMvxCommand RefreshUdpMsgCommand { get; set; }
 
@@ -226,25 +222,6 @@ namespace PCController.Core.ViewModels
             {
                 _udpLink.Dispose();
             }
-            
-        }
-
-        private void GetIpSuggestionsFromDb()
-        {
-            _stopwatch.Start();
-            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-            int numOfSuggestions = 20;
-
-            Log.Info("Getting IP Address Suggestions {numOfSuggestions}", numOfSuggestions);
-
-            var rows = sql.GetUdpUsedIPAddresses(numOfSuggestions);
-            IpList = rows;
-
-            _stopwatch.Stop();
-            string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
-            DataBaseQueryTime = timeToFetchFromDb;
-            RaisePropertyChanged(() => IpList);
-            RaisePropertyChanged(() => DataBaseQueryTime);
         }
 
         private void GetUdpLogs()
@@ -298,10 +275,6 @@ namespace PCController.Core.ViewModels
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => UdpGridRows);
             RaisePropertyChanged(() => DataBaseQueryTime);
-        }
-
-        private void IpSuggestionBoxChanged()
-        {
         }
 
         private void SendUDPMessage()
