@@ -209,6 +209,7 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
             RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
             RaisePropertyChanged(() => CanSendMsg);
+
             lock (_udpLink)
             {
                 _udpLink.Dispose();
