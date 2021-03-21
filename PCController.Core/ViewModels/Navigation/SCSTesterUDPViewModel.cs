@@ -18,10 +18,8 @@ using PCController.DataAccess;
 using PCController.DataAccess.Models;
 // ReSharper disable CheckNamespace
 
-
 namespace PCController.Core.ViewModels
 {
-
     public class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly Stopwatch _stopwatch;
@@ -211,7 +209,11 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
             RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
             RaisePropertyChanged(() => CanSendMsg);
-            //_udpLink.DisposeUDPLink();
+            lock (_udpLink)
+            {
+                _udpLink.Dispose();
+            }
+            
         }
 
         private void GetIpSuggestionsFromDb()
