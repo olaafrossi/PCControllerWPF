@@ -47,6 +47,11 @@ namespace PCController.Core.ViewModels
             _stopwatch = new Stopwatch();
             GetUdpLogs();
             GetIpSuggestionsFromDb();
+
+            //set initial UI Fields
+            IPAddress = Settings.Default.AsyncUdpIPAddress;
+            PortNum = Settings.Default.AsyncUdpRemotePort;
+            LocalPortNum = Settings.Default.AsyncUdpLocalPort;
         }
 
         public IMvxCommand OpenUdpCommand { get; set; }
@@ -126,11 +131,12 @@ namespace PCController.Core.ViewModels
             }
         }
 
-        public string IPAddress { get; set; } = Settings.Default.AsyncUdpIPAddress;
+        public string IPAddress { get; set; }
 
-        public int PortNum { get; set; } = Settings.Default.AsyncUdpRemotePort;
+        public int PortNum { get; set; }
 
-        public int LocalPortNum { get; set; } = Settings.Default.AsyncUdpLocalPort;
+        public int LocalPortNum { get; set; }
+
 
         public int ParentNo
         {
@@ -175,6 +181,12 @@ namespace PCController.Core.ViewModels
 
         public void CreateUDPAsyncManager()
         {
+
+            Settings.Default.AsyncUdpIPAddress = IPAddress;
+            Settings.Default.AsyncUdpRemotePort = PortNum;
+            Settings.Default.AsyncUdpLocalPort = LocalPortNum;
+            Settings.Default.Save();
+
             UdpShowControlManager link = new UdpShowControlManager(IPAddress, PortNum, LocalPortNum);
             _udpLink = link;
 
