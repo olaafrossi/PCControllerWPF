@@ -42,6 +42,8 @@ namespace PCController.Core.ViewModels
             IPBoxTextChangeCommand = new MvxCommand(GetIpSuggestionsFromDb);
             OpenUdpCommand = new MvxCommand(CreateUDPAsyncManager);
             CloseUdpCommand = new MvxCommand(DisposeUDPAsyncManager);
+            UDPDriverOpenButtonStatus = true;
+            UDPDriverClosedButtonStatus = false;
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -146,9 +148,13 @@ namespace PCController.Core.ViewModels
 
         public string DataBaseQueryTime { get; set; }
 
+        public bool UDPDriverOpenButtonStatus { get; set; }
+
+        public bool UDPDriverClosedButtonStatus { get; set; }
+
         public bool CanSendMsg
         {
-            get { return IPAddress?.Length > 0 && MessageSent?.Length > 0; }
+            get { return IPAddress?.Length > 0 && MessageSent?.Length > 0 && UDPDriverOpenButtonStatus == false; }
         }
 
         public string MessageSent
@@ -174,6 +180,13 @@ namespace PCController.Core.ViewModels
             UdpShowControlManager link = new UdpShowControlManager(IPAddress, PortNum, LocalPortNum);
             _udpLink = link;
 
+            // set the UI
+            UDPDriverOpenButtonStatus = false;
+            UDPDriverClosedButtonStatus = true;
+            RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
+            RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
+            RaisePropertyChanged(() => CanSendMsg);
+
             // Setup the binding and thread safety when msg's come in from _asyncUdpLink
             BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _udpLink);
             _udpLink.UDPDataReceived += UDPOnDataReceived;
@@ -193,7 +206,12 @@ namespace PCController.Core.ViewModels
 
         private void DisposeUDPAsyncManager()
         {
-            _udpLink.DisposeUDPLink();
+            UDPDriverOpenButtonStatus = true;
+            UDPDriverClosedButtonStatus = false;
+            RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
+            RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
+            RaisePropertyChanged(() => CanSendMsg);
+            //_udpLink.DisposeUDPLink();
         }
 
         private void GetIpSuggestionsFromDb()

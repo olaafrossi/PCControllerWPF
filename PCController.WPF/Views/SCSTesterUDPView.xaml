@@ -166,6 +166,7 @@
                             HorizontalAlignment="Left"
                             mvx:Bi.nd="Command OpenUdpCommand"
                             Content="Open UDP Driver"
+                            IsEnabled="{Binding UDPDriverOpenButtonStatus}"
                             Style="{StaticResource AccentButtonStyle}" />
                         <Button
                             x:Name="CloseUDPDriver"
@@ -175,6 +176,7 @@
                             HorizontalAlignment="Right"
                             mvx:Bi.nd="Command CloseUdpCommand"
                             Content="Close UDP Driver"
+                            IsEnabled="{Binding UDPDriverClosedButtonStatus}"
                             Style="{StaticResource AccentButtonStyle}" />
                     </ui:SimpleStackPanel>
                 </ui:SimpleStackPanel>
