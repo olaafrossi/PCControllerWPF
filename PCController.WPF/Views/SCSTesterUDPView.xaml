@@ -300,15 +300,15 @@
                 VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="Background" Value="Black"></Setter>
+                        <Setter Property="Background" Value="Black" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IncomingMessage}" Value="{x:Null}">
                                 <Setter Property="Background" Value="Black" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding OutgoingMessage}" Value="">
-                                <Setter Property="Background" >
+                                <Setter Property="Background">
                                     <Setter.Value>
-                                        <SolidColorBrush Color="#FFDEA504" Opacity="0.25"/>
+                                        <SolidColorBrush Opacity="0.25" Color="#FFDEA504" />
                                     </Setter.Value>
                                 </Setter>
                             </DataTrigger>
