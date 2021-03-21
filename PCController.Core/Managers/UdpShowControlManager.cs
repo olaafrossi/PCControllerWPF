@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCController |
+// Created: 2021 03 18
+// by Olaaf Rossi
+
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Windows.Data;
-using MvvmCross;
-using MvvmCross.Commands;
-using MvvmCross.Logging;
-using MvvmCross.Navigation;
-using MvvmCross.ViewModels;
-using PCController.Core.Managers;
-using PCController.Core.Properties;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
-using ThreeByteLibrary.Dotnet.NetworkUtils;
 using Serilog;
+using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.Managers
 {
     public class UdpShowControlManager
     {
-        private IAsyncUdpLink _asyncUdpLink;
+        private readonly IAsyncUdpLink _asyncUdpLink;
+
+
+        private IDisposable _disposableImplementation;
 
         public UdpShowControlManager(string IPAddress, int remotePort, int localPort)
         {
@@ -30,6 +26,27 @@ namespace PCController.Core.Managers
             _asyncUdpLink = link;
             _asyncUdpLink.DataReceived += LinkOnDataReceived;
         }
+
+
+        public string IncomingMessage { get; set; }
+
+        public string OutgoingMessage { get; set; }
+
+        public string RemoteIP { get; set; }
+
+        public string LocalIP { get; set; } = GetLocalIPAddress();
+
+        public int LocalPort { get; set; }
+
+        public int RemotePort { get; set; }
+
+        public string Timestamp { get; set; }
+
+        public int UDPPort { get; set; }
+
+        public string UdpFrameCombined { get; set; }
+
+        public event EventHandler UDPDataReceived;
 
         public void DisposeUDPLink()
         {
@@ -73,32 +90,7 @@ namespace PCController.Core.Managers
             }
 
             WriteUDPDataToDataBase(frame, true);
-            
         }
-
-
-
-        public string IncomingMessage { get; set; }
-
-        public string OutgoingMessage { get; set; }
-
-        public string RemoteIP { get; set; }
-
-        public string LocalIP { get; set; } = GetLocalIPAddress();
-
-        public int LocalPort { get; set; }
-
-        public int RemotePort { get; set; }
-
-        public string Timestamp { get; set; }
-
-        public int UDPPort { get; set; }
-
-        public string UdpFrameCombined { get; set; }
-
-
-
-        private IDisposable _disposableImplementation;
 
         public void WriteUDPDataToDataBase(string frameToSend, bool sentTypeMessage)
         {
@@ -120,6 +112,7 @@ namespace PCController.Core.Managers
                     $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {frameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {LocalIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
                 //UDPRealTimeCollection.Insert(0, udpFrameCombine);
                 UdpFrameCombined = udpFrameCombine;
+                _asyncUdpLink.DataReceived += UDPDataReceived;
             }
             else
             {
@@ -136,6 +129,7 @@ namespace PCController.Core.Managers
                     $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {LocalIP} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
 
                 UdpFrameCombined = udpFrameCombine;
+                _asyncUdpLink.DataReceived += UDPDataReceived;
             }
         }
 
@@ -154,10 +148,10 @@ namespace PCController.Core.Managers
             }
             catch (Exception e)
             {
-                Serilog.Log.Logger.Error("No network adapters with an IPv4 address in the system!{e}", e);
+                Log.Logger.Error("No network adapters with an IPv4 address in the system!{e}", e);
             }
 
-            Serilog.Log.Logger.Error("No network adapters with an IPv4 address in the system!");
+            Log.Logger.Error("No network adapters with an IPv4 address in the system!");
             return "No network adapters with an IPv4 address in the system!";
         }
 
@@ -198,6 +192,3 @@ namespace PCController.Core.Managers
         public int UDPPort { get; set; }
     }
 }
-
-
-

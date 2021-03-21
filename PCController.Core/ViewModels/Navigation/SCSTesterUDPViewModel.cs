@@ -6,11 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Data;
-using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
@@ -19,38 +16,22 @@ using PCController.Core.Managers;
 using PCController.Core.Properties;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
-using ThreeByteLibrary.Dotnet.NetworkUtils;
+// ReSharper disable CheckNamespace
+
 
 namespace PCController.Core.ViewModels
 {
+
     public class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
     {
-        private UdpShowControlManager _udpLink;
-
         private readonly Stopwatch _stopwatch;
-
-        private readonly ObservableCollection<string> _uDPRealTimeCollection = new();
-
+        private ObservableCollection<string> _udpRealTimeCollection = new ();
+        private bool _carriageReturnTrue;
+        private string _frameToSend;
+        private bool _lineFeedTrue;
         private string _messageSent;
-
         private WindowChildParam _param;
-
-        private string iPAddress;
-
-        private ObservableCollection<string> uDPRealTimeCollection;
-
-        private ObservableCollection<UdpSenderModel> udpSender = new();
-
-        public void CreateUDPAsyncManager()
-        {
-            UdpShowControlManager link = new UdpShowControlManager(IPAddress, PortNum, LocalPortNum);
-            _udpLink = link;
-        }
-
-
-        public IMvxCommand OpenUdpCommand { get; set; }
-
-        public IMvxCommand CloseUdpCommand { get; set; }
+        private UdpShowControlManager _udpLink;
 
         public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
             base(logProvider, navigationService)
@@ -66,37 +47,23 @@ namespace PCController.Core.ViewModels
             _stopwatch = new Stopwatch();
             GetUdpLogs();
             GetIpSuggestionsFromDb();
-
-            // Setup the UDP Singleton
-            //IAsyncUdpLink asyncUdpLink = Mvx.IoCProvider.Resolve<IAsyncUdpLink>();
-            //_asyncUdpLink = asyncUdpLink;
-            //_asyncUdpLink.DataReceived += LinkOnDataReceived;
-
-            // Setup the binding and thread safety when msg's come in from _asyncUdpLink
-            UDPRealTimeCollection = _uDPRealTimeCollection;
-            //BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _udpLink);
-            
         }
 
-        private void DisposeUDPAsyncManager()
-        {
-            _udpLink.DisposeUDPLink();
-        }
+        public IMvxCommand OpenUdpCommand { get; set; }
 
-        private void SendUDPMessage()
-        {
-            _udpLink.AddUdpFrame(FrameToSend);
-            UDPRealTimeCollection.Insert(0, _udpLink.UdpFrameCombined);
-        }
+        public IMvxCommand CloseUdpCommand { get; set; }
 
+        public IMvxCommand IPBoxTextChangeCommand { get; set; }
+
+        public IMvxCommand RefreshUdpMsgCommand { get; set; }
+
+        public IMvxCommand SendUdpCommand { get; set; }
+
+        public IList<string> IpList { get; set; }
+
+        public IList<UdpSenderModel> UdpGridRows { get; set; }
 
         public int ID { get; set; }
-
-        private bool _lineFeedTrue;
-
-        private string _frameToSend;
-
-        private bool _carriageReturnTrue;
 
         public string FrameToSend
         {
@@ -134,10 +101,7 @@ namespace PCController.Core.ViewModels
                 return _frameToSend;
             }
 
-            set
-            {
-                SetProperty(ref _frameToSend, value);
-            }
+            set { SetProperty(ref _frameToSend, value); }
         }
 
         public bool CarriageReturnTrue
@@ -168,10 +132,6 @@ namespace PCController.Core.ViewModels
 
         public int LocalPortNum { get; set; } = Settings.Default.AsyncUdpLocalPort;
 
-       
-
-        public IList<UdpSenderModel> UdpGridRows { get; set; }
-
         public int ParentNo
         {
             get { return _param.ParentNo; }
@@ -182,13 +142,9 @@ namespace PCController.Core.ViewModels
             get { return $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}"; }
         }
 
-        public IMvxCommand SendUdpCommand { get; set; }
-
         public string NumberOfUdpMsgToFetch { get; set; }
 
         public string DataBaseQueryTime { get; set; }
-
-        public IMvxCommand RefreshUdpMsgCommand { get; set; }
 
         public bool CanSendMsg
         {
@@ -209,15 +165,54 @@ namespace PCController.Core.ViewModels
 
         public ObservableCollection<string> UDPRealTimeCollection
         {
-            get { return uDPRealTimeCollection; }
-            set { SetProperty(ref uDPRealTimeCollection, value); }
+            get { return _udpRealTimeCollection; }
+            set { SetProperty(ref _udpRealTimeCollection, value); }
         }
 
-        public IList<string> IpList { get; set; }
+        public void CreateUDPAsyncManager()
+        {
+            UdpShowControlManager link = new UdpShowControlManager(IPAddress, PortNum, LocalPortNum);
+            _udpLink = link;
 
-        public IMvxCommand IPBoxTextChangeCommand { get; set; }
+            // Setup the binding and thread safety when msg's come in from _asyncUdpLink
+            BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _udpLink);
+            _udpLink.UDPDataReceived += UDPOnDataReceived;
+        }
 
+        public override void Prepare(WindowChildParam param)
+        {
+            _param = param;
+        }
 
+        public void UDPOnDataReceived(object sender, EventArgs e)
+        {
+            Log.Info("Message from Remote {e}", e);
+            string message = _udpLink.UdpFrameCombined;
+            UDPRealTimeCollection.Insert(0, message);
+        }
+
+        private void DisposeUDPAsyncManager()
+        {
+            _udpLink.DisposeUDPLink();
+        }
+
+        private void GetIpSuggestionsFromDb()
+        {
+            _stopwatch.Start();
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            int numOfSuggestions = 20;
+
+            Log.Info("Getting IP Address Suggestions {numOfSuggestions}", numOfSuggestions);
+
+            var rows = sql.GetUdpUsedIPAddresses(numOfSuggestions);
+            IpList = rows;
+
+            _stopwatch.Stop();
+            string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
+            DataBaseQueryTime = timeToFetchFromDb;
+            RaisePropertyChanged(() => IpList);
+            RaisePropertyChanged(() => DataBaseQueryTime);
+        }
 
         private void GetUdpLogs()
         {
@@ -262,7 +257,7 @@ namespace PCController.Core.ViewModels
             }
 
             Log.Info("Getting Data Logs{numOfMsgs}", numOfMsgs);
-            var rows = sql.GetSomeUdpData(numOfMsgs);
+            IList<UdpSenderModel> rows = sql.GetSomeUdpData(numOfMsgs);
             UdpGridRows = rows;
 
             _stopwatch.Stop();
@@ -272,34 +267,14 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => DataBaseQueryTime);
         }
 
-        public override void Prepare(WindowChildParam param)
-        {
-            _param = param;
-        }
-
-        private void GetIpSuggestionsFromDb()
-        {
-            _stopwatch.Start();
-            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-            int numOfSuggestions = 20;
-
-            Log.Info("Getting IP Address Suggestions {numOfSuggestions}", numOfSuggestions);
-
-            var rows = sql.GetUdpUsedIPAddresses(numOfSuggestions);
-            IpList = rows;
-
-            _stopwatch.Stop();
-            string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
-            DataBaseQueryTime = timeToFetchFromDb;
-            RaisePropertyChanged(() => IpList);
-            RaisePropertyChanged(() => DataBaseQueryTime);
-        }
-
         private void IpSuggestionBoxChanged()
-
         {
+        }
+
+        private void SendUDPMessage()
+        {
+            _udpLink.AddUdpFrame(FrameToSend);
+            UDPRealTimeCollection.Insert(0, _udpLink.UdpFrameCombined);
         }
     }
-
-
 }
