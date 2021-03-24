@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Windows.Data;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -31,8 +30,7 @@ namespace PCController.Core.ViewModels
         private WindowChildParam _param;
         private UdpShowControlManager _udpLink;
 
-        public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
-            base(logProvider, navigationService)
+        public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
             // Setup UI Commands
             RefreshUdpMsgCommand = new MvxCommand(GetUdpLogs);
@@ -59,8 +57,6 @@ namespace PCController.Core.ViewModels
         public IMvxCommand RefreshUdpMsgCommand { get; set; }
 
         public IMvxCommand SendUdpCommand { get; set; }
-
-        public IList<string> IpList { get; set; }
 
         public IList<UdpSenderModel> UdpGridRows { get; set; }
 
@@ -129,9 +125,29 @@ namespace PCController.Core.ViewModels
 
         public string IPAddress { get; set; }
 
-        public int PortNum { get; set; }
+        private int _portNum;
 
-        public int LocalPortNum { get; set; }
+        public int PortNum
+        {
+            get { return _portNum; }
+            set
+            {
+                SetProperty(ref _portNum, value);
+                RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
+            }
+        }
+
+        private int _localPortNum;
+
+        public int LocalPortNum
+        {
+            get { return _localPortNum; }
+            set
+            {
+                SetProperty(ref _localPortNum, value);
+                RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
+            }
+        }
 
 
         public int ParentNo
@@ -148,13 +164,35 @@ namespace PCController.Core.ViewModels
 
         public string DataBaseQueryTime { get; set; }
 
-        public bool UDPDriverOpenButtonStatus { get; set; }
+        public bool UDPLinkAlive { get; set; }
+
+
+        private bool _UDPDriverOpenButtonStatus;
+
+        public bool UDPDriverOpenButtonStatus
+        {
+            get { return ValidPortNum is true && ValidLocalPortNum is true && UDPLinkAlive is false; } // TODO work on this UI logic. 
+            set
+            {
+                SetProperty(ref _UDPDriverOpenButtonStatus, value);
+            }
+        }
 
         public bool UDPDriverClosedButtonStatus { get; set; }
 
+        public bool ValidPortNum
+        {
+            get { return PortNum > 0 && PortNum < 65535; }
+        }
+
+        public bool ValidLocalPortNum
+        {
+            get { return LocalPortNum > 0 && LocalPortNum < 65535; }
+        }
+
         public bool CanSendMsg
         {
-            get { return IPAddress?.Length > 0 && MessageSent?.Length > 0 && UDPDriverOpenButtonStatus == false; }
+            get { return IPAddress?.Length > 0 && MessageSent?.Length > 0 && UDPLinkAlive is true; }
         }
 
         public string MessageSent
@@ -177,7 +215,6 @@ namespace PCController.Core.ViewModels
 
         public void CreateUDPAsyncManager()
         {
-
             Settings.Default.AsyncUdpIPAddress = IPAddress;
             Settings.Default.AsyncUdpRemotePort = PortNum;
             Settings.Default.AsyncUdpLocalPort = LocalPortNum;
@@ -189,9 +226,11 @@ namespace PCController.Core.ViewModels
             // set the UI
             UDPDriverOpenButtonStatus = false;
             UDPDriverClosedButtonStatus = true;
+            UDPLinkAlive = true;
             RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
             RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
             RaisePropertyChanged(() => CanSendMsg);
+            RaisePropertyChanged(() => UDPLinkAlive);
 
             // Setup the binding and thread safety when msg's come in from _asyncUdpLink
             BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _udpLink);
@@ -214,9 +253,11 @@ namespace PCController.Core.ViewModels
         {
             UDPDriverOpenButtonStatus = true;
             UDPDriverClosedButtonStatus = false;
+            UDPLinkAlive = false;
             RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
             RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
             RaisePropertyChanged(() => CanSendMsg);
+            RaisePropertyChanged(() => UDPLinkAlive);
 
             lock (_udpLink)
             {

@@ -94,11 +94,25 @@ namespace PCController.Core.Managers
         {
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             UdpSenderModel udpFrame = new();
+            string incomingMessage = IncomingMessage;
+
+            if (incomingMessage.Contains("\r\n"))
+            {
+                incomingMessage = incomingMessage.Replace("\r\n", "!0A!0D");
+            }
+            else if (incomingMessage.Contains("\r"))
+            {
+                incomingMessage = incomingMessage.Replace("\r", "!0D");
+            }
+            else if (incomingMessage.Contains("\n"))
+            {
+                incomingMessage = incomingMessage.Replace("\n", "!0A");
+            }
 
             if (sentTypeMessage is true)
             {
                 udpFrame.OutgoingMessage = frameToSend;
-                udpFrame.IncomingMessage = IncomingMessage;
+                udpFrame.IncomingMessage = incomingMessage;
                 udpFrame.RemoteIP = _asyncUdpLink.Address;
                 udpFrame.LocalIP = GetLocalIPAddress();
                 udpFrame.LocalPort = _asyncUdpLink.LocalPort;
@@ -114,7 +128,7 @@ namespace PCController.Core.Managers
             else
             {
                 udpFrame.OutgoingMessage = string.Empty;
-                udpFrame.IncomingMessage = IncomingMessage;
+                udpFrame.IncomingMessage = incomingMessage;
                 udpFrame.RemoteIP = _asyncUdpLink.Address;
                 udpFrame.LocalIP = GetLocalIPAddress();
                 udpFrame.LocalPort = _asyncUdpLink.LocalPort;
@@ -123,7 +137,7 @@ namespace PCController.Core.Managers
                 sql.InsertUdpSentData(udpFrame);
 
                 string udpFrameCombine =
-                    $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {IncomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                    $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {incomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
 
                 UdpFrameCombined = udpFrameCombine;
             }

@@ -91,12 +91,14 @@
                         MinHeight="32"
                         Margin="5"
                         Focusable="True"
+                        ToolTip="Set both port #'s to the same # to test loopback"
                         ScrollViewer.CanContentScroll="True"
                         Text="Sending to port # max is 65535" />
                     <TextBlock
                         MinHeight="32"
                         Margin="5"
                         Focusable="True"
+                        ToolTip="Set both port #'s to the same # to test loopback"
                         ScrollViewer.CanContentScroll="True"
                         Text="This Port # max is 65535" />
                     <TextBlock
