@@ -23,7 +23,10 @@ namespace PCController.WPF
 {
     public class Setup : MvxWpfSetup
     {
-        public override MvxLogProviderType GetDefaultLogProviderType() => MvxLogProviderType.Serilog;
+        public override MvxLogProviderType GetDefaultLogProviderType()
+        {
+            return MvxLogProviderType.Serilog;
+        }
 
         protected override IMvxApplication CreateApp()
         {

@@ -17,9 +17,9 @@ namespace PCController.Core.Managers
     {
         private readonly IAsyncUdpLink _asyncUdpLink;
 
-        public UdpShowControlManager(string IPAddress, int remotePort, int localPort)
+        public UdpShowControlManager(string ipAddress, int remotePort, int localPort)
         {
-            IAsyncUdpLink link = new AsyncUdpLink(IPAddress, remotePort, localPort);
+            IAsyncUdpLink link = new AsyncUdpLink(ipAddress, remotePort, localPort);
             _asyncUdpLink = link;
             _asyncUdpLink.DataReceived += LinkOnDataReceived;
         }
@@ -142,7 +142,7 @@ namespace PCController.Core.Managers
                 UdpFrameCombined = udpFrameCombine;
             }
 
-            Log.Information("created an event handler to propogate messages to the ViewModel");
+            Log.Information("created an event handler to propagate messages to the ViewModel");
             _asyncUdpLink.DataReceived += UDPDataReceived;
         }
 

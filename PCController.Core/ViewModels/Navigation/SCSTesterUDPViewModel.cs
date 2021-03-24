@@ -167,14 +167,14 @@ namespace PCController.Core.ViewModels
         public bool UDPLinkAlive { get; set; }
 
 
-        private bool _UDPDriverOpenButtonStatus;
+        private bool _udpDriverOpenButtonStatus;
 
         public bool UDPDriverOpenButtonStatus
         {
             get { return ValidPortNum is true && ValidLocalPortNum is true && UDPLinkAlive is false; } // TODO work on this UI logic. 
             set
             {
-                SetProperty(ref _UDPDriverOpenButtonStatus, value);
+                SetProperty(ref _udpDriverOpenButtonStatus, value);
             }
         }
 
@@ -220,7 +220,7 @@ namespace PCController.Core.ViewModels
             Settings.Default.AsyncUdpLocalPort = LocalPortNum;
             Settings.Default.Save();
 
-            UdpShowControlManager link = new UdpShowControlManager(IPAddress, PortNum, LocalPortNum);
+            UdpShowControlManager link = new(IPAddress, PortNum, LocalPortNum);
             _udpLink = link;
 
             // set the UI
@@ -268,7 +268,7 @@ namespace PCController.Core.ViewModels
         private void GetUdpLogs()
         {
             _stopwatch.Start();
-            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
             int numOfMsgs = 20;
 
             try
