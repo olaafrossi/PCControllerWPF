@@ -73,7 +73,10 @@ namespace ThreeByteLibrary.Dotnet.NetworkUtils
             }
 
             //Return null if the link is not enabled
-            if (!Enabled) return null;
+            if (!Enabled)
+            {
+                return null;
+            }
 
             byte[] newMessage = null;
             lock (_incomingData)

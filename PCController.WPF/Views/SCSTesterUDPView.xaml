@@ -75,7 +75,6 @@
                     FontWeight="Normal"
                     Foreground="#FFDEA504"
                     Text="Realtime Log (This session only)" />
-
                 <ui:SimpleStackPanel
                     Grid.Row="1"
                     Grid.Column="0"
@@ -87,19 +86,19 @@
                         Margin="5"
                         Focusable="True"
                         ScrollViewer.CanContentScroll="True"
-                        Text="Target IP Address" />
+                        Text="Target IP Address / Hostname" />
                     <TextBlock
                         MinHeight="32"
                         Margin="5"
                         Focusable="True"
                         ScrollViewer.CanContentScroll="True"
-                        Text="Sending to port #:" />
+                        Text="Sending to port # max is 65535" />
                     <TextBlock
                         MinHeight="32"
                         Margin="5"
                         Focusable="True"
                         ScrollViewer.CanContentScroll="True"
-                        Text="This Port Number" />
+                        Text="This Port # max is 65535" />
                     <TextBlock
                         MinHeight="32"
                         Margin="5"
@@ -119,7 +118,6 @@
                         Content="Add a Line Feed"
                         IsChecked="{Binding LineFeedTrue, UpdateSourceTrigger=PropertyChanged}" />
                 </ui:SimpleStackPanel>
-
                 <ui:SimpleStackPanel
                     Grid.Row="1"
                     Grid.Column="1"
@@ -132,18 +130,23 @@
                         Margin="5"
                         Focusable="True"
                         IsReadOnly="False"
+                        MaxLines="1"
                         ScrollViewer.CanContentScroll="True"
                         Text="{Binding IPAddress, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
                         Margin="5"
                         Focusable="True"
                         IsReadOnly="False"
+                        MaxLength="5"
+                        MaxLines="1"
                         ScrollViewer.CanContentScroll="True"
                         Text="{Binding PortNum, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
                         Margin="5"
                         Focusable="True"
                         IsReadOnly="False"
+                        MaxLength="5"
+                        MaxLines="1"
                         ScrollViewer.CanContentScroll="True"
                         Text="{Binding LocalPortNum, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox
@@ -178,7 +181,6 @@
                             Style="{StaticResource AccentButtonStyle}" />
                     </ui:SimpleStackPanel>
                 </ui:SimpleStackPanel>
-
                 <ui:SimpleStackPanel
                     Grid.Row="1"
                     Grid.Column="2"
@@ -225,7 +227,6 @@
                         Text="When Opened, this driver is listening for messages on the (this port) number "
                         TextWrapping="Wrap" />
                 </ui:SimpleStackPanel>
-
                 <ui:SimpleStackPanel
                     Grid.Row="1"
                     Grid.Column="3"
@@ -246,7 +247,6 @@
                         ScrollViewer.VerticalScrollBarVisibility="Visible"
                         UseLayoutRounding="True" />
                 </ui:SimpleStackPanel>
-
                 <Grid.Resources>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Style.Triggers>
@@ -260,7 +260,6 @@
                     </Style>
                 </Grid.Resources>
             </Grid>
-
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
@@ -269,7 +268,6 @@
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
                 Text="UDP Message Log (All UDP messages from Database)" />
-
             <DataGrid
                 x:Name="UdpGrid"
                 Grid.Row="3"
@@ -296,7 +294,6 @@
                 VerticalScrollBarVisibility="Visible"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                 VirtualizingPanel.VirtualizationMode="Standard">
-
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <Setter Property="Background" Value="Black" />
@@ -315,7 +312,6 @@
                     </Style>
                 </DataGrid.RowStyle>
             </DataGrid>
-
             <ui:SimpleStackPanel
                 Grid.Row="3"
                 Grid.Column="2"
@@ -345,7 +341,7 @@
                     ui:ControlHelper.Header="Number of Logs to Fetch"
                     SelectedIndex="1"
                     SelectedItem="{Binding NumberOfUdpMsgToFetch}">
-                    <ComboBoxItem x:Name="ComboBoxItem">20</ComboBoxItem>
+                    <ComboBoxItem>20</ComboBoxItem>
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>100</ComboBoxItem>
                     <ComboBoxItem>200</ComboBoxItem>
@@ -395,14 +391,5 @@
             </ui:SimpleStackPanel>
         </Grid>
     </Border>
-
-
-
-
-
-
-
-
-
 </views:MvxWpfView>
 

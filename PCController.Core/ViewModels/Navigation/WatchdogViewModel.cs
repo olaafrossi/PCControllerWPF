@@ -17,8 +17,7 @@ namespace PCController.Core.ViewModels
 
         public Stopwatch NetStopwatch = new();
 
-        public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
-            base(logProvider, navigationService)
+        public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
         }
 
