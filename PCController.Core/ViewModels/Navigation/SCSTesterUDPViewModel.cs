@@ -16,10 +16,11 @@ using PCController.Core.Properties;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 // ReSharper disable CheckNamespace
+// ReSharper disable once ArrangeModifiersOrder
 
 namespace PCController.Core.ViewModels
 {
-    public class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
+    public sealed class SCSTesterUDPViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly Stopwatch _stopwatch;
         private ObservableCollection<string> _udpRealTimeCollection = new ();
@@ -32,6 +33,8 @@ namespace PCController.Core.ViewModels
 
         public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
+            Log.Info("SCSTesterUDPViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            
             // Setup UI Commands
             RefreshUdpMsgCommand = new MvxCommand(GetUdpLogs);
             SendUdpCommand = new MvxCommand(SendUDPMessage);
@@ -44,7 +47,7 @@ namespace PCController.Core.ViewModels
             _stopwatch = new Stopwatch();
             GetUdpLogs();
 
-            //set initial UI Fields
+            // set initial UI Fields
             IPAddress = Settings.Default.AsyncUdpIPAddress;
             PortNum = Settings.Default.AsyncUdpRemotePort;
             LocalPortNum = Settings.Default.AsyncUdpLocalPort;
@@ -149,7 +152,6 @@ namespace PCController.Core.ViewModels
             }
         }
 
-
         public int ParentNo
         {
             get { return _param.ParentNo; }
@@ -165,7 +167,6 @@ namespace PCController.Core.ViewModels
         public string DataBaseQueryTime { get; set; }
 
         public bool UDPLinkAlive { get; set; }
-
 
         private bool _udpDriverOpenButtonStatus;
 
