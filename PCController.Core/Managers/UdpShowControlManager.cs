@@ -22,6 +22,7 @@ namespace PCController.Core.Managers
             IAsyncUdpLink link = new AsyncUdpLink(ipAddress, remotePort, localPort);
             _asyncUdpLink = link;
             _asyncUdpLink.DataReceived += LinkOnDataReceived;
+            _asyncUdpLink.DataReceived += UDPDataReceived;
         }
 
         public string IncomingMessage { get; set; }
@@ -86,6 +87,7 @@ namespace PCController.Core.Managers
             IncomingMessage = messageFromController;
             WriteUDPDataToDataBase(string.Empty, false);
             IncomingMessage = string.Empty; // clear the prop
+            UDPDataReceived.Invoke(this, e);
         }
 
         public event EventHandler UDPDataReceived;
@@ -96,54 +98,58 @@ namespace PCController.Core.Managers
             UdpSenderModel udpFrame = new();
             string incomingMessage = IncomingMessage;
 
-            if (incomingMessage.Contains("\r\n"))
+            if (incomingMessage is null)
             {
-                incomingMessage = incomingMessage.Replace("\r\n", "!0A!0D");
-            }
-            else if (incomingMessage.Contains("\r"))
-            {
-                incomingMessage = incomingMessage.Replace("\r", "!0D");
-            }
-            else if (incomingMessage.Contains("\n"))
-            {
-                incomingMessage = incomingMessage.Replace("\n", "!0A");
-            }
-
-            if (sentTypeMessage is true)
-            {
-                udpFrame.OutgoingMessage = frameToSend;
-                udpFrame.IncomingMessage = incomingMessage;
-                udpFrame.RemoteIP = _asyncUdpLink.Address;
-                udpFrame.LocalIP = GetLocalIPAddress();
-                udpFrame.LocalPort = _asyncUdpLink.LocalPort;
-                udpFrame.RemotePort = _asyncUdpLink.Port;
-                udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                sql.InsertUdpSentData(udpFrame);
-
-                string udpFrameCombine =
-                    $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {frameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
-
-                UdpFrameCombined = udpFrameCombine;
+                Log.Error("Incoming Message is null{incomingMessage}", incomingMessage);
             }
             else
             {
-                udpFrame.OutgoingMessage = string.Empty;
-                udpFrame.IncomingMessage = incomingMessage;
-                udpFrame.RemoteIP = _asyncUdpLink.Address;
-                udpFrame.LocalIP = GetLocalIPAddress();
-                udpFrame.LocalPort = _asyncUdpLink.LocalPort;
-                udpFrame.RemotePort = _asyncUdpLink.Port;
-                udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                sql.InsertUdpSentData(udpFrame);
+                if (incomingMessage.Contains("\r\n"))
+                {
+                    incomingMessage = incomingMessage.Replace("\r\n", "!0A!0D");
+                }
+                else if (incomingMessage.Contains("\r"))
+                {
+                    incomingMessage = incomingMessage.Replace("\r", "!0D");
+                }
+                else if (incomingMessage.Contains("\n"))
+                {
+                    incomingMessage = incomingMessage.Replace("\n", "!0A");
+                }
 
-                string udpFrameCombine =
-                    $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {incomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+                if (sentTypeMessage is true)
+                {
+                    udpFrame.OutgoingMessage = frameToSend;
+                    udpFrame.IncomingMessage = incomingMessage;
+                    udpFrame.RemoteIP = _asyncUdpLink.Address;
+                    udpFrame.LocalIP = GetLocalIPAddress();
+                    udpFrame.LocalPort = _asyncUdpLink.LocalPort;
+                    udpFrame.RemotePort = _asyncUdpLink.Port;
+                    udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    sql.InsertUdpSentData(udpFrame);
 
-                UdpFrameCombined = udpFrameCombine;
+                    string udpFrameCombine =
+                        $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {frameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+
+                    UdpFrameCombined = udpFrameCombine;
+                }
+                else
+                {
+                    udpFrame.OutgoingMessage = string.Empty;
+                    udpFrame.IncomingMessage = incomingMessage;
+                    udpFrame.RemoteIP = _asyncUdpLink.Address;
+                    udpFrame.LocalIP = GetLocalIPAddress();
+                    udpFrame.LocalPort = _asyncUdpLink.LocalPort;
+                    udpFrame.RemotePort = _asyncUdpLink.Port;
+                    udpFrame.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                    sql.InsertUdpSentData(udpFrame);
+
+                    string udpFrameCombine =
+                        $"RECEIVED: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Received Frame: {incomingMessage} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+
+                    UdpFrameCombined = udpFrameCombine;
+                }
             }
-
-            Log.Information("created an event handler to propagate messages to the ViewModel");
-            _asyncUdpLink.DataReceived += UDPDataReceived;
         }
 
         private static string GetLocalIPAddress()
