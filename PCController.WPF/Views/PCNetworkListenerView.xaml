@@ -55,6 +55,7 @@
                 <StackPanel
                     Grid.Row="0"
                     Grid.Column="0"
+                    Margin="0,5,0,5"
                     MinWidth="200">
                     <TextBlock
                         MinHeight="32"
@@ -134,7 +135,7 @@
                         Focusable="True"
                         IsReadOnly="True"
                         ScrollViewer.CanContentScroll="True"
-                        Text="No prop yet" />
+                        Text="{Binding TimeSinceLastStartup}" />
                 </StackPanel>
 
             </Grid>
@@ -150,44 +151,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Top"
                 Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-
-                <TextBlock Margin="5,5,5,5" Text="Network Options" />
-                <Button
-                    x:Name="SendUDPFrame"
-                    MinWidth="165"
-                    MinHeight="40"
-                    Margin="5,10,5,5"
-                    HorizontalAlignment="Left"
-                    Content="Send UDP Frame"
-                    Style="{StaticResource AccentButtonStyle}" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Location of Application Config File" />
-                <TextBox
-                    MaxWidth="350"
-                    Margin="5,5,5,5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center"
-                    Focusable="True"
-                    FontSize="10"
-                    HorizontalScrollBarVisibility="Hidden"
-                    IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
-                    Text="C:\ThreeByteIntermedia\PCController\Settings\appsettings.json" />
+                
             </ui:SimpleStackPanel>
 
             <TextBlock

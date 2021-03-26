@@ -44,6 +44,9 @@ namespace PCController.Core.ViewModels
             // set initial UI Fields
             int listeningPort = pcNetworkListener.GetAppSettingsDataUdpPort();
             ListeningUDPPort = listeningPort.ToString();
+            TimeSinceLastStartup = GetDateFromTimeSpan();
+            RemoteControlTimeSinceLastMessage = "";
+            RemoteControlTimeStamp = "";
         }
 
         public IMvxCommand RefreshNetMsgCommand { get; set; }
@@ -66,6 +69,8 @@ namespace PCController.Core.ViewModels
 
         public string NumberOfNetMsgToFetch { get; set; }
 
+        public DateTime TimeSinceLastStartup { get; set; }
+
         public int ParentNo
         {
             get
@@ -85,6 +90,12 @@ namespace PCController.Core.ViewModels
         public override void Prepare(WindowChildParam param)
         {
             _param = param;
+        }
+
+        private static DateTime GetDateFromTimeSpan()
+        {
+            long tickCountMs = Environment.TickCount64;
+            return DateTime.Now.Subtract(TimeSpan.FromMilliseconds(tickCountMs));
         }
 
         private void GetNetLogs()
