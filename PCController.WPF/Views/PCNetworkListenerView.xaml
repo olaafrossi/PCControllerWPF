@@ -86,6 +86,12 @@
                         Focusable="True"
                         ScrollViewer.CanContentScroll="True"
                         Text="Time Since Last Message" />
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="Last Reboot/Startup" />
                 </StackPanel>
 
                 <StackPanel
@@ -123,6 +129,12 @@
                         IsReadOnly="True"
                         ScrollViewer.CanContentScroll="True"
                         Text="{Binding RemoteControlTimeSinceLastMessage}" />
+                    <TextBox
+                        Margin="5,5,5,5"
+                        Focusable="True"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="No prop yet" />
                 </StackPanel>
 
             </Grid>
@@ -185,7 +197,7 @@
                 FontSize="24"
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
-                Text="Network Log" />
+                Text="Network Listener Log" />
 
             <DataGrid
                 x:Name="NetworkGrid"
@@ -195,6 +207,7 @@
                 MinWidth="400"
                 MinHeight="100"
                 Margin="5"
+                AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
                 AutoGenerateColumns="True"
                 BorderBrush="Gray"
                 BorderThickness="1"
