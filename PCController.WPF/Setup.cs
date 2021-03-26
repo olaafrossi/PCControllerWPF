@@ -3,6 +3,9 @@
 // by Olaaf Rossi
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -13,14 +16,17 @@ using MvvmCross.Logging;
 using MvvmCross.Platforms.Wpf.Core;
 using MvvmCross.ViewModels;
 using PCController.Core.Properties;
+using PCController.Core.Services;
 using Serilog;
 using Serilog.Configuration;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 
+
 namespace PCController.WPF
 {
+
     public class Setup : MvxWpfSetup
     {
         public override MvxLogProviderType GetDefaultLogProviderType()
@@ -39,6 +45,8 @@ namespace PCController.WPF
             var outputTemplate = "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{Caller}]{NewLine}{Exception}{Message}{NewLine}";
             Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
 
+            //var collectionLog = new CollectionSink();
+
             LoggerConfiguration loggerConfig = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
@@ -48,6 +56,7 @@ namespace PCController.WPF
                 .Enrich.WithProcessId()
                 .WriteTo.SQLite(Settings.Default.SQLiteDBPath)
                 .WriteTo.File(Settings.Default.LocalLogFolderFile)
+                .WriteTo.Sink(new CollectionSink())
                 .WriteTo.Console();
 
             if (handler != null)

@@ -28,7 +28,9 @@ namespace PCController.Core
                 .RegisterAsLazySingleton();
 
             Mvx.IoCProvider.RegisterSingleton<IMvxTextProvider>(new TextProviderBuilder().TextProvider);
-            
+
+            Mvx.IoCProvider.RegisterSingleton<CollectionSink>(new CollectionSink());
+
             // setup info for the 3Byte network listener
             int portNum = Properties.Settings.Default.PCListenerUDPPort;
             ILogger netLogger = Log.Logger;

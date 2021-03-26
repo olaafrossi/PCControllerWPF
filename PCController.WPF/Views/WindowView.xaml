@@ -106,7 +106,7 @@
                                 HorizontalAlignment="Center"
                                 Command="{Binding ShowPCNetworkListenerCommand}"
                                 CommandParameter="2"
-                                Content="Network Listener"
+                                Content="Network Shutdown Listener"
                                 Style="{StaticResource AccentButtonStyle}" />
                             <Button
                                 Width="200"
@@ -115,7 +115,7 @@
                                 HorizontalAlignment="Center"
                                 Command="{Binding ShowWatchdogCommand}"
                                 CommandParameter="2"
-                                Content="Watchdog"
+                                Content="App Watchdog"
                                 Style="{StaticResource AccentButtonStyle}" />
                             <Button
                                 Width="200"
@@ -135,12 +135,37 @@
                                 CommandParameter="2"
                                 Content="SCS Tester (TCP)"
                                 Style="{StaticResource AccentButtonStyle}" />
-                            <RichTextBox
-                                x:Name="MyRichTextBox"
-                                Background="Black"
-                                FontFamily="Cascadia Mono, Consolas, Courier New, monospace"
-                                Foreground="LightGray"
-                                VerticalScrollBarVisibility="Auto" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowSCSUDPTesterCommand}"
+                                CommandParameter="2"
+                                Content="Wake-On-Lan Tester"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ShowSCSUDPTesterCommand}"
+                                CommandParameter="2"
+                                Content="Energy Monitor"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <ListBox
+                                x:Name="RealTimeMasterLog"
+                                MinWidth="200"
+                                MaxHeight="450"
+                                HorizontalAlignment="Center"
+                                AlternationCount="2"
+                                BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
+                                BorderThickness="1"
+                                ItemsSource="{Binding RealTimeLogCollection}"
+                                ScrollViewer.CanContentScroll="True"
+                                ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                UseLayoutRounding="True" />
 
                         </ui:ListView>
                     </DockPanel>
