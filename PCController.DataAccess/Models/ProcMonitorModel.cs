@@ -15,5 +15,6 @@ namespace PCController.DataAccess.Models
         public int ThreadCount { get; set; }
         public int HandleCount { get; set; }
         public bool IsNotResponding { get; set; }
+        public string Message { get; set; }
     }
 }

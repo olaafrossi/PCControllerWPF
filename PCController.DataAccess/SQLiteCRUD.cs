@@ -87,7 +87,7 @@ namespace PCController.DataAccess
         public void InsertProcData(ProcMonitorModel data)
         {
             string sql =
-                "insert into Network (Timestamp, PeakPagedMemorySize, PeakWorkingSet, PrivateMemorySize, ThreadCount, HandleCount, IsNotResponding) values (@Timestamp, @PeakPagedMemorySize, @PeakWorkingSet, @PrivateMemorySize, @ThreadCount, @HandleCount, @IsNotResponding);";
+                "insert into ProcMonitor (Timestamp, PeakPagedMemorySize, PeakWorkingSet, PrivateMemorySize, ThreadCount, HandleCount, IsNotResponding, Message) values (@Timestamp, @PeakPagedMemorySize, @PeakWorkingSet, @PrivateMemorySize, @ThreadCount, @HandleCount, @IsNotResponding, @Message);";
             this.db.SaveData(
                 sql,
                 new {
@@ -97,7 +97,8 @@ namespace PCController.DataAccess
                     data.PrivateMemorySize,
                     data.ThreadCount,
                     data.HandleCount,
-                    data.IsNotResponding
+                    data.IsNotResponding,
+                    data.Message
                 },
                 this.connectionString);
         }

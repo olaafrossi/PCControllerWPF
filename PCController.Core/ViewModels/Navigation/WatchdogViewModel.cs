@@ -4,10 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Threading;
+using System.IO;
+using System.Text;
+using System.Windows.Data;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -17,7 +18,7 @@ using PCController.Core.Managers;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
-using ThreeByteLibrary.Dotnet.NetworkUtils;
+
 // ReSharper disable CheckNamespace
 // ReSharper disable once ArrangeModifiersOrder
 
@@ -25,9 +26,11 @@ namespace PCController.Core.ViewModels
 {
     public sealed class WatchdogViewModel : MvxNavigationViewModel<WindowChildParam>
     {
+        private readonly object _processMonitorLock = new();
+        private readonly IProcessMonitor _procMonitor;
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
-        private IProcessMonitor _procMonitor;
+        private ObservableCollection<string> _procMonRealTimeCollection = new();
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
@@ -35,6 +38,8 @@ namespace PCController.Core.ViewModels
 
             // Setup UI Commands
             RefreshProcLogsCommand = new MvxCommand(GetProcLogs);
+            StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
+            StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -42,19 +47,38 @@ namespace PCController.Core.ViewModels
 
 
             // get singleton and create event handlers
-            _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
-            _procMonitor.ProcessEvent += OnProcessEvent;
-            _procMonitor.ProcessExited += OnProcessExited;
+            lock (_processMonitorLock)
+            {
+                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
+                _procMonitor.ProcessEvent += OnProcessEvent;
+                _procMonitor.ProcessExited += OnProcessExited;
+                _procMonitor.ResourceEvent += OnResourceEvent;
+                // Setup the binding and thread safety when msg's come in from _procMonitor
+                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
+            }
 
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
             ExecutionString = _procMonitor.ExecutionString;
             ResourceSnapshotInterval = _procMonitor.ResourceSnapshotInterval;
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
+            ProcMonitorStoppedButtonStatus = true;
+            ProcMonitorStartedButtonStatus = true;
+
+            RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
         }
 
 
         public IMvxCommand RefreshProcLogsCommand { get; set; }
+
+        public IMvxCommand StopProcMonitorCommand { get; set; }
+
+        public IMvxCommand StartProcMonitorCommand { get; set; }
+
+        public bool ProcMonitorStoppedButtonStatus { get; set; }
+
+        public bool ProcMonitorStartedButtonStatus { get; set; }
 
         public string ProcessName { get; set; }
 
@@ -64,19 +88,73 @@ namespace PCController.Core.ViewModels
 
         public TimeSpan UnresponsiveTimeout { get; set; }
 
-        public string ResourceSnaphotCombined { get; set; }
-
         public string NumberOfProcLogsToFetch { get; set; }
 
         public string DataBaseQueryTime { get; set; }
 
         public IList<ProcMonitorModel> ProcGridRows { get; set; }
 
+        public ObservableCollection<string> ProcMonRealTimeCollection
+        {
+            get { return _procMonRealTimeCollection; }
+            set { SetProperty(ref _procMonRealTimeCollection, value); }
+        }
 
         public int ParentNo => _param.ParentNo;
         public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
 
+        public override void Prepare(WindowChildParam param) => _param = param;
 
+        public void WriteErrorDataToDataBase(string error)
+        {
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            ProcMonitorModel procData = new();
+            procData.Timestamp = DateTime.Now;
+            procData.Message = error;
+            sql.InsertProcData(procData);
+        }
+
+        public void WriteProcDataToDataBase(ResourceSnapshot snap)
+        {
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            ProcMonitorModel procData = new();
+
+            procData.PeakPagedMemorySize = snap.PeakPagedMemorySize;
+            procData.PeakWorkingSet = snap.PeakWorkingSet;
+            procData.PrivateMemorySize = snap.PrivateMemorySize;
+            procData.ThreadCount = snap.ThreadCount;
+            procData.HandleCount = snap.HandleCount;
+            procData.IsNotResponding = snap.IsNotResponding;
+            procData.Timestamp = DateTime.Now;
+            procData.Message = "";
+            sql.InsertProcData(procData);
+        }
+
+        private string DumpToUserFile(string processName, string text)
+        {
+            try
+            {
+                //Create a userfile with a timestamp that will be accesible
+                string filename = string.Format("{0}_{1}.txt", processName, DateTime.Now.ToString("yyyyMMdd-hhmmss"));
+                string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Watchdog", filename);
+                string filedir = Path.GetDirectoryName(filepath);
+
+                //Ensure the directory exists
+                if (!Directory.Exists(filedir))
+                {
+                    Directory.CreateDirectory(filedir);
+                }
+
+                File.WriteAllText(filepath, text);
+                Log.Error("User process file written to: {0}", filepath);
+                return filepath;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Could not dump to user file", ex);
+                return null;
+            }
+        }
 
         private void GetProcLogs()
         {
@@ -131,41 +209,56 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => DataBaseQueryTime);
         }
 
-        private void OnProcessExited(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void OnProcessEvent(object? sender, ProcessEventArgs e)
         {
-            //WriteProcDataToDataBase();
+            ProcMonRealTimeCollection.Insert(0, e.ToString());
+            RaisePropertyChanged(() => ProcMonRealTimeCollection);
         }
 
-        //public void WriteProcDataToDataBase()
-        //{
-        //    SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-        //    ProcMonitorModel procData = new();
+        private void OnProcessExited(object? sender, EventArgs e)
+        {
+            lock (_processMonitorLock)
+            {
+                if (_procMonitor != null)
+                {
+                    //print the last 30 snapshots
+                    StringBuilder sb = new();
+                    sb.AppendLine("Process Exited");
+                    int snapshots = 30; //At most
+                    foreach (ResourceSnapshot s in _procMonitor.GetSnapshotHistory())
+                    {
+                        if (--snapshots < 0)
+                        {
+                            break;
+                        }
 
-        //    procData = _procMonitor.GetSnapshotHistory{
-        //        _procMonitor.GetSnapshotHistory
-        //    }
-            
+                        sb.AppendLine(s.ToString());
+                    }
 
-        //    procData.PeakPagedMemorySize = _procMonitor.PeakPagedMemorySize;
-        //    procData.PeakWorkingSet = PeakWorkingSet;
-        //    procData.RemoteIP = _asyncUdpLink.Address;
-        //    procData.LocalIP = GetLocalIPAddress();
-        //    procData.LocalPort = _asyncUdpLink.LocalPort;
-        //    procData.RemotePort = _asyncUdpLink.Port;
-        //    procData.Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        //            sql.InsertProcData(procData);
+                    ProcMonRealTimeCollection.Insert(0, $"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Monitored Process Died {e}");
+                    RaisePropertyChanged(() => ProcMonRealTimeCollection);
+                    string userfile = DumpToUserFile(ProcessName, sb.ToString());
+                    Console.WriteLine(userfile);
+                    WriteErrorDataToDataBase("Monitored Process Died");
+                    //SetMessage(string.Format("File written to {0}", userfile));
+                }
+            }
+        }
 
-        //            string procDataCombine =
-        //                $"SENT: {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} Sent Frame: {frameToSend} Remote IP: {_asyncUdpLink.Address} This IP: {GetLocalIPAddress()} Remote Port: {_asyncUdpLink.LocalPort} Local Port: {_asyncUdpLink.Port}";
+        private void OnResourceEvent(object? sender, ResourceSnapshot e)
+        {
+            ProcMonRealTimeCollection.Insert(0, e.ToString());
+            RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            WriteProcDataToDataBase(e);
+        }
 
-        //    ResourceSnaphotCombined = procDataCombine;
-        //}
+        private void StartProcMonitor()
+        {
+        }
 
-        public override void Prepare(WindowChildParam param) => _param = param;
+        private void StopProcMonitor()
+        {
+            _procMonitor.Kill();
+        }
     }
 }
