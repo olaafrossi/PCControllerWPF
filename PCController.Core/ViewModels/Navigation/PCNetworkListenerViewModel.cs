@@ -26,7 +26,6 @@ namespace PCController.Core.ViewModels
     {
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
-        public Stopwatch NetStopwatch = new();
 
         public PCNetworkListenerViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
