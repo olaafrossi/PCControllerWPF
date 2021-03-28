@@ -28,14 +28,20 @@ namespace PCController.DataAccess
 
         public IList<NetworkMessageModel> GetSomeNetData(int msgCount)
         {
-            string sql = $"SELECT * FROM Network ORDER BY iD DESC LIMIT {msgCount}";
+            string sql = $"SELECT * FROM Network ORDER BY ID DESC LIMIT {msgCount}";
             return this.db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, this.connectionString);
         }
 
         public IList<UdpSenderModel> GetSomeUdpData(int msgCount)
         {
-            string sql = $"SELECT * FROM UDPSender ORDER BY iD DESC LIMIT {msgCount}";
+            string sql = $"SELECT * FROM UDPSender ORDER BY ID DESC LIMIT {msgCount}";
             return this.db.LoadData<UdpSenderModel, dynamic>(sql, new { }, this.connectionString);
+        }
+
+        public IList<ProcMonitorModel> GetSomeProcData(int msgCount)
+        {
+            string sql = $"SELECT * FROM ProcMonitor ORDER BY ID DESC LIMIT {msgCount}";
+            return this.db.LoadData<ProcMonitorModel, dynamic>(sql, new { }, this.connectionString);
         }
 
         public IList<string> GetUdpUsedIPAddresses(int ipCount)
@@ -75,6 +81,24 @@ namespace PCController.DataAccess
                         msg.IncomingMessage,
                         msg.OutgoingMessage
                     },
+                this.connectionString);
+        }
+
+        public void InsertProcData(ProcMonitorModel data)
+        {
+            string sql =
+                "insert into Network (Timestamp, PeakPagedMemorySize, PeakWorkingSet, PrivateMemorySize, ThreadCount, HandleCount, IsNotResponding) values (@Timestamp, @PeakPagedMemorySize, @PeakWorkingSet, @PrivateMemorySize, @ThreadCount, @HandleCount, @IsNotResponding);";
+            this.db.SaveData(
+                sql,
+                new {
+                    data.Timestamp,
+                    data.PeakPagedMemorySize,
+                    data.PeakWorkingSet,
+                    data.PrivateMemorySize,
+                    data.ThreadCount,
+                    data.HandleCount,
+                    data.IsNotResponding
+                },
                 this.connectionString);
         }
     }

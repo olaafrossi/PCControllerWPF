@@ -11,7 +11,7 @@
     xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
     x:Name="MvxWView"
     d:DesignHeight="1120"
-    d:DesignWidth="810"
+    d:DesignWidth="1410"
     ui:ThemeManager.RequestedTheme="Dark"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
@@ -34,150 +34,222 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                Margin="5"
-                FontSize="24"
-                FontWeight="Normal"
-                Foreground="#FFDEA504"
-                Text="Network Listener" />
             <Grid
                 x:Name="InfoBar"
                 Grid.Row="1"
                 Grid.Column="0"
+                Grid.ColumnSpan="3"
                 Margin="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" MaxWidth="350" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="260" />
                 </Grid.RowDefinitions>
-                <StackPanel
+
+                <TextBlock
                     Grid.Row="0"
                     Grid.Column="0"
-                    MinWidth="200">
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="UDP Port Listening On" />
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Remote Controller IP" />
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Time of Last Message" />
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Last Message" />
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Time Since Last Message" />
-                </StackPanel>
-
-                <StackPanel
+                    Margin="5"
+                    FontSize="24"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="App Watchdog" />
+                <TextBlock
                     Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="5"
+                    FontSize="24"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="Frame Details" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="5"
+                    FontSize="24"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="Realtime Log (This session only)" />
+                <ui:SimpleStackPanel
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    MinWidth="200"
+                    Margin="0,5,0,5"
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="Process Name" />
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="Execution String"
+                        ToolTip="???" />
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="ResourceSnapshotInterval"
+                        ToolTip="????" />
+                    <TextBlock
+                        MinHeight="32"
+                        Margin="5"
+                        Focusable="True"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="Unresponsive Timeout (seconds)" />
+                </ui:SimpleStackPanel>
+                <ui:SimpleStackPanel
+                    Grid.Row="1"
                     Grid.Column="1"
-                    MinWidth="200">
-                    <TextBox
-                        Margin="5,5,5,5"
-                        Focusable="True"
-                        HorizontalScrollBarVisibility="Auto"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding ListeningUDPPort}" />
-                    <TextBox
-                        Margin="5,5,5,5"
-                        Focusable="True"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding RemoteControlIP}" />
-                    <TextBox
-                        Margin="5,5,5,5"
-                        Focusable="True"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding RemoteControlTimeStamp}" />
-                    <TextBox
-                        Margin="5,5,5,5"
-                        Focusable="True"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding RemoteControlLastMessage}" />
-                    <TextBox
-                        Margin="5,5,5,5"
-                        Focusable="True"
-                        IsReadOnly="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding RemoteControlTimeSinceLastMessage}" />
-                </StackPanel>
-
-            </Grid>
-
-
-            <ui:SimpleStackPanel
-                Grid.Row="1"
-                Grid.Column="1"
-                Grid.ColumnSpan="2"
-                Height="250"
-                MinWidth="600"
-                Margin="0,5,0,5"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Top"
-                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-
-                <TextBlock Margin="5,5,5,5" Text="Network Options" />
-                <Button
-                    x:Name="SendUDPFrame"
-                    MinWidth="165"
-                    MinHeight="40"
-                    Margin="5,10,5,5"
+                    MinWidth="260"
+                    MaxWidth="300"
+                    Margin="0,5,2,5"
                     HorizontalAlignment="Left"
-                    Content="Send UDP Frame"
-                    Style="{StaticResource AccentButtonStyle}" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Some Text" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Location of Application Config File" />
-                <TextBox
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    <TextBox
+                        Margin="5"
+                        Focusable="True"
+                        IsReadOnly="False"
+                        MaxLines="1"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="{Binding ProcessName, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox
+                        Margin="5"
+                        Focusable="True"
+                        IsReadOnly="False"
+                        MaxLength="5"
+                        MaxLines="1"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="{Binding ExecutionString, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox
+                        Margin="5"
+                        Focusable="True"
+                        IsReadOnly="False"
+                        MaxLength="5"
+                        MaxLines="1"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="{Binding ResourceSnapshotInterval, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox
+                        Margin="5,5,5,5"
+                        Focusable="True"
+                        IsReadOnly="False"
+                        ScrollViewer.CanContentScroll="True"
+                        Text="{Binding UnresponsiveTimeout, UpdateSourceTrigger=PropertyChanged}" />
+                    <ui:SimpleStackPanel
+                        Margin="5,0,5,0"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="OpenUDPDriver"
+                            Width="145"
+                            MinHeight="40"
+                            Margin="0,5,5,5"
+                            HorizontalAlignment="Left"
+                            mvx:Bi.nd="Command OpenUdpCommand"
+                            Content="Open UDP Driver"
+                            IsEnabled="{Binding UDPDriverOpenButtonStatus}"
+                            Style="{StaticResource AccentButtonStyle}" />
+                        <Button
+                            x:Name="CloseUDPDriver"
+                            Width="145"
+                            MinHeight="40"
+                            Margin="0,5,0,5"
+                            HorizontalAlignment="Right"
+                            mvx:Bi.nd="Command CloseUdpCommand"
+                            Content="Close UDP Driver"
+                            IsEnabled="{Binding UDPDriverClosedButtonStatus}"
+                            Style="{StaticResource AccentButtonStyle}" />
+                    </ui:SimpleStackPanel>
+                </ui:SimpleStackPanel>
+                <ui:SimpleStackPanel
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Height="250"
+                    MinWidth="345"
                     MaxWidth="350"
-                    Margin="5,5,5,5"
+                    Margin="0,5,2,5"
                     HorizontalAlignment="Left"
-                    VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center"
-                    Focusable="True"
-                    FontSize="10"
-                    HorizontalScrollBarVisibility="Hidden"
-                    IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
-                    Text="C:\ThreeByteIntermedia\PCController\Settings\appsettings.json" />
-            </ui:SimpleStackPanel>
-
+                    VerticalAlignment="Top"
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    <TextBlock
+                        Margin="5"
+                        FontSize="20"
+                        Foreground="#CCF7FFFF"
+                        Text="Frame to Send:" />
+                    <TextBlock
+                        MaxWidth="350"
+                        MaxHeight="100"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        FontSize="28"
+                        Foreground="#FFDEA504"
+                        LineStackingStrategy="MaxHeight"
+                        Text="{Binding FrameToSend}"
+                        TextAlignment="Left"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="WrapWithOverflow" />
+                    <Button
+                        x:Name="SendUDPFrame"
+                        Width="Auto"
+                        MinWidth="100"
+                        MinHeight="40"
+                        Margin="5,10,5,5"
+                        HorizontalAlignment="Left"
+                        mvx:Bi.nd="Command SendUdpCommand"
+                        Content="Send UDP Frame"
+                        IsEnabled="{Binding CanSendMsg}"
+                        Style="{StaticResource AccentButtonStyle}" />
+                    <TextBlock
+                        MaxWidth="300"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        FontSize="14"
+                        Text="When Opened, this driver is listening for messages on the (this port) number "
+                        TextWrapping="Wrap" />
+                </ui:SimpleStackPanel>
+                <ui:SimpleStackPanel
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    Width="Auto"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    <ListBox
+                        x:Name="RealTimeLog"
+                        MaxHeight="250"
+                        AlternationCount="2"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
+                        BorderThickness="1"
+                        ItemsSource="{Binding UDPRealTimeCollection}"
+                        ScrollViewer.CanContentScroll="True"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        UseLayoutRounding="True" />
+                </ui:SimpleStackPanel>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                <Setter Property="Foreground" Value="#CCF7FFFF" />
+                            </Trigger>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter Property="Foreground" Value="#FFDEA504" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Resources>
+            </Grid>
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
@@ -185,16 +257,15 @@
                 FontSize="24"
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
-                Text="Network Log" />
-
+                Text="Process Logs (All Logs from Database)" />
             <DataGrid
-                x:Name="NetworkGrid"
+                x:Name="ProcGrid"
                 Grid.Row="3"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 MinWidth="400"
                 MinHeight="100"
-                Margin="5"
+                Margin="1,5,5,5"
                 AutoGenerateColumns="True"
                 BorderBrush="Gray"
                 BorderThickness="1"
@@ -206,14 +277,31 @@
                 HeadersVisibility="Column"
                 HorizontalScrollBarVisibility="Auto"
                 IsReadOnly="True"
-                ItemsSource="{Binding NetGridRows}"
+                ItemsSource="{Binding UdpGridRows}"
                 RowDetailsVisibilityMode="Visible"
                 SnapsToDevicePixels="True"
                 UseLayoutRounding="True"
                 VerticalScrollBarVisibility="Visible"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                VirtualizingPanel.VirtualizationMode="Standard" />
-
+                VirtualizingPanel.VirtualizationMode="Standard">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="Black" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IncomingMessage}" Value="{x:Null}">
+                                <Setter Property="Background" Value="Black" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding OutgoingMessage}" Value="">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Opacity="0.25" Color="#FFDEA504" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
             <ui:SimpleStackPanel
                 Grid.Row="3"
                 Grid.Column="2"
@@ -222,7 +310,6 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Stretch"
                 Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-
                 <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
                 <Button
                     x:Name="RefreshLog"
@@ -230,8 +317,8 @@
                     MinHeight="40"
                     Margin="5,10,5,5"
                     HorizontalAlignment="Left"
-                    mvx:Bi.nd="Command RefreshNetMsgCommand"
-                    Content="Refresh Network Log"
+                    mvx:Bi.nd="Command RefreshUdpMsgCommand"
+                    Content="Refresh UDP Message Log"
                     Style="{StaticResource AccentButtonStyle}" />
                 <TextBlock
                     x:Name="LoadTimeTextBlock"
@@ -242,8 +329,8 @@
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="Number of Logs to Fetch"
-                    SelectedIndex="0"
-                    SelectedItem="{Binding NumberOfNetMsgToFetch}">
+                    SelectedIndex="1"
+                    SelectedItem="{Binding NumberOfProcLogsToFetch}">
                     <ComboBoxItem>20</ComboBoxItem>
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>100</ComboBoxItem>
@@ -258,25 +345,25 @@
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="GridLinesVisibility"
                     ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=GridLinesVisibility}" />
+                    SelectedItem="{Binding ElementName=ProcGrid, Path=GridLinesVisibility}" />
                 <ComboBox
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="ClipboardCopyMode"
                     ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=ClipboardCopyMode}" />
+                    SelectedItem="{Binding ElementName=ProcGrid, Path=ClipboardCopyMode}" />
                 <ComboBox
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="SelectionUnit"
                     ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=SelectionUnit}" />
+                    SelectedItem="{Binding ElementName=ProcGrid, Path=SelectionUnit}" />
                 <ComboBox
                     MinWidth="240"
                     Margin="5,10,5,5"
                     ui:ControlHelper.Header="SelectionMode"
                     ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=NetworkGrid, Path=SelectionMode}" />
+                    SelectedItem="{Binding ElementName=ProcGrid, Path=SelectionMode}" />
                 <TextBlock
                     Margin="5"
                     FontSize="14"
@@ -292,18 +379,7 @@
                     SnapsToDevicePixels="True"
                     Text="C:\ThreeByteIntermedia\PCController\Logs\network.db" />
             </ui:SimpleStackPanel>
-
-
         </Grid>
     </Border>
-
-
-
-
-
-
-
-
-
 </views:MvxWpfView>
 
