@@ -5,7 +5,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -45,7 +47,6 @@ namespace PCController.Core.ViewModels
             int listeningPort = pcNetworkListener.GetAppSettingsDataUdpPort();
             ListeningUDPPort = listeningPort.ToString();
             TimeSinceLastStartup = GetDateFromTimeSpan();
-            RemoteControlTimeSinceLastMessage = "";
             RemoteControlTimeStamp = "";
         }
 
@@ -61,7 +62,7 @@ namespace PCController.Core.ViewModels
 
         public string RemoteControlLastMessage { get; set; }
 
-        public string RemoteControlTimeSinceLastMessage { get; set; }
+        public TimeSpan RemoteControlTimeSinceLastMessage { get; set; } = new TimeSpan(0, 0, 0, 0);
 
         public IList<NetworkMessageModel> NetGridRows { get; set; }
 
@@ -153,31 +154,50 @@ namespace PCController.Core.ViewModels
 
         private void PCNetworkManagerOnMessage(object sender, NetworkMessagesEventArgs e)
         {
-            NetStopwatch.Start();
-            PCNetworkManager pc = new(e);
+            
+            NetWorkTimer(false);
+            Thread.Sleep(10);
+            NetWorkTimer(true);
 
+            PCNetworkManager pc = new(e);
             RemoteControlIP = e.RemoteIP;
             RemoteControlPort = e.RemotePort;
             RemoteControlTimeStamp = e.Timestamp;
             RemoteControlLastMessage = e.IncomingMessage;
-            string time = $"{NetStopwatch.ElapsedMilliseconds} ms";
-            RemoteControlTimeSinceLastMessage = time;
 
             RaisePropertyChanged(() => RemoteControlIP);
             RaisePropertyChanged(() => RemoteControlPort);
             RaisePropertyChanged(() => RemoteControlTimeStamp);
             RaisePropertyChanged(() => RemoteControlLastMessage);
-            RaisePropertyChanged(() => RemoteControlTimeSinceLastMessage);
 
-            NetStopwatch.Stop();
-            NetStopwatch.Reset();
+            Log.Info("Message from PC network shutdown controller {sender} {e}", sender, e);
         }
 
-        private async Task StartNetWorkTimer()
+        private void NetWorkTimer(bool run)
         {
-            do
+            DispatcherTimer timer = new (){Interval = TimeSpan.FromSeconds(1)};
+
+            if (run is true)
             {
-            } while (NetStopwatch.IsRunning);
+                timer.Tick += TimerOnTick;
+                timer.Start();
+            }
+            else
+            {
+                // stop the event handler to reset the property field
+                timer.Tick -= TimerOnTick;
+                timer.Stop();
+
+                RemoteControlTimeSinceLastMessage = timer.Interval;
+                RaisePropertyChanged(() => RemoteControlTimeSinceLastMessage);
+            }
+        }
+
+        private void TimerOnTick(object sender, EventArgs e)
+        {
+            TimeSpan timeTick = new TimeSpan(0, 0, 0, 1);
+            RemoteControlTimeSinceLastMessage = RemoteControlTimeSinceLastMessage.Add(timeTick);
+            RaisePropertyChanged(() => RemoteControlTimeSinceLastMessage);
         }
     }
 }
