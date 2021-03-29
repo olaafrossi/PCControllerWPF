@@ -27,7 +27,7 @@ namespace PCController.Core.ViewModels
     public sealed class WatchdogViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly object _processMonitorLock = new();
-        private readonly IProcessMonitor _procMonitor;
+        private IProcessMonitor _procMonitor;
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
@@ -45,17 +45,8 @@ namespace PCController.Core.ViewModels
             _stopwatch = new Stopwatch();
             GetProcLogs();
 
-
-            // get singleton and create event handlers
-            lock (_processMonitorLock)
-            {
-                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
-                _procMonitor.ProcessEvent += OnProcessEvent;
-                _procMonitor.ProcessExited += OnProcessExited;
-                _procMonitor.ResourceEvent += OnResourceEvent;
-                // Setup the binding and thread safety when msg's come in from _procMonitor
-                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
-            }
+            // start the proc mon
+            ResolveAndStartProcMon();
 
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
@@ -64,11 +55,24 @@ namespace PCController.Core.ViewModels
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
             ProcMonitorStoppedButtonStatus = true;
             ProcMonitorStartedButtonStatus = true;
-
             RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
             RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
         }
 
+        private void ResolveAndStartProcMon()
+        {
+            // get singleton and create event handlers
+            lock (_processMonitorLock)
+            {
+                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
+                _procMonitor.ProcessEvent += OnProcessEvent;
+                _procMonitor.ProcessExited += OnProcessExited;
+                _procMonitor.ResourceEvent += OnResourceEvent;
+
+                // Setup the binding and thread safety when msg's come in from _procMonitor
+                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
+            }
+        }
 
         public IMvxCommand RefreshProcLogsCommand { get; set; }
 
@@ -212,6 +216,7 @@ namespace PCController.Core.ViewModels
         private void OnProcessEvent(object? sender, ProcessEventArgs e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
+            ProcMonRealTimeCollection.Insert(0, "I think the process is frozen");
             RaisePropertyChanged(() => ProcMonRealTimeCollection);
         }
 
