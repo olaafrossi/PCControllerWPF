@@ -8,7 +8,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -18,9 +22,6 @@ using PCController.Core.Managers;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
 
 // ReSharper disable CheckNamespace
 // ReSharper disable once ArrangeModifiersOrder
@@ -30,13 +31,13 @@ namespace PCController.Core.ViewModels
     public sealed class WatchdogViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly object _processMonitorLock = new();
-        private IProcessMonitor _procMonitor;
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
+        private IProcessMonitor _procMonitor;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
-        private int index = 0;
-        private Random random = new Random();
+        private int index;
         private ObservableCollection<ObservablePoint> observableValues;
+        private readonly Random random = new();
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
@@ -51,6 +52,7 @@ namespace PCController.Core.ViewModels
             ReplaceItemCommand = new MvxCommand(ReplaceRandomItem);
             AddSeriesCommand = new MvxCommand(AddSeries);
             RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
+            //AddRandomCommand = new MvxCommand(RandomChart);
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -67,6 +69,7 @@ namespace PCController.Core.ViewModels
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
             ProcMonitorStoppedButtonStatus = true;
             ProcMonitorStartedButtonStatus = true;
+
             RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
             RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
         }
@@ -76,111 +79,7 @@ namespace PCController.Core.ViewModels
         public IMvxCommand ReplaceItemCommand { get; set; }
         public IMvxCommand AddSeriesCommand { get; set; }
         public IMvxCommand RemoveSeriesCommand { get; set; }
-
-
-        private void ResolveAndStartProcMon()
-        {
-            // get singleton and create event handlers
-            lock (_processMonitorLock)
-            {
-                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
-                _procMonitor.ProcessEvent += OnProcessEvent;
-                _procMonitor.ProcessExited += OnProcessExited;
-                _procMonitor.ResourceEvent += OnResourceEvent;
-
-                // Setup the binding and thread safety when msg's come in from _procMonitor
-                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
-            }
-        }
-
-        public void AddChart()
-        {
-            // using a collection that implements INotifyCollectionChanged as your series collection
-            // will allow the chart to update every time a series is added, removed, replaced or the whole list was cleared
-            // .Net already provides the System.Collections.ObjectModel.ObservableCollection class
-            Series = new ObservableCollection<ISeries>();
-
-            // using an INotifyCollectionChanged as your values collection
-            // will let the chart update every time a point is added, removed, replaced or the whole list was cleared
-            observableValues = new ObservableCollection<ObservablePoint>
-            {
-                // using object that implements INotifyPropertyChanged
-                // will allow the chart to update everytime a property in a point changes.
-
-                // LiveCharts already provides the ObservableValue class
-                // notice you can plot any type, but you must let LiveCharts know how to handle it
-                // for more info please see:
-                // https://github.com/beto-rodriguez/LiveCharts2/blob/master/samples/ViewModelsSamples/General/UserDefinedTypes/ViewModel.cs#L22
-
-                new ObservablePoint(index++, 2),
-                new ObservablePoint(index++, 5),
-                new ObservablePoint(index++, 4),
-                new ObservablePoint(index++, 5),
-                new ObservablePoint(index++, 2),
-                new ObservablePoint(index++, 6),
-                new ObservablePoint(index++, 6),
-                new ObservablePoint(index++, 6),
-                new ObservablePoint(index++, 4),
-                new ObservablePoint(index++, 2),
-                new ObservablePoint(index++, 3),
-                new ObservablePoint(index++, 8),
-                new ObservablePoint(index++, 3)
-            };
-
-            Series.Add(
-                new LineSeries<ObservablePoint> { Values = observableValues });
-
-            // in the following series notice that the type int does not implement INotifyPropertyChanged
-            // and our Series.Values collection is of type List<T>
-            // List<T> does not implement INotifyCollectionChanged
-            // this means the following series is not listening for changes.
-            //Series.Add(
-            //    new LineSeries<int> { Values = new List<int> { 2, 4, 6, 1, 7, -2 } });
-
-            AddSeries();
-        }
-
-        public void AddRandomItem()
-        {
-            // for this sample only 50 items are suported.
-            if (observableValues.Count > 50) return;
-
-            var randomValue = random.Next(1, 10);
-            observableValues.Add(new ObservablePoint(index++, randomValue));
-        }
-
-        public void RemoveFirstItem()
-        {
-            if (observableValues.Count < 2) return;
-
-            observableValues.RemoveAt(0);
-        }
-
-        public void ReplaceRandomItem()
-        {
-            var randomValue = random.Next(1, 10);
-            var randomIndex = random.Next(0, observableValues.Count - 1);
-            observableValues[randomIndex] = new ObservablePoint(observableValues[randomIndex].X, randomValue);
-        }
-
-        public void AddSeries()
-        {
-            //  for this sample only 5 series are supported.
-            if (Series.Count == 5) return;
-
-            Series.Add(
-                new LineSeries<int>
-                {
-                    Values = new List<int> { random.Next(0, 10), random.Next(0, 10), random.Next(0, 10) }
-                });
-        }
-
-        public void RemoveLastSeries()
-        {
-            if (Series.Count == 1) return;
-
-            Series.RemoveAt(Series.Count - 1);
-        }
+        public IMvxCommand AddRandomCommand { get; set; }
 
         public IMvxCommand RefreshProcLogsCommand { get; set; }
 
@@ -217,7 +116,98 @@ namespace PCController.Core.ViewModels
         public int ParentNo => _param.ParentNo;
         public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
 
+        public int ProcessThreadCount { get; set; }
+
+        public void AddChart()
+        {
+            // using a collection that implements INotifyCollectionChanged as your series collection
+            // will allow the chart to update every time a series is added, removed, replaced or the whole list was cleared
+            // .Net already provides the System.Collections.ObjectModel.ObservableCollection class
+            Series = new ObservableCollection<ISeries>();
+
+            // using an INotifyCollectionChanged as your values collection
+            // will let the chart update every time a point is added, removed, replaced or the whole list was cleared
+            observableValues = new ObservableCollection<ObservablePoint> {
+                // using object that implements INotifyPropertyChanged
+                // will allow the chart to update everytime a property in a point changes.
+
+                // LiveCharts already provides the ObservableValue class
+                // notice you can plot any type, but you must let LiveCharts know how to handle it
+                // for more info please see:
+                // https://github.com/beto-rodriguez/LiveCharts2/blob/master/samples/ViewModelsSamples/General/UserDefinedTypes/ViewModel.cs#L22
+
+                new(index++, 2),
+                new(index++, 5),
+                new(index++, 4),
+                new(index++, 5),
+                new(index++, 2),
+                new(index++, 6),
+                new(index++, 6),
+                new(index++, 6),
+                new(index++, 4),
+                new(index++, 2),
+                new(index++, 3),
+                new(index++, 8),
+                new(index++, 3)
+            };
+
+            Series.Add(
+                new LineSeries<ObservablePoint> {Values = observableValues});
+
+            // in the following series notice that the type int does not implement INotifyPropertyChanged
+            // and our Series.Values collection is of type List<T>
+            // List<T> does not implement INotifyCollectionChanged
+            // this means the following series is not listening for changes.
+            //Series.Add(
+            //    new LineSeries<int> { Values = new List<int> { 2, 4, 6, 1, 7, -2 } });
+
+            AddSeries();
+        }
+
+        public void AddRandomItem()
+        {
+            // for this sample only 50 items are suported.
+            if (observableValues.Count > 50) return;
+
+            var randomValue = random.Next(1, 10);
+
+            int haappy = ProcessThreadCount;
+
+            observableValues.Add(new ObservablePoint(index++, haappy));
+        }
+
+        public void AddSeries()
+        {
+            //  for this sample only 5 series are supported.
+            if (Series.Count == 5) return;
+
+            Series.Add(
+                new LineSeries<int> {Values = new List<int> {1, 2, 3}});
+        }
+
         public override void Prepare(WindowChildParam param) => _param = param;
+
+        public void RemoveFirstItem()
+        {
+            if (observableValues.Count < 2) return;
+
+            observableValues.RemoveAt(0);
+        }
+
+        public void RemoveLastSeries()
+        {
+            if (Series.Count == 1) return;
+
+            Series.RemoveAt(Series.Count - 1);
+        }
+
+        public void ReplaceRandomItem()
+        {
+            var randomValue = random.Next(1, 10);
+            var randomIndex = random.Next(0, observableValues.Count - 1);
+
+            observableValues[randomIndex] = new ObservablePoint(observableValues[randomIndex].X, randomValue);
+        }
 
         public void WriteErrorDataToDataBase(string error)
         {
@@ -363,8 +353,33 @@ namespace PCController.Core.ViewModels
         private void OnResourceEvent(object? sender, ResourceSnapshot e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
-            RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            ProcessThreadCount = e.ThreadCount;
+
             WriteProcDataToDataBase(e);
+
+            RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            RaisePropertyChanged(() => ProcessThreadCount);
+            RaisePropertyChanged(() => Series);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                AddRandomItem();
+            });
+        }
+
+        private void ResolveAndStartProcMon()
+        {
+            // get singleton and create event handlers
+            lock (_processMonitorLock)
+            {
+                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
+                _procMonitor.ProcessEvent += OnProcessEvent;
+                _procMonitor.ProcessExited += OnProcessExited;
+                _procMonitor.ResourceEvent += OnResourceEvent;
+
+                // Setup the binding and thread safety when msg's come in from _procMonitor
+                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
+            }
         }
 
         private void StartProcMonitor()
