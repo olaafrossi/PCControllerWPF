@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="MvvmCross.Platforms.Wpf" Version="7.1.2" />
-    <PackageReference Include="ModernWpfUI" Version="0.9.3" />
+    <PackageReference Include="ModernWpfUI" Version="0.9.4" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
     <PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
     <PackageReference Include="Serilog.Enrichers.Context" Version="4.2.0" />
@@ -25,10 +25,14 @@
     <PackageReference Include="OSVersionHelper" Version="1.1.24" />
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.17.1" />
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" Version="0.1.0-preview1" />
+    <PackageReference Include="SkiaSharp" Version="2.80.2" />
+    <PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.2" />
 
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LiveCharts2\src\LiveChartsCore\LiveChartsCore.csproj" />
+    <ProjectReference Include="..\LiveCharts2\src\skiasharp\LiveChartsCore.SkiaSharp.WPF\LiveChartsCore.SkiaSharpView.WPF.csproj" />
     <ProjectReference Include="..\PCController.Core\PCController.Core.csproj" />
   </ItemGroup>
 

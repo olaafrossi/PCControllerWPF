@@ -18,6 +18,9 @@ using PCController.Core.Managers;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 
 // ReSharper disable CheckNamespace
 // ReSharper disable once ArrangeModifiersOrder
@@ -31,6 +34,9 @@ namespace PCController.Core.ViewModels
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
+        private int index = 0;
+        private Random random = new Random();
+        private ObservableCollection<ObservablePoint> observableValues;
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
@@ -40,6 +46,11 @@ namespace PCController.Core.ViewModels
             RefreshProcLogsCommand = new MvxCommand(GetProcLogs);
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
+            AddItemCommand = new MvxCommand(AddRandomItem);
+            RemoveItemCommand = new MvxCommand(RemoveFirstItem);
+            ReplaceItemCommand = new MvxCommand(ReplaceRandomItem);
+            AddSeriesCommand = new MvxCommand(AddSeries);
+            RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -47,6 +58,7 @@ namespace PCController.Core.ViewModels
 
             // start the proc mon
             ResolveAndStartProcMon();
+            AddChart();
 
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
@@ -58,6 +70,13 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
             RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
         }
+
+        public IMvxCommand AddItemCommand { get; set; }
+        public IMvxCommand RemoveItemCommand { get; set; }
+        public IMvxCommand ReplaceItemCommand { get; set; }
+        public IMvxCommand AddSeriesCommand { get; set; }
+        public IMvxCommand RemoveSeriesCommand { get; set; }
+
 
         private void ResolveAndStartProcMon()
         {
@@ -74,6 +93,95 @@ namespace PCController.Core.ViewModels
             }
         }
 
+        public void AddChart()
+        {
+            // using a collection that implements INotifyCollectionChanged as your series collection
+            // will allow the chart to update every time a series is added, removed, replaced or the whole list was cleared
+            // .Net already provides the System.Collections.ObjectModel.ObservableCollection class
+            Series = new ObservableCollection<ISeries>();
+
+            // using an INotifyCollectionChanged as your values collection
+            // will let the chart update every time a point is added, removed, replaced or the whole list was cleared
+            observableValues = new ObservableCollection<ObservablePoint>
+            {
+                // using object that implements INotifyPropertyChanged
+                // will allow the chart to update everytime a property in a point changes.
+
+                // LiveCharts already provides the ObservableValue class
+                // notice you can plot any type, but you must let LiveCharts know how to handle it
+                // for more info please see:
+                // https://github.com/beto-rodriguez/LiveCharts2/blob/master/samples/ViewModelsSamples/General/UserDefinedTypes/ViewModel.cs#L22
+
+                new ObservablePoint(index++, 2),
+                new ObservablePoint(index++, 5),
+                new ObservablePoint(index++, 4),
+                new ObservablePoint(index++, 5),
+                new ObservablePoint(index++, 2),
+                new ObservablePoint(index++, 6),
+                new ObservablePoint(index++, 6),
+                new ObservablePoint(index++, 6),
+                new ObservablePoint(index++, 4),
+                new ObservablePoint(index++, 2),
+                new ObservablePoint(index++, 3),
+                new ObservablePoint(index++, 8),
+                new ObservablePoint(index++, 3)
+            };
+
+            Series.Add(
+                new LineSeries<ObservablePoint> { Values = observableValues });
+
+            // in the following series notice that the type int does not implement INotifyPropertyChanged
+            // and our Series.Values collection is of type List<T>
+            // List<T> does not implement INotifyCollectionChanged
+            // this means the following series is not listening for changes.
+            //Series.Add(
+            //    new LineSeries<int> { Values = new List<int> { 2, 4, 6, 1, 7, -2 } });
+
+            AddSeries();
+        }
+
+        public void AddRandomItem()
+        {
+            // for this sample only 50 items are suported.
+            if (observableValues.Count > 50) return;
+
+            var randomValue = random.Next(1, 10);
+            observableValues.Add(new ObservablePoint(index++, randomValue));
+        }
+
+        public void RemoveFirstItem()
+        {
+            if (observableValues.Count < 2) return;
+
+            observableValues.RemoveAt(0);
+        }
+
+        public void ReplaceRandomItem()
+        {
+            var randomValue = random.Next(1, 10);
+            var randomIndex = random.Next(0, observableValues.Count - 1);
+            observableValues[randomIndex] = new ObservablePoint(observableValues[randomIndex].X, randomValue);
+        }
+
+        public void AddSeries()
+        {
+            //  for this sample only 5 series are supported.
+            if (Series.Count == 5) return;
+
+            Series.Add(
+                new LineSeries<int>
+                {
+                    Values = new List<int> { random.Next(0, 10), random.Next(0, 10), random.Next(0, 10) }
+                });
+        }
+
+        public void RemoveLastSeries()
+        {
+            if (Series.Count == 1) return;
+
+            Series.RemoveAt(Series.Count - 1);
+        }
+
         public IMvxCommand RefreshProcLogsCommand { get; set; }
 
         public IMvxCommand StopProcMonitorCommand { get; set; }
@@ -83,6 +191,8 @@ namespace PCController.Core.ViewModels
         public bool ProcMonitorStoppedButtonStatus { get; set; }
 
         public bool ProcMonitorStartedButtonStatus { get; set; }
+
+        public ObservableCollection<ISeries> Series { get; set; }
 
         public string ProcessName { get; set; }
 

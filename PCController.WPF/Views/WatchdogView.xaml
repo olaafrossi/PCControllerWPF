@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PCController.WPF.Views"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
     xmlns:ui="http://schemas.modernwpf.com/2019"
@@ -15,6 +16,10 @@
     ui:ThemeManager.RequestedTheme="Dark"
     SnapsToDevicePixels="True"
     mc:Ignorable="d">
+
+    <!--<views:MvxWpfView.DataContext>
+        <vm:WatchdogViewModel/>
+    </views:MvxWpfView.DataContext>-->
 
     <Border BorderBrush="{DynamicResource SystemAccentColorDark1Brush}" BorderThickness="2">
         <Grid
@@ -28,6 +33,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -221,8 +228,42 @@
                     </Style>
                 </Grid.Resources>
             </Grid>
+            <Grid
+                x:Name="Graphs"
+                Grid.Row="3"
+                Grid.Column="0"
+                MinWidth="500"
+                MinHeight="500"
+                Margin="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="500" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="500" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    HorizontalAlignment="Left"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Orientation="Horizontal">
+                    <Button Margin="5" mvx:Bi.nd="Command AddItemCommand">Add item</Button>
+                    <Button Margin="5" mvx:Bi.nd="Command RemoveItemCommand">Remove item</Button>
+                    <Button Margin="5" mvx:Bi.nd="Command ReplaceItemCommand">Replace item</Button>
+                    <Button Margin="5" mvx:Bi.nd="Command AddSeriesCommand">Add Series</Button>
+                    <Button Margin="5" mvx:Bi.nd="Command RemoveSeriesCommand">Remove Series</Button>
+                    <Button Margin="6">Constant changes</Button>
+                </StackPanel>
+                <lvc:CartesianChart
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Series="{Binding Series}" />
+
+            </Grid>
             <TextBlock
-                Grid.Row="2"
+                Grid.Row="5"
                 Grid.Column="0"
                 Margin="5"
                 FontSize="24"
@@ -231,7 +272,7 @@
                 Text="Process Logs (All Logs from Database)" />
             <DataGrid
                 x:Name="ProcGrid"
-                Grid.Row="3"
+                Grid.Row="6"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 MinWidth="400"
@@ -256,7 +297,7 @@
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                 VirtualizingPanel.VirtualizationMode="Standard" />
             <ui:SimpleStackPanel
-                Grid.Row="3"
+                Grid.Row="5"
                 Grid.Column="2"
                 Width="250"
                 Margin="0,5,0,5"

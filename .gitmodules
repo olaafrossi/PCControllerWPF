@@ -1,3 +1,6 @@
 [submodule "ThreeByteLibrary"]
 	path = ThreeByteLibrary
 	url = https://github.com/olaafrossi/ThreeByteLibrary.git
+[submodule "LiveCharts2"]
+	path = LiveCharts2
+	url = https://github.com/beto-rodriguez/LiveCharts2.git
