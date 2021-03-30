@@ -31,18 +31,5 @@ namespace PCController.WPF.Views
                 StackNavigation = false
             };
         }
-
-        private async void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var vm = (WatchdogViewModel) DataContext;
-            isStreaming = isStreaming == null ? true : !isStreaming;
-
-            while (isStreaming.Value)
-            {
-                vm.RemoveFirstItem();
-                vm.AddRandomItem();
-                await Task.Delay(1000);
-            }
-        }
     }
 }

@@ -35,9 +35,13 @@ namespace PCController.Core.ViewModels
         private WindowChildParam _param;
         private IProcessMonitor _procMonitor;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
+
+        // chart fields
         private int index;
-        private ObservableCollection<ObservablePoint> observableValues;
-        private readonly Random random = new();
+        private ObservableCollection<ObservablePoint> _threadCount;
+        private ObservableCollection<ObservablePoint> _peakPagedMemorySize;
+        private ObservableCollection<ObservablePoint> _peakWorkingSet;
+        private ObservableCollection<ObservablePoint> _privateMemorySize;
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
@@ -47,12 +51,11 @@ namespace PCController.Core.ViewModels
             RefreshProcLogsCommand = new MvxCommand(GetProcLogs);
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
-            AddItemCommand = new MvxCommand(AddRandomItem);
-            RemoveItemCommand = new MvxCommand(RemoveFirstItem);
-            ReplaceItemCommand = new MvxCommand(ReplaceRandomItem);
-            AddSeriesCommand = new MvxCommand(AddSeries);
+            AddItemCommand = new MvxCommand(AddThreadToChart);
+            RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
+            //AddSeriesCommand = new MvxCommand(AddSeries);
             RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
-            //AddRandomCommand = new MvxCommand(RandomChart);
+
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -60,7 +63,7 @@ namespace PCController.Core.ViewModels
 
             // start the proc mon
             ResolveAndStartProcMon();
-            AddChart();
+
 
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
@@ -69,17 +72,22 @@ namespace PCController.Core.ViewModels
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
             ProcMonitorStoppedButtonStatus = true;
             ProcMonitorStartedButtonStatus = true;
+            AddChart();
+            AddMemoryChart();
+
+
 
             RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
             RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
         }
 
         public IMvxCommand AddItemCommand { get; set; }
+
         public IMvxCommand RemoveItemCommand { get; set; }
-        public IMvxCommand ReplaceItemCommand { get; set; }
+
         public IMvxCommand AddSeriesCommand { get; set; }
+
         public IMvxCommand RemoveSeriesCommand { get; set; }
-        public IMvxCommand AddRandomCommand { get; set; }
 
         public IMvxCommand RefreshProcLogsCommand { get; set; }
 
@@ -91,7 +99,9 @@ namespace PCController.Core.ViewModels
 
         public bool ProcMonitorStartedButtonStatus { get; set; }
 
-        public ObservableCollection<ISeries> Series { get; set; }
+        public ObservableCollection<ISeries> ThreadSeries { get; set; }
+
+        public ObservableCollection<ISeries> MemorySeries { get; set; }
 
         public string ProcessName { get; set; }
 
@@ -118,96 +128,97 @@ namespace PCController.Core.ViewModels
 
         public int ProcessThreadCount { get; set; }
 
+        public long PeakPagedMemorySize { get; set; }
+
+        public long PeakWorkingSet { get; set; }
+
+        public long PrivateMemorySize { get; set; }
+
         public void AddChart()
         {
-            // using a collection that implements INotifyCollectionChanged as your series collection
-            // will allow the chart to update every time a series is added, removed, replaced or the whole list was cleared
-            // .Net already provides the System.Collections.ObjectModel.ObservableCollection class
-            Series = new ObservableCollection<ISeries>();
 
-            // using an INotifyCollectionChanged as your values collection
-            // will let the chart update every time a point is added, removed, replaced or the whole list was cleared
-            observableValues = new ObservableCollection<ObservablePoint> {
-                // using object that implements INotifyPropertyChanged
-                // will allow the chart to update everytime a property in a point changes.
+            ThreadSeries = new ObservableCollection<ISeries>();
 
-                // LiveCharts already provides the ObservableValue class
-                // notice you can plot any type, but you must let LiveCharts know how to handle it
-                // for more info please see:
-                // https://github.com/beto-rodriguez/LiveCharts2/blob/master/samples/ViewModelsSamples/General/UserDefinedTypes/ViewModel.cs#L22
-
-                new(index++, 2),
-                new(index++, 5),
-                new(index++, 4),
-                new(index++, 5),
-                new(index++, 2),
-                new(index++, 6),
-                new(index++, 6),
-                new(index++, 6),
-                new(index++, 4),
-                new(index++, 2),
-                new(index++, 3),
-                new(index++, 8),
-                new(index++, 3)
-            };
-
-            Series.Add(
-                new LineSeries<ObservablePoint> {Values = observableValues});
-
-            // in the following series notice that the type int does not implement INotifyPropertyChanged
-            // and our Series.Values collection is of type List<T>
-            // List<T> does not implement INotifyCollectionChanged
-            // this means the following series is not listening for changes.
-            //Series.Add(
-            //    new LineSeries<int> { Values = new List<int> { 2, 4, 6, 1, 7, -2 } });
-
+            _threadCount = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
             AddSeries();
+
+
         }
 
-        public void AddRandomItem()
+        public void AddMemoryChart()
         {
-            // for this sample only 50 items are suported.
-            if (observableValues.Count > 50) return;
 
-            var randomValue = random.Next(1, 10);
+            MemorySeries = new ObservableCollection<ISeries>();
 
-            int haappy = ProcessThreadCount;
+            _peakPagedMemorySize = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakPagedMemorySize });
 
-            observableValues.Add(new ObservablePoint(index++, haappy));
+            _peakWorkingSet = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakWorkingSet });
+
+            _privateMemorySize = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _privateMemorySize });
+            
+            AddMemorySeries();
+
+
+        }
+
+        public void AddThreadToChart()
+        {
+            if (_threadCount.Count > 50)
+            {
+                RemoveThreadFromChart();
+            }
+            else
+            {
+                _threadCount.Add(new ObservablePoint(index++, ProcessThreadCount));
+            }
+        }
+
+        public void AddMemToChart()
+        {
+
+            _peakPagedMemorySize.Add(new ObservablePoint(index++, PeakPagedMemorySize));
+            _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
+            _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
+
         }
 
         public void AddSeries()
         {
-            //  for this sample only 5 series are supported.
-            if (Series.Count == 5) return;
-
-            Series.Add(
-                new LineSeries<int> {Values = new List<int> {1, 2, 3}});
+            if (ThreadSeries.Count == 5)
+            {
+                return;
+            }
+            ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0 } });
         }
 
-        public override void Prepare(WindowChildParam param) => _param = param;
-
-        public void RemoveFirstItem()
+        public void AddMemorySeries()
         {
-            if (observableValues.Count < 2) return;
+            if (MemorySeries.Count == 5)
+            {
+                return;
+            }
+            MemorySeries.Add(new LineSeries<long> { Values = new List<long> { 0 } });
+        }
 
-            observableValues.RemoveAt(0);
+        public void RemoveThreadFromChart()
+        {
+            if (_threadCount.Count < 2) return;
+
+            _threadCount.RemoveAt(0);
         }
 
         public void RemoveLastSeries()
         {
-            if (Series.Count == 1) return;
+            if (ThreadSeries.Count == 1) return;
 
-            Series.RemoveAt(Series.Count - 1);
+            ThreadSeries.RemoveAt(ThreadSeries.Count - 1);
         }
 
-        public void ReplaceRandomItem()
-        {
-            var randomValue = random.Next(1, 10);
-            var randomIndex = random.Next(0, observableValues.Count - 1);
-
-            observableValues[randomIndex] = new ObservablePoint(observableValues[randomIndex].X, randomValue);
-        }
+        public override void Prepare(WindowChildParam param) => _param = param;
 
         public void WriteErrorDataToDataBase(string error)
         {
@@ -355,15 +366,28 @@ namespace PCController.Core.ViewModels
             ProcMonRealTimeCollection.Insert(0, e.ToString());
             ProcessThreadCount = e.ThreadCount;
 
+            long toMegaBytes = 1024;
+
+            PeakPagedMemorySize = e.PeakPagedMemorySize / toMegaBytes /toMegaBytes;
+            PrivateMemorySize = e.PrivateMemorySize / toMegaBytes / toMegaBytes;
+            PeakWorkingSet = e.PeakWorkingSet / toMegaBytes / toMegaBytes;
+
+
+
             WriteProcDataToDataBase(e);
 
             RaisePropertyChanged(() => ProcMonRealTimeCollection);
             RaisePropertyChanged(() => ProcessThreadCount);
-            RaisePropertyChanged(() => Series);
+            RaisePropertyChanged(() => PeakPagedMemorySize);
+            RaisePropertyChanged(() => PrivateMemorySize);
+            RaisePropertyChanged(() => PeakWorkingSet);
+            RaisePropertyChanged(() => ThreadSeries);
+            RaisePropertyChanged(() => MemorySeries);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                AddRandomItem();
+                AddThreadToChart();
+                AddMemToChart();
             });
         }
 
