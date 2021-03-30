@@ -263,16 +263,9 @@
                     MaxHeight="550"
                     Margin="5"
                     VerticalAlignment="Stretch"
-                    Padding="0"
                     Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
                     BorderBrush="Orange"
                     BorderThickness="4"
-                    LegendFontStretch="Normal"
-                    LegendPosition="Bottom"
-                    LegendOrientation="Auto"
-                    
-                    LegendFontStyle="Normal"
-                    LegendTextColor="{StaticResource {x:Static SystemColors.InfoTextBrushKey}}"
                     Series="{Binding Series}"
                     UseLayoutRounding="True" />
 
