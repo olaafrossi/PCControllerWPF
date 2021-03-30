@@ -37,7 +37,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -120,7 +119,7 @@
                     Grid.Column="1"
                     MinWidth="260"
                     MaxWidth="300"
-                    Margin="0,5,2,5"
+                    Margin="0,5,0,5"
                     HorizontalAlignment="Left"
                     Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
                     <TextBox
@@ -184,7 +183,7 @@
                     Height="250"
                     MinWidth="345"
                     MaxWidth="350"
-                    Margin="0,5,2,5"
+                    Margin="0,5,0,5"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
@@ -193,7 +192,6 @@
                         FontSize="20"
                         Foreground="#CCF7FFFF"
                         Text="Some Message Here" />
-
                 </ui:SimpleStackPanel>
                 <ui:SimpleStackPanel
                     Grid.Row="1"
@@ -230,21 +228,20 @@
             </Grid>
             <Grid
                 x:Name="Graphs"
-                Grid.Row="3"
+                Grid.Row="2"
                 Grid.Column="0"
-                MinWidth="500"
-                MinHeight="500"
+                Grid.ColumnSpan="3"
                 Margin="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="500" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="500" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <StackPanel
+                <!--<StackPanel
                     Grid.Row="0"
                     Grid.Column="0"
                     HorizontalAlignment="Left"
@@ -253,45 +250,63 @@
                     <Button Margin="5" mvx:Bi.nd="Command RemoveItemCommand">Remove item</Button>
                     <Button Margin="5" mvx:Bi.nd="Command AddSeriesCommand">Add ThreadSeries</Button>
                     <Button Margin="5" mvx:Bi.nd="Command RemoveSeriesCommand">Remove ThreadSeries</Button>
-                </StackPanel>
+                </StackPanel>-->
+                <Rectangle
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Fill="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
+                    Stroke="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="5"
+                    FontSize="18"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="Threads" />
                 <lvc:CartesianChart
                     Grid.Row="1"
                     Grid.Column="0"
-                    MaxWidth="650"
-                    MaxHeight="550"
+                    Width="650"
+                    Height="550"
                     Margin="5"
-                    VerticalAlignment="Stretch"
-                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
-                    BorderBrush="Orange"
-                    BorderThickness="4"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
                     Series="{Binding ThreadSeries}"
                     UseLayoutRounding="True" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="-200,5,5,5"
+                    FontSize="18"
+                    FontWeight="Normal"
+                    Foreground="#FFDEA504"
+                    Text="Memory" />
                 <lvc:CartesianChart
                     Grid.Row="1"
                     Grid.Column="1"
-                    MaxWidth="650"
-                    MaxHeight="550"
-                    Margin="5"
-                    VerticalAlignment="Stretch"
-                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
-                    BorderBrush="Orange"
-                    BorderThickness="4"
+                    Width="650"
+                    Height="550"
+                    Margin="-200,5,5,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
                     Series="{Binding MemorySeries}"
                     UseLayoutRounding="True" />
-
-
             </Grid>
             <TextBlock
-                Grid.Row="5"
+                Grid.Row="3"
                 Grid.Column="0"
                 Margin="5"
+                VerticalAlignment="Top"
                 FontSize="24"
                 FontWeight="Normal"
                 Foreground="#FFDEA504"
                 Text="Process Logs (All Logs from Database)" />
             <DataGrid
                 x:Name="ProcGrid"
-                Grid.Row="6"
+                Grid.Row="4"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 MinWidth="400"

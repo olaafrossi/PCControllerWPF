@@ -167,7 +167,7 @@ namespace PCController.Core.ViewModels
 
         public void AddThreadToChart()
         {
-            if (_threadCount.Count > 50)
+            if (_threadCount.Count > 120)
             {
                 RemoveThreadFromChart();
             }
@@ -180,9 +180,16 @@ namespace PCController.Core.ViewModels
         public void AddMemToChart()
         {
 
-            _peakPagedMemorySize.Add(new ObservablePoint(index++, PeakPagedMemorySize));
-            _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
-            _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
+            if (_peakPagedMemorySize.Count > 120)
+            {
+                RemoveMemFromChart();
+            }
+            else
+            {
+                _peakPagedMemorySize.Add(new ObservablePoint(index++, PeakPagedMemorySize));
+                _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
+                _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
+            }
 
         }
 
@@ -209,6 +216,13 @@ namespace PCController.Core.ViewModels
             if (_threadCount.Count < 2) return;
 
             _threadCount.RemoveAt(0);
+        }
+
+        public void RemoveMemFromChart()
+        {
+            if (_peakPagedMemorySize.Count < 2) return;
+
+            _peakPagedMemorySize.RemoveAt(0);
         }
 
         public void RemoveLastSeries()
