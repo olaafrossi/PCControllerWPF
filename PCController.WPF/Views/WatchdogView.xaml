@@ -276,6 +276,9 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     Series="{Binding ThreadSeries}"
+                    TooltipFindingStrategy="CompareOnlyX"
+                    TooltipFontSize="12"
+                    TooltipPosition="Center"
                     UseLayoutRounding="True" />
                 <TextBlock
                     Grid.Row="0"
@@ -288,12 +291,16 @@
                 <lvc:CartesianChart
                     Grid.Row="1"
                     Grid.Column="1"
+                    Grid.ColumnSpan="1"
                     Width="650"
                     Height="550"
                     Margin="-180,5,5,5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     Series="{Binding MemorySeries}"
+                    TooltipFindingStrategy="CompareOnlyX"
+                    TooltipFontSize="12"
+                    TooltipPosition="Center"
                     UseLayoutRounding="True" />
             </Grid>
             <TextBlock
