@@ -303,7 +303,12 @@
                         UseLayoutRounding="True"
                         VerticalScrollBarVisibility="Visible"
                         VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                        VirtualizingPanel.VirtualizationMode="Standard" />
+                        VirtualizingPanel.VirtualizationMode="Standard">
+                        <DataGrid.AlternatingRowBackground>
+                        <SolidColorBrush Opacity="0.4" Color="DimGray" />
+                        </DataGrid.AlternatingRowBackground>
+                    </DataGrid>
+
 
                     <ui:SimpleStackPanel
                         Grid.Row="0"
