@@ -35,6 +35,7 @@ namespace PCController.Core.ViewModels
         private WindowChildParam _param;
         private IProcessMonitor _procMonitor;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
+        private int _writeCountToDb = 0;
 
         // chart fields
         private int index;
@@ -236,7 +237,7 @@ namespace PCController.Core.ViewModels
 
         public void WriteErrorDataToDataBase(string error)
         {
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
             procData.Timestamp = DateTime.Now;
             procData.Message = error;
@@ -245,7 +246,7 @@ namespace PCController.Core.ViewModels
 
         public void WriteProcDataToDataBase(ResourceSnapshot snap)
         {
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
 
             procData.PeakPagedMemorySize = snap.PeakPagedMemorySize;
@@ -289,7 +290,7 @@ namespace PCController.Core.ViewModels
         {
             _stopwatch.Start();
             
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
             ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
             
@@ -356,9 +357,13 @@ namespace PCController.Core.ViewModels
             PrivateMemorySize = e.PrivateMemorySize / toMegaBytes / toMegaBytes;
             PeakWorkingSet = e.PeakWorkingSet / toMegaBytes / toMegaBytes;
 
+            _writeCountToDb = _writeCountToDb + 1;
 
-
-            WriteProcDataToDataBase(e);
+            if (_writeCountToDb is >= 60)
+            {
+                WriteProcDataToDataBase(e);
+                _writeCountToDb = 0;
+            }
 
             RaisePropertyChanged(() => ProcMonRealTimeCollection);
             RaisePropertyChanged(() => ProcessThreadCount);

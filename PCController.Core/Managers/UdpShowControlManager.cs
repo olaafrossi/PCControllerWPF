@@ -87,14 +87,14 @@ namespace PCController.Core.Managers
             IncomingMessage = messageFromController;
             WriteUDPDataToDataBase(string.Empty, false);
             IncomingMessage = string.Empty; // clear the prop
-            UDPDataReceived.Invoke(this, e);
+            UDPDataReceived?.Invoke(this, e);
         }
 
         public event EventHandler UDPDataReceived;
 
         public void WriteUDPDataToDataBase(string frameToSend, bool sentTypeMessage)
         {
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             UdpSenderModel udpFrame = new();
             string incomingMessage = IncomingMessage;
 

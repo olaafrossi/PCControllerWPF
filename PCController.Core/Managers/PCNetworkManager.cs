@@ -16,7 +16,7 @@ namespace PCController.Core.Managers
 
         public PCNetworkManager(NetworkMessagesEventArgs incomingMsg)
         {
-            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             NetworkMessageModel netMsg = new NetworkMessageModel();
 
             if (incomingMsg.IncomingMessage is null)
