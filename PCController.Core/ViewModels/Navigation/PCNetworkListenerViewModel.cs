@@ -32,11 +32,11 @@ namespace PCController.Core.ViewModels
             Log.Info("PCNetworkListenerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             // Setup UI Commands
-            RefreshNetMsgCommand = new MvxCommand(GetNetLogs);
+            RefreshNetMsgCommand = new MvxCommand(GetLogsFromManager);
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
-            GetNetLogs();
+            GetLogsFromManager();
 
             // get singleton and create event handler
             IPcNetworkListener pcNetworkListener = Mvx.IoCProvider.Resolve<IPcNetworkListener>();
@@ -98,53 +98,23 @@ namespace PCController.Core.ViewModels
             return DateTime.Now.Subtract(TimeSpan.FromMilliseconds(tickCountMs));
         }
 
-        private void GetNetLogs()
+        public void GetLogsFromManager()
         {
             _stopwatch.Start();
+
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-            int numOfMsgs = 20;
+            ProcMonitorModel procData = new();
+            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
 
-            try
-            {
-                RaisePropertyChanged(() => NumberOfNetMsgToFetch);
-                if (NumberOfNetMsgToFetch is null)
-                {
-                    numOfMsgs = 20;
-                }
-                else if (NumberOfNetMsgToFetch.Contains("All"))
-                {
-                    // All
-                    numOfMsgs = 100000000;
-                }
-                else if (NumberOfNetMsgToFetch.Length == 40)
-                {
-                    // 20, 50
-                    string logComboBoxSelected = NumberOfNetMsgToFetch.Substring(38, 2);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfNetMsgToFetch.Length == 41)
-                {
-                    // hundred
-                    string logComboBoxSelected = NumberOfNetMsgToFetch.Substring(38, 3);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfNetMsgToFetch.Length == 42)
-                {
-                    // thousand
-                    string logComboBoxSelected = NumberOfNetMsgToFetch.Substring(38, 4);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-            }
-            catch (Exception e)
-            {
-                Serilog.Log.Logger.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
-            }
+            int numLogs = parser.GetLogs(NumberOfNetMsgToFetch);
 
-            Log.Info("Getting Data Logs{numOfMsgs}", numOfMsgs);
-            IList<NetworkMessageModel> rows = sql.GetSomeNetData(numOfMsgs);
+            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            IList<NetworkMessageModel> rows = sql.GetSomeNetData(numLogs);
+
             NetGridRows = rows;
 
             _stopwatch.Stop();
+
             string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => NetGridRows);

@@ -36,7 +36,7 @@ namespace PCController.Core.ViewModels
             Log.Info("SCSTesterUDPViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
             
             // Setup UI Commands
-            RefreshUdpMsgCommand = new MvxCommand(GetUdpLogs);
+            RefreshUdpMsgCommand = new MvxCommand(GetLogsFromManager);
             SendUdpCommand = new MvxCommand(SendUDPMessage);
             OpenUdpCommand = new MvxCommand(CreateUDPAsyncManager);
             CloseUdpCommand = new MvxCommand(DisposeUDPAsyncManager);
@@ -45,7 +45,7 @@ namespace PCController.Core.ViewModels
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
-            GetUdpLogs();
+            GetLogsFromManager();
 
             // set initial UI Fields
             IPAddress = Settings.Default.AsyncUdpIPAddress;
@@ -266,53 +266,24 @@ namespace PCController.Core.ViewModels
             }
         }
 
-        private void GetUdpLogs()
+        public void GetLogsFromManager()
         {
             _stopwatch.Start();
+
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-            int numOfMsgs = 20;
+            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
 
-            try
-            {
-                RaisePropertyChanged(() => NumberOfUdpMsgToFetch);
-                if (NumberOfUdpMsgToFetch is null)
-                {
-                    numOfMsgs = 20;
-                }
-                else if (NumberOfUdpMsgToFetch.Contains("All"))
-                {
-                    // All
-                    numOfMsgs = 100000000;
-                }
-                else if (NumberOfUdpMsgToFetch.Length == 40)
-                {
-                    // 20, 50
-                    string logComboBoxSelected = NumberOfUdpMsgToFetch.Substring(38, 2);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfUdpMsgToFetch.Length == 41)
-                {
-                    // hundred
-                    string logComboBoxSelected = NumberOfUdpMsgToFetch.Substring(38, 3);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfUdpMsgToFetch.Length == 42)
-                {
-                    // thousand
-                    string logComboBoxSelected = NumberOfUdpMsgToFetch.Substring(38, 4);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
-            }
+            int numLogs = parser.GetLogs(NumberOfUdpMsgToFetch);
 
-            Log.Info("Getting Data Logs{numOfMsgs}", numOfMsgs);
-            IList<UdpSenderModel> rows = sql.GetSomeUdpData(numOfMsgs);
+            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+
+            Log.Info("Getting Data Logs{numOfMsgs}", numLogs);
+            IList<UdpSenderModel> rows = sql.GetSomeUdpData(numLogs);
+            
             UdpGridRows = rows;
 
             _stopwatch.Stop();
+
             string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => UdpGridRows);

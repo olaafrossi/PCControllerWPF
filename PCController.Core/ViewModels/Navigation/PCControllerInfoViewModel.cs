@@ -17,20 +17,20 @@ namespace PCController.Core.ViewModels
 {
     public class PCControllerInfoViewModel : MvxNavigationViewModel<WindowChildParam>
     {
-        private readonly Stopwatch stopwatch;
+        private readonly Stopwatch _stopwatch;
 
         private WindowChildParam _param;
 
         public PCControllerInfoViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
             base(logProvider, navigationService)
         {
-            RefreshLogCommand = new MvxCommand(GetDataLogs);
+            RefreshLogCommand = new MvxCommand(GetLogsFromManager);
 
             Serilog.Log.Logger.Information("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             GetAppInfo();
-            stopwatch = new Stopwatch();
-            GetDataLogs();
+            _stopwatch = new Stopwatch();
+            GetLogsFromManager();
         }
 
         public int ParentNo => _param.ParentNo;
@@ -69,55 +69,25 @@ namespace PCController.Core.ViewModels
         public Uri AppInfoInstallerUri { get; set; }
         public override void Prepare(WindowChildParam param) => _param = param;
 
-        private void GetDataLogs()
+        public void GetLogsFromManager()
         {
-            stopwatch.Start();
-            SQLiteCRUD sql = new SQLiteCRUD(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
-            int numOfLogs = 20;
+            _stopwatch.Start();
 
-            try
-            {
-                RaisePropertyChanged(() => NumberOfLogsToFetch);
-                if (NumberOfLogsToFetch is null)
-                {
-                    numOfLogs = 20;
-                }
-                else if (NumberOfLogsToFetch.Contains("All"))
-                {
-                    // All
-                    numOfLogs = 100000000;
-                }
-                else if (NumberOfLogsToFetch.Length == 40)
-                {
-                    // 20, 50
-                    string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 2);
-                    numOfLogs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfLogsToFetch.Length == 41)
-                {
-                    // hundred
-                    string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 3);
-                    numOfLogs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfLogsToFetch.Length == 42)
-                {
-                    // thousand
-                    string logComboBoxSelected = NumberOfLogsToFetch.Substring(38, 4);
-                    numOfLogs = int.Parse(logComboBoxSelected);
-                }
-            }
-            catch (Exception e)
-            {
-                Serilog.Log.Logger.Error("Didn't parse the number in the Log ComboBox {numOfLogs}", numOfLogs, e);
-            }
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
+            ProcMonitorModel procData = new();
+            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
 
-            Serilog.Log.Logger.Information("Getting Data Logs{numOfLogs}", numOfLogs);
-            var rows = sql.GetSomeLogs(numOfLogs);
+            int numLogs = parser.GetLogs(NumberOfLogsToFetch);
+
+            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+
+            var rows = sql.GetSomeLogs(numLogs);
             LogGridRows = rows;
 
-            stopwatch.Stop();
-            string timeToFetchFromDB = $" DB query time: {stopwatch.ElapsedMilliseconds} ms";
-            DataBaseQueryTime = timeToFetchFromDB;
+            _stopwatch.Stop();
+
+            string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
+            DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => LogGridRows);
             RaisePropertyChanged(() => DataBaseQueryTime);
         }

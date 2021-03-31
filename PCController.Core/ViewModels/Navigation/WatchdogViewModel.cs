@@ -48,7 +48,7 @@ namespace PCController.Core.ViewModels
             Log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             // Setup UI Commands
-            RefreshProcLogsCommand = new MvxCommand(GetProcLogs);
+            RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
             AddItemCommand = new MvxCommand(AddThreadToChart);
@@ -59,7 +59,7 @@ namespace PCController.Core.ViewModels
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
-            GetProcLogs();
+            GetLogsFromManager();
 
             // start the proc mon
             ResolveAndStartProcMon();
@@ -285,53 +285,23 @@ namespace PCController.Core.ViewModels
             }
         }
 
-        private void GetProcLogs()
+        public void GetLogsFromManager()
         {
             _stopwatch.Start();
+            
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-            int numOfMsgs = 20;
+            ProcMonitorModel procData = new();
+            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
+            
+            int numLogs = parser.GetLogs(NumberOfProcLogsToFetch);
 
-            try
-            {
-                RaisePropertyChanged(() => NumberOfProcLogsToFetch);
-                if (NumberOfProcLogsToFetch is null)
-                {
-                    numOfMsgs = 20;
-                }
-                else if (NumberOfProcLogsToFetch.Contains("All"))
-                {
-                    // All
-                    numOfMsgs = 100000000;
-                }
-                else if (NumberOfProcLogsToFetch.Length == 40)
-                {
-                    // 20, 50
-                    string logComboBoxSelected = NumberOfProcLogsToFetch.Substring(38, 2);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfProcLogsToFetch.Length == 41)
-                {
-                    // hundred
-                    string logComboBoxSelected = NumberOfProcLogsToFetch.Substring(38, 3);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfProcLogsToFetch.Length == 42)
-                {
-                    // thousand
-                    string logComboBoxSelected = NumberOfProcLogsToFetch.Substring(38, 4);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
-            }
-
-            Log.Info("Getting Data Logs{numOfMsgs}", numOfMsgs);
-            IList<ProcMonitorModel> rows = sql.GetSomeProcData(numOfMsgs);
+            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            IList<ProcMonitorModel> rows = sql.GetSomeProcData(numLogs);
+            
             ProcGridRows = rows;
 
             _stopwatch.Stop();
+
             string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => ProcGridRows);
