@@ -50,13 +50,14 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=C:\\ThreeByteIntermedia\\PCController\\Logs\\network.db;Version=3;")]
-        public string ConnectionStringNetwork {
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=C:\\ThreeByteIntermedia\\PCController\\Data\\PCControllerDB.db;Version=3;" +
+            "")]
+        public string ConnectionStringApp {
             get {
-                return ((string)(this["ConnectionStringNetwork"]));
+                return ((string)(this["ConnectionStringApp"]));
             }
             set {
-                this["ConnectionStringNetwork"] = value;
+                this["ConnectionStringApp"] = value;
             }
         }
         

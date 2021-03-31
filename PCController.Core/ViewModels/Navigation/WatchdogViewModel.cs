@@ -236,7 +236,7 @@ namespace PCController.Core.ViewModels
 
         public void WriteErrorDataToDataBase(string error)
         {
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
             procData.Timestamp = DateTime.Now;
             procData.Message = error;
@@ -245,7 +245,7 @@ namespace PCController.Core.ViewModels
 
         public void WriteProcDataToDataBase(ResourceSnapshot snap)
         {
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
 
             procData.PeakPagedMemorySize = snap.PeakPagedMemorySize;
@@ -289,7 +289,7 @@ namespace PCController.Core.ViewModels
         {
             _stopwatch.Start();
             
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
             ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
             

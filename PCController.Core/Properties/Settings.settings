@@ -8,8 +8,8 @@
     <Setting Name="ConnectionStringLogs" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Logs\log.db;Version=3;Read Only=True;</Value>
     </Setting>
-    <Setting Name="ConnectionStringNetwork" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Logs\network.db;Version=3;</Value>
+    <Setting Name="ConnectionStringApp" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data Source=C:\ThreeByteIntermedia\PCController\Data\PCControllerDB.db;Version=3;</Value>
     </Setting>
     <Setting Name="LocalDataFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Settings\</Value>

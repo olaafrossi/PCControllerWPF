@@ -270,7 +270,7 @@ namespace PCController.Core.ViewModels
         {
             _stopwatch.Start();
 
-            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
+            SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
 
             int numLogs = parser.GetLogs(NumberOfUdpMsgToFetch);
