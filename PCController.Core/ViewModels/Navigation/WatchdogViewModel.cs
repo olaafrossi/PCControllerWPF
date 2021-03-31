@@ -8,7 +8,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.SkiaSharpView;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -27,26 +31,39 @@ namespace PCController.Core.ViewModels
     public sealed class WatchdogViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly object _processMonitorLock = new();
-        private IProcessMonitor _procMonitor;
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
+        private IProcessMonitor _procMonitor;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
+
+        // chart fields
+        private int index;
+        private ObservableCollection<ObservablePoint> _threadCount;
+        private ObservableCollection<ObservablePoint> _peakPagedMemorySize;
+        private ObservableCollection<ObservablePoint> _peakWorkingSet;
+        private ObservableCollection<ObservablePoint> _privateMemorySize;
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
             Log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             // Setup UI Commands
-            RefreshProcLogsCommand = new MvxCommand(GetProcLogs);
+            RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
+            AddItemCommand = new MvxCommand(AddThreadToChart);
+            RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
+            //AddSeriesCommand = new MvxCommand(AddSeries);
+            RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
+
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
-            GetProcLogs();
+            GetLogsFromManager();
 
             // start the proc mon
             ResolveAndStartProcMon();
+
 
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
@@ -55,24 +72,22 @@ namespace PCController.Core.ViewModels
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
             ProcMonitorStoppedButtonStatus = true;
             ProcMonitorStartedButtonStatus = true;
+            AddChart();
+            AddMemoryChart();
+
+
+
             RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
             RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
         }
 
-        private void ResolveAndStartProcMon()
-        {
-            // get singleton and create event handlers
-            lock (_processMonitorLock)
-            {
-                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
-                _procMonitor.ProcessEvent += OnProcessEvent;
-                _procMonitor.ProcessExited += OnProcessExited;
-                _procMonitor.ResourceEvent += OnResourceEvent;
+        public IMvxCommand AddItemCommand { get; set; }
 
-                // Setup the binding and thread safety when msg's come in from _procMonitor
-                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
-            }
-        }
+        public IMvxCommand RemoveItemCommand { get; set; }
+
+        public IMvxCommand AddSeriesCommand { get; set; }
+
+        public IMvxCommand RemoveSeriesCommand { get; set; }
 
         public IMvxCommand RefreshProcLogsCommand { get; set; }
 
@@ -83,6 +98,10 @@ namespace PCController.Core.ViewModels
         public bool ProcMonitorStoppedButtonStatus { get; set; }
 
         public bool ProcMonitorStartedButtonStatus { get; set; }
+
+        public ObservableCollection<ISeries> ThreadSeries { get; set; }
+
+        public ObservableCollection<ISeries> MemorySeries { get; set; }
 
         public string ProcessName { get; set; }
 
@@ -106,6 +125,112 @@ namespace PCController.Core.ViewModels
 
         public int ParentNo => _param.ParentNo;
         public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
+
+        public int ProcessThreadCount { get; set; }
+
+        public long PeakPagedMemorySize { get; set; }
+
+        public long PeakWorkingSet { get; set; }
+
+        public long PrivateMemorySize { get; set; }
+
+        public void AddChart()
+        {
+
+            ThreadSeries = new ObservableCollection<ISeries>();
+
+            _threadCount = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
+            AddSeries();
+
+
+        }
+
+        public void AddMemoryChart()
+        {
+
+            MemorySeries = new ObservableCollection<ISeries>();
+
+            _peakPagedMemorySize = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakPagedMemorySize });
+
+            _peakWorkingSet = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakWorkingSet });
+
+            _privateMemorySize = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _privateMemorySize });
+            
+            AddMemorySeries();
+
+
+        }
+
+        public void AddThreadToChart()
+        {
+            if (_threadCount.Count > 120)
+            {
+                RemoveThreadFromChart();
+            }
+            else
+            {
+                _threadCount.Add(new ObservablePoint(index++, ProcessThreadCount));
+            }
+        }
+
+        public void AddMemToChart()
+        {
+
+            if (_peakPagedMemorySize.Count > 120)
+            {
+                RemoveMemFromChart();
+            }
+            else
+            {
+                _peakPagedMemorySize.Add(new ObservablePoint(index++, PeakPagedMemorySize));
+                _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
+                _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
+            }
+
+        }
+
+        public void AddSeries()
+        {
+            if (ThreadSeries.Count == 5)
+            {
+                return;
+            }
+            ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0 } });
+        }
+
+        public void AddMemorySeries()
+        {
+            if (MemorySeries.Count == 5)
+            {
+                return;
+            }
+            MemorySeries.Add(new LineSeries<long> { Values = new List<long> { 0 } });
+        }
+
+        public void RemoveThreadFromChart()
+        {
+            if (_threadCount.Count < 2) return;
+
+            _threadCount.RemoveAt(0);
+        }
+
+        public void RemoveMemFromChart()
+        {
+            if (_peakPagedMemorySize.Count < 2) return;
+
+            _peakPagedMemorySize.RemoveAt(0);
+        }
+
+        public void RemoveLastSeries()
+        {
+            if (ThreadSeries.Count == 1) return;
+
+            ThreadSeries.RemoveAt(ThreadSeries.Count - 1);
+        }
 
         public override void Prepare(WindowChildParam param) => _param = param;
 
@@ -160,53 +285,23 @@ namespace PCController.Core.ViewModels
             }
         }
 
-        private void GetProcLogs()
+        public void GetLogsFromManager()
         {
             _stopwatch.Start();
+            
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Network));
-            int numOfMsgs = 20;
+            ProcMonitorModel procData = new();
+            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
+            
+            int numLogs = parser.GetLogs(NumberOfProcLogsToFetch);
 
-            try
-            {
-                RaisePropertyChanged(() => NumberOfProcLogsToFetch);
-                if (NumberOfProcLogsToFetch is null)
-                {
-                    numOfMsgs = 20;
-                }
-                else if (NumberOfProcLogsToFetch.Contains("All"))
-                {
-                    // All
-                    numOfMsgs = 100000000;
-                }
-                else if (NumberOfProcLogsToFetch.Length == 40)
-                {
-                    // 20, 50
-                    string logComboBoxSelected = NumberOfProcLogsToFetch.Substring(38, 2);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfProcLogsToFetch.Length == 41)
-                {
-                    // hundred
-                    string logComboBoxSelected = NumberOfProcLogsToFetch.Substring(38, 3);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-                else if (NumberOfProcLogsToFetch.Length == 42)
-                {
-                    // thousand
-                    string logComboBoxSelected = NumberOfProcLogsToFetch.Substring(38, 4);
-                    numOfMsgs = int.Parse(logComboBoxSelected);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error("Didn't parse the number in the Net ComboBox {numOfMsgs}", numOfMsgs, e);
-            }
-
-            Log.Info("Getting Data Logs{numOfMsgs}", numOfMsgs);
-            IList<ProcMonitorModel> rows = sql.GetSomeProcData(numOfMsgs);
+            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            IList<ProcMonitorModel> rows = sql.GetSomeProcData(numLogs);
+            
             ProcGridRows = rows;
 
             _stopwatch.Stop();
+
             string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => ProcGridRows);
@@ -253,8 +348,46 @@ namespace PCController.Core.ViewModels
         private void OnResourceEvent(object? sender, ResourceSnapshot e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
-            RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            ProcessThreadCount = e.ThreadCount;
+
+            long toMegaBytes = 1024;
+
+            PeakPagedMemorySize = e.PeakPagedMemorySize / toMegaBytes /toMegaBytes;
+            PrivateMemorySize = e.PrivateMemorySize / toMegaBytes / toMegaBytes;
+            PeakWorkingSet = e.PeakWorkingSet / toMegaBytes / toMegaBytes;
+
+
+
             WriteProcDataToDataBase(e);
+
+            RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            RaisePropertyChanged(() => ProcessThreadCount);
+            RaisePropertyChanged(() => PeakPagedMemorySize);
+            RaisePropertyChanged(() => PrivateMemorySize);
+            RaisePropertyChanged(() => PeakWorkingSet);
+            RaisePropertyChanged(() => ThreadSeries);
+            RaisePropertyChanged(() => MemorySeries);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                AddThreadToChart();
+                AddMemToChart();
+            });
+        }
+
+        private void ResolveAndStartProcMon()
+        {
+            // get singleton and create event handlers
+            lock (_processMonitorLock)
+            {
+                _procMonitor = Mvx.IoCProvider.Resolve<IProcessMonitor>();
+                _procMonitor.ProcessEvent += OnProcessEvent;
+                _procMonitor.ProcessExited += OnProcessExited;
+                _procMonitor.ResourceEvent += OnResourceEvent;
+
+                // Setup the binding and thread safety when msg's come in from _procMonitor
+                BindingOperations.EnableCollectionSynchronization(ProcMonRealTimeCollection, _procMonitor);
+            }
         }
 
         private void StartProcMonitor()

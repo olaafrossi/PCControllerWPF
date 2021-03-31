@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Navigation;
 using MvvmCross.Platforms.Wpf.Presenters.Attributes;
 using MvvmCross.Presenters;
@@ -14,6 +15,8 @@ namespace PCController.WPF.Views
     /// </summary>
     public partial class WatchdogView : IMvxOverridePresentationAttribute
     {
+        private bool? isStreaming = false;
+
         public WatchdogView()
         {
             InitializeComponent();
