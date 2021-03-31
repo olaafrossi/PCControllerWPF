@@ -114,6 +114,41 @@
                             Focusable="True"
                             ScrollViewer.CanContentScroll="True"
                             Text="Unresponsive Timeout (seconds)" />
+                        <ui:SimpleStackPanel
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Button
+                                x:Name="StopMonitor"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                mvx:Bi.nd="Command StopProcMonitorCommand"
+                                Content="Stop Process Monitor"
+                                IsEnabled="{Binding ProcMonitorStopButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                x:Name="StartMonitor"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Right"
+                                mvx:Bi.nd="Command StartProcMonitorCommand"
+                                Content="Start Process Monitor"
+                                IsEnabled="{Binding ProcMonitorStartButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                x:Name="KillApp"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Right"
+                                mvx:Bi.nd="Command KillProcMonitorCommand"
+                                Content="Kill Process"
+                                IsEnabled="{Binding ProcMonitorKillButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        </ui:SimpleStackPanel>
                     </ui:SimpleStackPanel>
                     <ui:SimpleStackPanel
                         Grid.Row="1"
@@ -152,31 +187,6 @@
                             IsReadOnly="False"
                             ScrollViewer.CanContentScroll="True"
                             Text="{Binding UnresponsiveTimeout, UpdateSourceTrigger=PropertyChanged}" />
-                        <ui:SimpleStackPanel
-                            Margin="5,0,5,0"
-                            HorizontalAlignment="Center"
-                            Orientation="Horizontal">
-                            <Button
-                                x:Name="StopMonitor"
-                                Width="145"
-                                MinHeight="40"
-                                Margin="0,5,5,5"
-                                HorizontalAlignment="Left"
-                                mvx:Bi.nd="Command StopProcMonitor"
-                                Content="Stop Process Monitor"
-                                IsEnabled="{Binding ProcMonitorStoppedButtonStatus}"
-                                Style="{StaticResource AccentButtonStyle}" />
-                            <Button
-                                x:Name="StartMonitor"
-                                Width="145"
-                                MinHeight="40"
-                                Margin="0,5,0,5"
-                                HorizontalAlignment="Right"
-                                mvx:Bi.nd="Command StartProcMonitor"
-                                Content="Start Process Monitor"
-                                IsEnabled="{Binding ProcMonitorStartedButtonStatus}"
-                                Style="{StaticResource AccentButtonStyle}" />
-                        </ui:SimpleStackPanel>
                     </ui:SimpleStackPanel>
                     <ui:SimpleStackPanel
                         Grid.Row="1"

@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using LiveChartsCore;
@@ -52,11 +53,12 @@ namespace PCController.Core.ViewModels
             RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
+            KillProcMonitorCommand = new MvxCommand(KillProcess);
+
             AddItemCommand = new MvxCommand(AddThreadToChart);
             RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
             //AddSeriesCommand = new MvxCommand(AddSeries);
             RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
-
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -65,21 +67,21 @@ namespace PCController.Core.ViewModels
             // start the proc mon
             ResolveAndStartProcMon();
 
-
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
             ExecutionString = _procMonitor.ExecutionString;
             ResourceSnapshotInterval = _procMonitor.ResourceSnapshotInterval;
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
-            ProcMonitorStoppedButtonStatus = true;
-            ProcMonitorStartedButtonStatus = true;
+            ProcMonitorStopButtonStatus = true;
+            ProcMonitorStartButtonStatus = false;
+            ProcMonitorKillButtonStatus = true;
+
             AddChart();
             AddMemoryChart();
 
-
-
-            RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
-            RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
         }
 
         public IMvxCommand AddItemCommand { get; set; }
@@ -96,9 +98,13 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand StartProcMonitorCommand { get; set; }
 
-        public bool ProcMonitorStoppedButtonStatus { get; set; }
+        public IMvxCommand KillProcMonitorCommand { get; set; }
 
-        public bool ProcMonitorStartedButtonStatus { get; set; }
+        public bool ProcMonitorStopButtonStatus { get; set; }
+
+        public bool ProcMonitorStartButtonStatus { get; set; }
+
+        public bool ProcMonitorKillButtonStatus { get; set; }
 
         public ObservableCollection<ISeries> ThreadSeries { get; set; }
 
@@ -397,11 +403,55 @@ namespace PCController.Core.ViewModels
 
         private void StartProcMonitor()
         {
+            lock (_processMonitorLock)
+            {
+                // setup info for the 3Byte watchdog/process monitor
+                string processName = Properties.Settings.Default.ProcessName;
+                string exeString = Properties.Settings.Default.ExecutionString;
+                _procMonitor = new ProcessMonitor(processName, exeString);
+                _procMonitor.ProcessEvent += OnProcessEvent;
+                _procMonitor.ProcessExited += OnProcessExited;
+                _procMonitor.ResourceEvent += OnResourceEvent;
+            }
+
+            ProcMonitorStartButtonStatus = false;
+            ProcMonitorStopButtonStatus = true;
+            ProcMonitorKillButtonStatus = true;
+
+            RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
         }
 
         private void StopProcMonitor()
         {
-            _procMonitor.Kill();
+            lock (_processMonitorLock)
+            {
+                if (_procMonitor != null)
+                {
+                    _procMonitor.Dispose();
+                    _procMonitor = null;
+                }
+            }
+
+            ProcMonitorStartButtonStatus = true;
+            ProcMonitorStopButtonStatus = false;
+            ProcMonitorKillButtonStatus = false;
+
+            RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
+        }
+
+        private void KillProcess()
+        {
+            lock (_processMonitorLock)
+            {
+                if (_procMonitor != null)
+                {
+                    _procMonitor.Kill();
+                }
+            }
         }
     }
 }
