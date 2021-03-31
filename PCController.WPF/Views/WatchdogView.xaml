@@ -192,7 +192,7 @@
                             Margin="5"
                             FontSize="20"
                             Foreground="#CCF7FFFF"
-                            Text="Some Message Here" />
+                            Text="Note: Writes to the DB are only ever 60 seconds" />
                     </ui:SimpleStackPanel>
                     <ui:SimpleStackPanel
                         Grid.Row="1"
