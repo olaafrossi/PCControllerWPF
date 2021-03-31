@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -54,6 +55,7 @@ namespace PCController.Core.ViewModels
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
             KillProcMonitorCommand = new MvxCommand(KillProcess);
+            GetRegScriptCommand = new MvxCommand(GetRegistryScript);
 
             AddItemCommand = new MvxCommand(AddThreadToChart);
             RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
@@ -99,6 +101,8 @@ namespace PCController.Core.ViewModels
         public IMvxCommand StartProcMonitorCommand { get; set; }
 
         public IMvxCommand KillProcMonitorCommand { get; set; }
+
+        public IMvxCommand GetRegScriptCommand { get; set; }
 
         public bool ProcMonitorStopButtonStatus { get; set; }
 
@@ -207,6 +211,8 @@ namespace PCController.Core.ViewModels
                 return;
             }
             ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0 } });
+
+            
         }
 
         public void AddMemorySeries()
@@ -270,7 +276,7 @@ namespace PCController.Core.ViewModels
         {
             try
             {
-                //Create a userfile with a timestamp that will be accesible
+                // TODO chnage this to the Props settings file location, next to the log. Create a userfile with a timestamp that will be accesible
                 string filename = string.Format("{0}_{1}.txt", processName, DateTime.Now.ToString("yyyyMMdd-hhmmss"));
                 string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Watchdog", filename);
                 string filedir = Path.GetDirectoryName(filepath);
@@ -290,6 +296,27 @@ namespace PCController.Core.ViewModels
                 Log.Error("Could not dump to user file", ex);
                 return null;
             }
+        }
+
+        private void GetRegistryScript()
+        {
+            //Write file to a temporary directory and then open that
+            string regKeyFile = "WER_DontShowUI.reg";
+
+            string tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WER");
+            Directory.CreateDirectory(tempDir);
+            string regFilePath = System.IO.Path.Combine(tempDir, regKeyFile);
+            using (Stream regFileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(regKeyFile))
+            {
+                using (FileStream fs = new FileStream(regFilePath, FileMode.Create))
+                {
+                    regFileStream.CopyTo(fs);
+                }
+            }
+
+            Process newProcess = new Process();
+            newProcess.StartInfo = new ProcessStartInfo(tempDir);
+            newProcess.Start();
         }
 
         public void GetLogsFromManager()
@@ -318,8 +345,9 @@ namespace PCController.Core.ViewModels
         private void OnProcessEvent(object? sender, ProcessEventArgs e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
-            ProcMonRealTimeCollection.Insert(0, "I think the process is frozen");
+            ProcMonRealTimeCollection.Insert(0, "Process Has Frozen");
             RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            WriteErrorDataToDataBase("Process Has Frozen");
         }
 
         private void OnProcessExited(object? sender, EventArgs e)
@@ -403,6 +431,7 @@ namespace PCController.Core.ViewModels
 
         private void StartProcMonitor()
         {
+
             lock (_processMonitorLock)
             {
                 // setup info for the 3Byte watchdog/process monitor
