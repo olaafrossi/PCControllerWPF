@@ -8,7 +8,7 @@ using MvvmCross.Navigation;
 using MvvmCross.Plugin.Messenger;
 using MvvmCross.ViewModels;
 using PCController.Core.Models;
-using PCController.Core.ViewModels.Navigation;
+using PCController.Core.ViewModels;
 using Serilog;
 using Serilog.Core;
 
@@ -44,15 +44,15 @@ namespace PCController.Core.ViewModels
                 Console.WriteLine(e.ToString());
             }
 
-            ShowChildCommand = new MvxAsyncCommand(async () =>
-            {
-                var result = await NavigationService.Navigate<ChildViewModel, SampleModel, SampleModel>(new SampleModel
-                {
-                    Message = "Hey",
-                    Value = 1.23m
-                });
-                var testIfReturn = result;
-            });
+            //ShowChildCommand = new MvxAsyncCommand(async () =>
+            //{
+            //    var result = await NavigationService.Navigate<ChildViewModel, SampleModel, SampleModel>(new SampleModel
+            //    {
+            //        Message = "Hey",
+            //        Value = 1.23m
+            //    });
+            //    var testIfReturn = result;
+            //});
 
             //ShowModalCommand = new MvxAsyncCommand(Navigate);
 
@@ -191,23 +191,23 @@ namespace PCController.Core.ViewModels
 
         public string TotalTime { get; set; }
 
-        public override async Task Initialize()
-        {
-            Log.Warn(() => "Testing log");
+        //public override async Task Initialize()
+        //{
+        //    Log.Warn(() => "Testing log");
 
-            await base.Initialize();
+        //    await base.Initialize();
 
-            // Uncomment this to demonstrate use of StartAsync for async first navigation
-            // await Task.Delay(5000);
+        //    // Uncomment this to demonstrate use of StartAsync for async first navigation
+        //    // await Task.Delay(5000);
 
-            _mvxViewModelLoader.LoadViewModel(MvxViewModelRequest.GetDefaultRequest(typeof(ChildViewModel)),
-                new SampleModel
-                {
-                    Message = "From locator",
-                    Value = 2
-                },
-                null);
-        }
+        //    _mvxViewModelLoader.LoadViewModel(MvxViewModelRequest.GetDefaultRequest(typeof(ChildViewModel)),
+        //        new SampleModel
+        //        {
+        //            Message = "From locator",
+        //            Value = 2
+        //        },
+        //        null);
+        //}
 
         public override void ViewAppearing()
         {

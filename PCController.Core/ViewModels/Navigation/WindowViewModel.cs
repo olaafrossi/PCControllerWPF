@@ -61,15 +61,15 @@ namespace PCController.Core.ViewModels
             RealTimeLogCollection.Insert(0, "Hello World");
             
 
-            ShowWindowChildCommand = new MvxAsyncCommand<int>(async no =>
-            {
-                await NavigationService.Navigate<WindowChildViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
-            });
+            //ShowWindowChildCommand = new MvxAsyncCommand<int>(async no =>
+            //{
+            //    await NavigationService.Navigate<WindowChildViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
+            //});
 
-            ShowNavBarCommand = new MvxAsyncCommand<int>(async no =>
-            {
-                await NavigationService.Navigate<NavBarViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
-            });
+            //ShowNavBarCommand = new MvxAsyncCommand<int>(async no =>
+            //{
+            //    await NavigationService.Navigate<NavBarViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
+            //});
 
             ShowPCControllerInfoCommand = new MvxAsyncCommand<int>(async no =>
             {
