@@ -11,7 +11,7 @@ namespace PCController.Core.Managers
             /// Should probably clean this up a bit
             /// </summary>
             Logs,
-            Network,
+            PCControllerDB,
         }
 
         public static string GetConnectionString(DataBases dB)
@@ -23,9 +23,9 @@ namespace PCController.Core.Managers
                 output = Properties.Settings.Default.ConnectionStringLogs;
                 Log.Logger.Information("Getting SQL Connection String for LogDB {output}", output);
             }
-            else if (dB == DataBases.Network)
+            else if (dB == DataBases.PCControllerDB)
             {
-                output = Properties.Settings.Default.ConnectionStringNetwork;
+                output = Properties.Settings.Default.ConnectionStringApp;
                 Log.Logger.Information("Getting SQL Connection String for NetworkDB {output}", output);
             }
             else

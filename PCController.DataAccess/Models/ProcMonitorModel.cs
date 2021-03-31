@@ -8,6 +8,7 @@ namespace PCController.DataAccess.Models
 {
     public class ProcMonitorModel
     {
+        public int ID { get; set; }
         public DateTime Timestamp { get; set; }
         public long PeakPagedMemorySize { get; set; }
         public long PeakWorkingSet { get; set; }

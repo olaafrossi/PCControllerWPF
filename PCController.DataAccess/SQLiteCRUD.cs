@@ -5,55 +5,55 @@ namespace PCController.DataAccess
 {
     public class SQLiteCRUD
     {
-        private readonly string connectionString;
+        private readonly string _connectionString;
 
-        private readonly SQLiteDataAccess db = new();
+        private readonly SQLiteDataAccess _db = new();
 
         public SQLiteCRUD(string connString)
         {
-            this.connectionString = connString;
+            _connectionString = connString;
         }
 
         public IList<LogModel> GetAllLogs()
         {
             string sql = $"SELECT * FROM Logs ORDER BY ID DESC LIMIT";
-            return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
+            return _db.LoadData<LogModel, dynamic>(sql, new { }, _connectionString);
         }
 
         public IList<LogModel> GetSomeLogs(int logCount)
         {
             string sql = $"SELECT * FROM Logs ORDER BY ID DESC LIMIT {logCount}";
-            return this.db.LoadData<LogModel, dynamic>(sql, new { }, this.connectionString);
+            return _db.LoadData<LogModel, dynamic>(sql, new { }, _connectionString);
         }
 
         public IList<NetworkMessageModel> GetSomeNetData(int msgCount)
         {
             string sql = $"SELECT * FROM Network ORDER BY ID DESC LIMIT {msgCount}";
-            return this.db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, this.connectionString);
+            return _db.LoadData<NetworkMessageModel, dynamic>(sql, new { }, _connectionString);
         }
 
         public IList<UdpSenderModel> GetSomeUdpData(int msgCount)
         {
             string sql = $"SELECT * FROM UDPSender ORDER BY ID DESC LIMIT {msgCount}";
-            return this.db.LoadData<UdpSenderModel, dynamic>(sql, new { }, this.connectionString);
+            return _db.LoadData<UdpSenderModel, dynamic>(sql, new { }, _connectionString);
         }
 
         public IList<ProcMonitorModel> GetSomeProcData(int msgCount)
         {
             string sql = $"SELECT * FROM ProcMonitor ORDER BY ID DESC LIMIT {msgCount}";
-            return this.db.LoadData<ProcMonitorModel, dynamic>(sql, new { }, this.connectionString);
+            return _db.LoadData<ProcMonitorModel, dynamic>(sql, new { }, _connectionString);
         }
 
         public IList<string> GetUdpUsedIPAddresses(int ipCount)
         {
             string sql = $"SELECT LocalIP FROM UDPSender ORDER BY ID DESC LIMIT {ipCount}";
-            return this.db.LoadData<string, dynamic>(sql, new { }, this.connectionString);
+            return _db.LoadData<string, dynamic>(sql, new { }, _connectionString);
         }
 
         public void InsertUdpSentData(UdpSenderModel udp)
         {
             string sql = "insert into UDPSender (IncomingMessage, OutgoingMessage, RemoteIP, LocalIP, LocalPort, RemotePort, Timestamp) values(@IncomingMessage, @OutgoingMessage, @RemoteIP, @LocalIP, @LocalPort, @RemotePort, @Timestamp);";
-            this.db.SaveData(sql, new
+            _db.SaveData(sql, new
                 {
                     udp.IncomingMessage,
                     udp.OutgoingMessage,
@@ -63,14 +63,14 @@ namespace PCController.DataAccess
                     udp.RemotePort,
                     udp.Timestamp
                 },
-                this.connectionString);
+                _connectionString);
         }
 
         public void InsertNetMessage(NetworkMessageModel msg)
         {
             string sql =
                 "insert into Network (Timestamp, UDPPort, RemoteIP, RemotePort, IncomingMessage, OutgoingMessage) values (@Timestamp, @UDPPort, @RemoteIP, @RemotePort, @IncomingMessage, @OutgoingMessage);";
-            this.db.SaveData(
+            _db.SaveData(
                 sql,
                 new
                     {
@@ -81,14 +81,14 @@ namespace PCController.DataAccess
                         msg.IncomingMessage,
                         msg.OutgoingMessage
                     },
-                this.connectionString);
+                _connectionString);
         }
 
         public void InsertProcData(ProcMonitorModel data)
         {
             string sql =
                 "insert into ProcMonitor (Timestamp, PeakPagedMemorySize, PeakWorkingSet, PrivateMemorySize, ThreadCount, HandleCount, IsNotResponding, Message) values (@Timestamp, @PeakPagedMemorySize, @PeakWorkingSet, @PrivateMemorySize, @ThreadCount, @HandleCount, @IsNotResponding, @Message);";
-            this.db.SaveData(
+            _db.SaveData(
                 sql,
                 new {
                     data.Timestamp,
@@ -100,7 +100,7 @@ namespace PCController.DataAccess
                     data.IsNotResponding,
                     data.Message
                 },
-                this.connectionString);
+                _connectionString);
         }
     }
 }

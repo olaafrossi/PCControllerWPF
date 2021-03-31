@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\Bindings\" />
-    <Folder Include="ViewModels\Samples\" />
   </ItemGroup>
 
   <ItemGroup>
