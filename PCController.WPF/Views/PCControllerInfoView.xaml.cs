@@ -5,6 +5,7 @@ using MvvmCross.Presenters;
 using MvvmCross.Presenters.Attributes;
 using MvvmCross.ViewModels;
 using Serilog;
+// TODO nothing should be in this view, and remove serilog
 
 using PCController.Core.ViewModels;
 

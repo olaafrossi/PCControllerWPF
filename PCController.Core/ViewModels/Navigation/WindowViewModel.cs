@@ -7,7 +7,6 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using ABI.Windows.Devices.Midi;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -15,7 +14,6 @@ using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using PCController.Core.Models;
 using PCController.Core.Services;
-using Serilog.Events;
 using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 // ReSharper disable CheckNamespace
