@@ -21,228 +21,229 @@
         <vm:WatchdogViewModel/>
     </views:MvxWpfView.DataContext>-->
 
-    <Border BorderBrush="{DynamicResource SystemAccentColorDark1Brush}" BorderThickness="2">
-        <Grid
-            x:Name="LayoutRoot"
-            MinWidth="500"
-            MinHeight="500"
-            Margin="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <Border BorderBrush="{DynamicResource SystemAccentColorDark1Brush}" BorderThickness="2">
             <Grid
-                x:Name="InfoBar"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
+                x:Name="LayoutRoot"
+                MinWidth="500"
+                MinHeight="500"
                 Margin="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" MaxWidth="350" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="260" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="5"
-                    FontSize="24"
-                    FontWeight="Normal"
-                    Foreground="#FFDEA504"
-                    Text="App Watchdog" />
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    Margin="5"
-                    FontSize="24"
-                    FontWeight="Normal"
-                    Foreground="#FFDEA504"
-                    Text="Frame Details" />
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="3"
-                    Margin="5"
-                    FontSize="24"
-                    FontWeight="Normal"
-                    Foreground="#FFDEA504"
-                    Text="Realtime Log (This session only)" />
-                <ui:SimpleStackPanel
+                <Grid
+                    x:Name="InfoBar"
                     Grid.Row="1"
                     Grid.Column="0"
-                    MinWidth="200"
-                    Margin="0,5,0,5"
-                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    Grid.ColumnSpan="3"
+                    Margin="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" MaxWidth="350" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="260" />
+                    </Grid.RowDefinitions>
+
                     <TextBlock
-                        MinHeight="32"
+                        Grid.Row="0"
+                        Grid.Column="0"
                         Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Process Name" />
+                        FontSize="24"
+                        FontWeight="Normal"
+                        Foreground="#FFDEA504"
+                        Text="App Watchdog" />
                     <TextBlock
-                        MinHeight="32"
+                        Grid.Row="0"
+                        Grid.Column="2"
                         Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Execution String"
-                        ToolTip="???" />
+                        FontSize="24"
+                        FontWeight="Normal"
+                        Foreground="#FFDEA504"
+                        Text="Frame Details" />
                     <TextBlock
-                        MinHeight="32"
+                        Grid.Row="0"
+                        Grid.Column="3"
                         Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="ResourceSnapshotInterval"
-                        ToolTip="????" />
-                    <TextBlock
-                        MinHeight="32"
-                        Margin="5"
-                        Focusable="True"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="Unresponsive Timeout (seconds)" />
-                </ui:SimpleStackPanel>
-                <ui:SimpleStackPanel
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    MinWidth="260"
-                    MaxWidth="300"
-                    Margin="0,5,0,5"
-                    HorizontalAlignment="Left"
-                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-                    <TextBox
-                        Margin="5"
-                        Focusable="True"
-                        IsReadOnly="False"
-                        MaxLines="1"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding ProcessName, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox
-                        Margin="5"
-                        Focusable="True"
-                        IsReadOnly="False"
-                        MaxLength="5"
-                        MaxLines="1"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding ExecutionString, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox
-                        Margin="5"
-                        Focusable="True"
-                        IsReadOnly="False"
-                        MaxLength="5"
-                        MaxLines="1"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding ResourceSnapshotInterval, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBox
-                        Margin="5,5,5,5"
-                        Focusable="True"
-                        IsReadOnly="False"
-                        ScrollViewer.CanContentScroll="True"
-                        Text="{Binding UnresponsiveTimeout, UpdateSourceTrigger=PropertyChanged}" />
+                        FontSize="24"
+                        FontWeight="Normal"
+                        Foreground="#FFDEA504"
+                        Text="Realtime Log (This session only)" />
                     <ui:SimpleStackPanel
-                        Margin="5,0,5,0"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal">
-                        <Button
-                            x:Name="StopMonitor"
-                            Width="145"
-                            MinHeight="40"
-                            Margin="0,5,5,5"
-                            HorizontalAlignment="Left"
-                            mvx:Bi.nd="Command StopProcMonitor"
-                            Content="Stop Process Monitor"
-                            IsEnabled="{Binding ProcMonitorStoppedButtonStatus}"
-                            Style="{StaticResource AccentButtonStyle}" />
-                        <Button
-                            x:Name="StartMonitor"
-                            Width="145"
-                            MinHeight="40"
-                            Margin="0,5,0,5"
-                            HorizontalAlignment="Right"
-                            mvx:Bi.nd="Command StartProcMonitor"
-                            Content="Start Process Monitor"
-                            IsEnabled="{Binding ProcMonitorStartedButtonStatus}"
-                            Style="{StaticResource AccentButtonStyle}" />
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        MinWidth="200"
+                        Margin="0,5,0,5"
+                        Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                        <TextBlock
+                            MinHeight="32"
+                            Margin="5"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="Process Name" />
+                        <TextBlock
+                            MinHeight="32"
+                            Margin="5"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="Execution String"
+                            ToolTip="???" />
+                        <TextBlock
+                            MinHeight="32"
+                            Margin="5"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="ResourceSnapshotInterval"
+                            ToolTip="????" />
+                        <TextBlock
+                            MinHeight="32"
+                            Margin="5"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="Unresponsive Timeout (seconds)" />
                     </ui:SimpleStackPanel>
-                </ui:SimpleStackPanel>
-                <ui:SimpleStackPanel
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Height="250"
-                    MinWidth="345"
-                    MaxWidth="350"
-                    Margin="0,5,0,5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-                    <TextBlock
-                        Margin="5"
-                        FontSize="20"
-                        Foreground="#CCF7FFFF"
-                        Text="Some Message Here" />
-                </ui:SimpleStackPanel>
-                <ui:SimpleStackPanel
-                    Grid.Row="1"
-                    Grid.Column="3"
-                    Width="Auto"
-                    Margin="0,5,0,5"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-                    <ListBox
-                        x:Name="RealTimeLog"
-                        MaxHeight="250"
-                        AlternationCount="2"
-                        BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
-                        BorderThickness="1"
-                        ItemsSource="{Binding ProcMonRealTimeCollection}"
-                        ScrollViewer.CanContentScroll="True"
-                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                        ScrollViewer.VerticalScrollBarVisibility="Visible"
-                        UseLayoutRounding="True" />
-                </ui:SimpleStackPanel>
-                <Grid.Resources>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Style.Triggers>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                <Setter Property="Foreground" Value="#CCF7FFFF" />
-                            </Trigger>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                <Setter Property="Foreground" Value="#FFDEA504" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Resources>
-            </Grid>
-            <Grid
-                x:Name="Graphs"
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <!--<StackPanel
+                    <ui:SimpleStackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        MinWidth="260"
+                        MaxWidth="300"
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Left"
+                        Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding ProcessName, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLength="5"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding ExecutionString, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLength="5"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding ResourceSnapshotInterval, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5,5,5,5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding UnresponsiveTimeout, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:SimpleStackPanel
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Button
+                                x:Name="StopMonitor"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                mvx:Bi.nd="Command StopProcMonitor"
+                                Content="Stop Process Monitor"
+                                IsEnabled="{Binding ProcMonitorStoppedButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                x:Name="StartMonitor"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Right"
+                                mvx:Bi.nd="Command StartProcMonitor"
+                                Content="Start Process Monitor"
+                                IsEnabled="{Binding ProcMonitorStartedButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        </ui:SimpleStackPanel>
+                    </ui:SimpleStackPanel>
+                    <ui:SimpleStackPanel
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Height="250"
+                        MinWidth="345"
+                        MaxWidth="350"
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                        <TextBlock
+                            Margin="5"
+                            FontSize="20"
+                            Foreground="#CCF7FFFF"
+                            Text="Some Message Here" />
+                    </ui:SimpleStackPanel>
+                    <ui:SimpleStackPanel
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        Width="Auto"
+                        Margin="0,5,0,5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                        <ListBox
+                            x:Name="RealTimeLog"
+                            MaxHeight="250"
+                            AlternationCount="2"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
+                            BorderThickness="1"
+                            ItemsSource="{Binding ProcMonRealTimeCollection}"
+                            ScrollViewer.CanContentScroll="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                            ScrollViewer.VerticalScrollBarVisibility="Visible"
+                            UseLayoutRounding="True" />
+                    </ui:SimpleStackPanel>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Style.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                    <Setter Property="Foreground" Value="#CCF7FFFF" />
+                                </Trigger>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                    <Setter Property="Foreground" Value="#FFDEA504" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Resources>
+                </Grid>
+                <Grid
+                    x:Name="Graphs"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Margin="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--<StackPanel
                     Grid.Row="0"
                     Grid.Column="0"
                     HorizontalAlignment="Left"
@@ -252,171 +253,170 @@
                     <Button Margin="5" mvx:Bi.nd="Command AddSeriesCommand">Add ThreadSeries</Button>
                     <Button Margin="5" mvx:Bi.nd="Command RemoveSeriesCommand">Remove ThreadSeries</Button>
                 </StackPanel>-->
-                <Rectangle
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    Fill="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
-                    Stroke="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" />
+                    <Rectangle
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="3"
+                        Fill="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
+                        Stroke="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="5"
+                        FontSize="18"
+                        FontWeight="Normal"
+                        Foreground="#FFDEA504"
+                        Text="Threads" />
+                    <lvc:CartesianChart
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Width="650"
+                        Height="550"
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Series="{Binding ThreadSeries}"
+                        TooltipFindingStrategy="CompareOnlyX"
+                        TooltipFontSize="12"
+                        TooltipPosition="Center"
+                        UseLayoutRounding="True" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="-180,5,5,5"
+                        FontSize="18"
+                        FontWeight="Normal"
+                        Foreground="#FFDEA504"
+                        Text="Memory" />
+                    <lvc:CartesianChart
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Grid.ColumnSpan="1"
+                        Width="650"
+                        Height="550"
+                        Margin="-180,5,5,5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Series="{Binding MemorySeries}"
+                        TooltipFindingStrategy="CompareOnlyX"
+                        TooltipFontSize="12"
+                        TooltipPosition="Center"
+                        UseLayoutRounding="True" />
+                </Grid>
                 <TextBlock
-                    Grid.Row="0"
+                    Grid.Row="3"
                     Grid.Column="0"
                     Margin="5"
-                    FontSize="18"
+                    VerticalAlignment="Top"
+                    FontSize="24"
                     FontWeight="Normal"
                     Foreground="#FFDEA504"
-                    Text="Threads" />
-                <lvc:CartesianChart
-                    Grid.Row="1"
+                    Text="Process Logs (All Logs from Database)" />
+                <DataGrid
+                    x:Name="ProcGrid"
+                    Grid.Row="4"
                     Grid.Column="0"
-                    Width="650"
-                    Height="550"
-                    Margin="5"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Series="{Binding ThreadSeries}"
-                    TooltipFindingStrategy="CompareOnlyX"
-                    TooltipFontSize="12"
-                    TooltipPosition="Center"
-                    UseLayoutRounding="True" />
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="-180,5,5,5"
-                    FontSize="18"
-                    FontWeight="Normal"
-                    Foreground="#FFDEA504"
-                    Text="Memory" />
-                <lvc:CartesianChart
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="1"
-                    Width="650"
-                    Height="550"
-                    Margin="-180,5,5,5"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Series="{Binding MemorySeries}"
-                    TooltipFindingStrategy="CompareOnlyX"
-                    TooltipFontSize="12"
-                    TooltipPosition="Center"
-                    UseLayoutRounding="True" />
-            </Grid>
-            <TextBlock
-                Grid.Row="3"
-                Grid.Column="0"
-                Margin="5"
-                VerticalAlignment="Top"
-                FontSize="24"
-                FontWeight="Normal"
-                Foreground="#FFDEA504"
-                Text="Process Logs (All Logs from Database)" />
-            <DataGrid
-                x:Name="ProcGrid"
-                Grid.Row="4"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                MinWidth="400"
-                MinHeight="100"
-                Margin="1,5,5,5"
-                AutoGenerateColumns="True"
-                BorderBrush="Gray"
-                BorderThickness="1"
-                CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                EnableColumnVirtualization="True"
-                EnableRowVirtualization="True"
-                GridLinesVisibility="Horizontal"
-                HeadersVisibility="Column"
-                HorizontalScrollBarVisibility="Auto"
-                IsReadOnly="True"
-                ItemsSource="{Binding ProcGridRows}"
-                RowDetailsVisibilityMode="Visible"
-                SnapsToDevicePixels="True"
-                UseLayoutRounding="True"
-                VerticalScrollBarVisibility="Visible"
-                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                VirtualizingPanel.VirtualizationMode="Standard" />
-            <ui:SimpleStackPanel
-                Grid.Row="5"
-                Grid.Column="2"
-                Width="250"
-                Margin="0,5,0,5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Stretch"
-                Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-                <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
-                <Button
-                    x:Name="RefreshLog"
-                    Width="250"
-                    MinHeight="40"
-                    Margin="5,10,5,5"
-                    HorizontalAlignment="Left"
-                    mvx:Bi.nd="Command RefreshProcLogsCommand"
-                    Content="Refresh Process Logs"
-                    Style="{StaticResource AccentButtonStyle}" />
-                <TextBlock
-                    x:Name="LoadTimeTextBlock"
-                    Margin="5,10,5,5"
-                    Text="{Binding DataBaseQueryTime}" />
-                <ComboBox
-                    x:Name="NetSelectComboBox"
-                    MinWidth="240"
-                    Margin="5,10,5,5"
-                    ui:ControlHelper.Header="Number of Logs to Fetch"
-                    SelectedIndex="1"
-                    SelectedItem="{Binding NumberOfProcLogsToFetch}">
-                    <ComboBoxItem>20</ComboBoxItem>
-                    <ComboBoxItem>50</ComboBoxItem>
-                    <ComboBoxItem>100</ComboBoxItem>
-                    <ComboBoxItem>200</ComboBoxItem>
-                    <ComboBoxItem>500</ComboBoxItem>
-                    <ComboBoxItem>1000</ComboBoxItem>
-                    <ComboBoxItem>2000</ComboBoxItem>
-                    <ComboBoxItem>All</ComboBoxItem>
-                </ComboBox>
-                <ComboBox
-                    MinWidth="240"
-                    Margin="5,10,5,5"
-                    ui:ControlHelper.Header="GridLinesVisibility"
-                    ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=ProcGrid, Path=GridLinesVisibility}" />
-                <ComboBox
-                    MinWidth="240"
-                    Margin="5,10,5,5"
-                    ui:ControlHelper.Header="ClipboardCopyMode"
-                    ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=ProcGrid, Path=ClipboardCopyMode}" />
-                <ComboBox
-                    MinWidth="240"
-                    Margin="5,10,5,5"
-                    ui:ControlHelper.Header="SelectionUnit"
-                    ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=ProcGrid, Path=SelectionUnit}" />
-                <ComboBox
-                    MinWidth="240"
-                    Margin="5,10,5,5"
-                    ui:ControlHelper.Header="SelectionMode"
-                    ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
-                    SelectedItem="{Binding ElementName=ProcGrid, Path=SelectionMode}" />
-                <TextBlock
-                    Margin="5"
-                    FontSize="14"
-                    Text="Location of SQLite Net DB" />
-                <TextBox
-                    Margin="5,5,5,5"
-                    VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center"
-                    Focusable="True"
-                    FontSize="9"
+                    Grid.ColumnSpan="2"
+                    MinWidth="400"
+                    MinHeight="100"
+                    Margin="1,5,5,5"
+                    AutoGenerateColumns="True"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    EnableColumnVirtualization="True"
+                    EnableRowVirtualization="True"
+                    GridLinesVisibility="Horizontal"
+                    HeadersVisibility="Column"
+                    HorizontalScrollBarVisibility="Auto"
                     IsReadOnly="True"
-                    ScrollViewer.CanContentScroll="True"
+                    ItemsSource="{Binding ProcGridRows}"
+                    RowDetailsVisibilityMode="Visible"
                     SnapsToDevicePixels="True"
-                    Text="C:\ThreeByteIntermedia\PCController\Logs\network.db" />
-            </ui:SimpleStackPanel>
-
-        </Grid>
-    </Border>
+                    UseLayoutRounding="True"
+                    VerticalScrollBarVisibility="Visible"
+                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                    VirtualizingPanel.VirtualizationMode="Standard" />
+                <ui:SimpleStackPanel
+                    Grid.Row="5"
+                    Grid.Column="2"
+                    Width="250"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                    <TextBlock Margin="5,5,5,5" Text="Log Grid Options" />
+                    <Button
+                        x:Name="RefreshLog"
+                        Width="250"
+                        MinHeight="40"
+                        Margin="5,10,5,5"
+                        HorizontalAlignment="Left"
+                        mvx:Bi.nd="Command RefreshProcLogsCommand"
+                        Content="Refresh Process Logs"
+                        Style="{StaticResource AccentButtonStyle}" />
+                    <TextBlock
+                        x:Name="LoadTimeTextBlock"
+                        Margin="5,10,5,5"
+                        Text="{Binding DataBaseQueryTime}" />
+                    <ComboBox
+                        x:Name="NetSelectComboBox"
+                        MinWidth="240"
+                        Margin="5,10,5,5"
+                        ui:ControlHelper.Header="Number of Logs to Fetch"
+                        SelectedIndex="1"
+                        SelectedItem="{Binding NumberOfProcLogsToFetch}">
+                        <ComboBoxItem>20</ComboBoxItem>
+                        <ComboBoxItem>50</ComboBoxItem>
+                        <ComboBoxItem>100</ComboBoxItem>
+                        <ComboBoxItem>200</ComboBoxItem>
+                        <ComboBoxItem>500</ComboBoxItem>
+                        <ComboBoxItem>1000</ComboBoxItem>
+                        <ComboBoxItem>2000</ComboBoxItem>
+                        <ComboBoxItem>All</ComboBoxItem>
+                    </ComboBox>
+                    <ComboBox
+                        MinWidth="240"
+                        Margin="5,10,5,5"
+                        ui:ControlHelper.Header="GridLinesVisibility"
+                        ItemsSource="{Binding Source={x:Type DataGridGridLinesVisibility}, Converter={StaticResource EnumValuesConverter}}"
+                        SelectedItem="{Binding ElementName=ProcGrid, Path=GridLinesVisibility}" />
+                    <ComboBox
+                        MinWidth="240"
+                        Margin="5,10,5,5"
+                        ui:ControlHelper.Header="ClipboardCopyMode"
+                        ItemsSource="{Binding Source={x:Type DataGridClipboardCopyMode}, Converter={StaticResource EnumValuesConverter}}"
+                        SelectedItem="{Binding ElementName=ProcGrid, Path=ClipboardCopyMode}" />
+                    <ComboBox
+                        MinWidth="240"
+                        Margin="5,10,5,5"
+                        ui:ControlHelper.Header="SelectionUnit"
+                        ItemsSource="{Binding Source={x:Type DataGridSelectionUnit}, Converter={StaticResource EnumValuesConverter}}"
+                        SelectedItem="{Binding ElementName=ProcGrid, Path=SelectionUnit}" />
+                    <ComboBox
+                        MinWidth="240"
+                        Margin="5,10,5,5"
+                        ui:ControlHelper.Header="SelectionMode"
+                        ItemsSource="{Binding Source={x:Type DataGridSelectionMode}, Converter={StaticResource EnumValuesConverter}}"
+                        SelectedItem="{Binding ElementName=ProcGrid, Path=SelectionMode}" />
+                    <TextBlock
+                        Margin="5"
+                        FontSize="14"
+                        Text="Location of SQLite Net DB" />
+                    <TextBox
+                        Margin="5,5,5,5"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Focusable="True"
+                        FontSize="9"
+                        IsReadOnly="True"
+                        ScrollViewer.CanContentScroll="True"
+                        SnapsToDevicePixels="True"
+                        Text="C:\ThreeByteIntermedia\PCController\Logs\network.db" />
+                </ui:SimpleStackPanel>
+            </Grid>
+        </Border>
+    </ScrollViewer>
 </views:MvxWpfView>
-
