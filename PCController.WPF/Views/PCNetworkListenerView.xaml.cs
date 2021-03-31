@@ -5,7 +5,6 @@ using MvvmCross.Presenters;
 using MvvmCross.Presenters.Attributes;
 using MvvmCross.ViewModels;
 using PCController.Core.ViewModels;
-using Serilog;
 
 namespace PCController.WPF.Views
 {

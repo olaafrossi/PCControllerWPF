@@ -1,5 +1,4 @@
 ﻿using System;
-using Serilog;
 
 namespace PCController.WPF.Views
 {
@@ -11,9 +10,7 @@ namespace PCController.WPF.Views
     {
         public RootView()
         {
-            InitializeComponent();  
-            Log.Logger.Information("hello from Serilog");
-            Console.WriteLine("hello from console");
+            InitializeComponent();
         }
     }
 }

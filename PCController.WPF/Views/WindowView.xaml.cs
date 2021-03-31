@@ -3,8 +3,6 @@ using MvvmCross.Presenters;
 using MvvmCross.Presenters.Attributes;
 using MvvmCross.ViewModels;
 using PCController.Core.ViewModels;
-using Serilog;
-using Serilog.Sinks.RichTextBox;
 
 namespace PCController.WPF.Views
 {
@@ -16,7 +14,6 @@ namespace PCController.WPF.Views
         public WindowView()
         {
             InitializeComponent();
-
         }
 
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
@@ -24,14 +21,10 @@ namespace PCController.WPF.Views
             var instanceRequest = request as MvxViewModelInstanceRequest;
             var viewModel = instanceRequest?.ViewModelInstance as WindowViewModel;
 
-
             return new MvxWindowPresentationAttribute
-                       {
-                           Identifier = $"{nameof(WindowView)}.{viewModel}"
-
-                       };
-
-            
+            {
+                Identifier = $"{nameof(WindowView)}.{viewModel}"
+            };
         }
     }
 }

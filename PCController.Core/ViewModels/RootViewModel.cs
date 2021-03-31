@@ -9,8 +9,6 @@ using MvvmCross.Plugin.Messenger;
 using MvvmCross.ViewModels;
 using PCController.Core.Models;
 using PCController.Core.ViewModels;
-using Serilog;
-using Serilog.Core;
 
 namespace PCController.Core.ViewModels
 {
@@ -18,7 +16,7 @@ namespace PCController.Core.ViewModels
     {
         private readonly IMvxViewModelLoader _mvxViewModelLoader;
 
-        private readonly IMvxLog log;
+        private readonly IMvxLog _log;
 
         private int _counter = 2;
 
@@ -32,12 +30,12 @@ namespace PCController.Core.ViewModels
         public RootViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, IMvxViewModelLoader mvxViewModelLoader) : base(logProvider, navigationService)
         {
             _mvxViewModelLoader = mvxViewModelLoader;
-            log = logProvider.GetLogFor<RootViewModel>();
+            _log = logProvider.GetLogFor<RootViewModel>();
             try
             {
                 var messenger = Mvx.IoCProvider.Resolve<IMvxMessenger>();
                 var str = messenger.ToString();
-                log.InfoFormat("this is from the root, Does it get to Serilog? {messenger}", messenger);
+                _log.InfoFormat("Creating the Root View Model via the MVX IOC provider {messenger}", messenger);
             }
             catch (Exception e)
             {

@@ -12,10 +12,12 @@ using MvvmCross.ViewModels;
 using PCController.Core.Managers;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
+// ReSharper disable CheckNamespace
+// ReSharper disable once ArrangeModifiersOrder
 
 namespace PCController.Core.ViewModels
 {
-    public class PCControllerInfoViewModel : MvxNavigationViewModel<WindowChildParam>
+    public sealed class PCControllerInfoViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly Stopwatch _stopwatch;
 
@@ -26,7 +28,7 @@ namespace PCController.Core.ViewModels
         {
             RefreshLogCommand = new MvxCommand(GetLogsFromManager);
 
-            Serilog.Log.Logger.Information("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            Log.Info("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             GetAppInfo();
             _stopwatch = new Stopwatch();
