@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="WER_DontShowUI.reg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MvvmCross" Version="7.1.2" />
     <PackageReference Include="MvvmCross.Platforms.Wpf" Version="7.1.2" />
     <PackageReference Include="MvvmCross.Plugin.JsonLocalization" Version="7.1.2" />

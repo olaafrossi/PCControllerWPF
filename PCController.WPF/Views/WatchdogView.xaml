@@ -114,6 +114,41 @@
                             Focusable="True"
                             ScrollViewer.CanContentScroll="True"
                             Text="Unresponsive Timeout (seconds)" />
+                        <ui:SimpleStackPanel
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Button
+                                x:Name="StopMonitor"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                mvx:Bi.nd="Command StopProcMonitorCommand"
+                                Content="Stop Process Monitor"
+                                IsEnabled="{Binding ProcMonitorStopButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                x:Name="StartMonitor"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Right"
+                                mvx:Bi.nd="Command StartProcMonitorCommand"
+                                Content="Start Process Monitor"
+                                IsEnabled="{Binding ProcMonitorStartButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                x:Name="KillApp"
+                                Width="145"
+                                MinHeight="40"
+                                Margin="0,5,0,5"
+                                HorizontalAlignment="Right"
+                                mvx:Bi.nd="Command KillProcMonitorCommand"
+                                Content="Kill Process"
+                                IsEnabled="{Binding ProcMonitorKillButtonStatus}"
+                                Style="{StaticResource AccentButtonStyle}" />
+                        </ui:SimpleStackPanel>
                     </ui:SimpleStackPanel>
                     <ui:SimpleStackPanel
                         Grid.Row="1"
@@ -152,31 +187,6 @@
                             IsReadOnly="False"
                             ScrollViewer.CanContentScroll="True"
                             Text="{Binding UnresponsiveTimeout, UpdateSourceTrigger=PropertyChanged}" />
-                        <ui:SimpleStackPanel
-                            Margin="5,0,5,0"
-                            HorizontalAlignment="Center"
-                            Orientation="Horizontal">
-                            <Button
-                                x:Name="StopMonitor"
-                                Width="145"
-                                MinHeight="40"
-                                Margin="0,5,5,5"
-                                HorizontalAlignment="Left"
-                                mvx:Bi.nd="Command StopProcMonitor"
-                                Content="Stop Process Monitor"
-                                IsEnabled="{Binding ProcMonitorStoppedButtonStatus}"
-                                Style="{StaticResource AccentButtonStyle}" />
-                            <Button
-                                x:Name="StartMonitor"
-                                Width="145"
-                                MinHeight="40"
-                                Margin="0,5,0,5"
-                                HorizontalAlignment="Right"
-                                mvx:Bi.nd="Command StartProcMonitor"
-                                Content="Start Process Monitor"
-                                IsEnabled="{Binding ProcMonitorStartedButtonStatus}"
-                                Style="{StaticResource AccentButtonStyle}" />
-                        </ui:SimpleStackPanel>
                     </ui:SimpleStackPanel>
                     <ui:SimpleStackPanel
                         Grid.Row="1"
@@ -242,26 +252,28 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <!--<StackPanel
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    Orientation="Horizontal">
-                    <Button Margin="5" mvx:Bi.nd="Command AddItemCommand">Add item</Button>
-                    <Button Margin="5" mvx:Bi.nd="Command RemoveItemCommand">Remove item</Button>
-                    <Button Margin="5" mvx:Bi.nd="Command AddSeriesCommand">Add ThreadSeries</Button>
-                    <Button Margin="5" mvx:Bi.nd="Command RemoveSeriesCommand">Remove ThreadSeries</Button>
-                </StackPanel>-->
-                    <Rectangle
+                    <StackPanel
                         Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                        <Button Margin="5" mvx:Bi.nd="Command AddItemCommand">Add item</Button>
+                        <Button Margin="5" mvx:Bi.nd="Command RemoveItemCommand">Remove item</Button>
+                        <Button Margin="5" mvx:Bi.nd="Command AddSeriesCommand">Add ThreadSeries</Button>
+                        <Button Margin="5" mvx:Bi.nd="Command RemoveSeriesCommand">Remove ThreadSeries</Button>
+                    </StackPanel>
+                    <Rectangle
+                        Grid.Row="1"
                         Grid.RowSpan="2"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         Fill="{DynamicResource SimpleStackPanelBackgroundDarkGrey}"
                         Stroke="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" />
                     <TextBlock
-                        Grid.Row="0"
+                        Grid.Row="1"
                         Grid.Column="0"
                         Margin="5"
                         FontSize="18"
@@ -269,7 +281,8 @@
                         Foreground="#FFDEA504"
                         Text="Threads" />
                     <lvc:CartesianChart
-                        Grid.Row="1"
+                        x:Name="cartesianChart"
+                        Grid.Row="2"
                         Grid.Column="0"
                         Width="650"
                         Height="550"
@@ -277,12 +290,17 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
                         Series="{Binding ThreadSeries}"
-                        TooltipFindingStrategy="CompareOnlyX"
-                        TooltipFontSize="12"
-                        TooltipPosition="Center"
                         UseLayoutRounding="True" />
+                    <lvc:DefaultLegend
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        MinHeight="100"
+                        Background="GreenYellow"
+                        FontSize="14"
+                        Foreground="DimGray"
+                        Series="{Binding BindingGroup.Name, ElementName=cartesianChart}" />
                     <TextBlock
-                        Grid.Row="0"
+                        Grid.Row="1"
                         Grid.Column="1"
                         Margin="-180,5,5,5"
                         FontSize="18"
@@ -290,18 +308,14 @@
                         Foreground="#FFDEA504"
                         Text="Memory" />
                     <lvc:CartesianChart
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="1"
-                        Grid.ColumnSpan="1"
                         Width="650"
                         Height="550"
                         Margin="-180,5,5,5"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
                         Series="{Binding MemorySeries}"
-                        TooltipFindingStrategy="CompareOnlyX"
-                        TooltipFontSize="12"
-                        TooltipPosition="Center"
                         UseLayoutRounding="True" />
                 </Grid>
                 <TextBlock
@@ -321,8 +335,8 @@
                     MinWidth="400"
                     MinHeight="100"
                     MaxWidth="1200"
-                    HorizontalAlignment="Left"
                     Margin="1,5,5,5"
+                    HorizontalAlignment="Left"
                     AutoGenerateColumns="True"
                     BorderBrush="Gray"
                     BorderThickness="1"
@@ -421,7 +435,16 @@
                         ScrollViewer.CanContentScroll="True"
                         SnapsToDevicePixels="True"
                         Text="C:\ThreeByteIntermedia\PCController\Logs\network.db" />
+                    <Button
+                        Width="250"
+                        MinHeight="40"
+                        Margin="5,5,5,5"
+                        HorizontalAlignment="Left"
+                        mvx:Bi.nd="Command OpenFolderCommand"
+                        Content="Click to open location of logs"
+                        Style="{StaticResource AccentButtonStyle}" />
                 </ui:SimpleStackPanel>
+
             </Grid>
         </Border>
     </ScrollViewer>

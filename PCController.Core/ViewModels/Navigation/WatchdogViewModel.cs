@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using LiveChartsCore;
@@ -52,11 +54,13 @@ namespace PCController.Core.ViewModels
             RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
+            KillProcMonitorCommand = new MvxCommand(KillProcess);
+            OpenFolderCommand = new MvxCommand(OpenFolder);
+
             AddItemCommand = new MvxCommand(AddThreadToChart);
             RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
             //AddSeriesCommand = new MvxCommand(AddSeries);
             RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
-
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -65,24 +69,33 @@ namespace PCController.Core.ViewModels
             // start the proc mon
             ResolveAndStartProcMon();
 
-
             // set initial UI Fields
             ProcessName = _procMonitor.ProcessName;
             ExecutionString = _procMonitor.ExecutionString;
             ResourceSnapshotInterval = _procMonitor.ResourceSnapshotInterval;
             UnresponsiveTimeout = _procMonitor.UnresponsiveTimeout;
-            ProcMonitorStoppedButtonStatus = true;
-            ProcMonitorStartedButtonStatus = true;
+            ProcMonitorStopButtonStatus = true;
+            ProcMonitorStartButtonStatus = false;
+            ProcMonitorKillButtonStatus = true;
+
             AddChart();
             AddMemoryChart();
 
+            RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
+        }
 
-
-            RaisePropertyChanged(() => ProcMonitorStoppedButtonStatus);
-            RaisePropertyChanged(() => ProcMonitorStartedButtonStatus);
+        private void OpenFolder()
+        {
+            string path = Properties.Settings.Default.LocalDataFolder;
+            Process newProcess = new Process();
+            Process.Start("explorer.exe", path);
         }
 
         public IMvxCommand AddItemCommand { get; set; }
+
+        public IMvxCommand OpenFolderCommand { get; set; }
 
         public IMvxCommand RemoveItemCommand { get; set; }
 
@@ -96,9 +109,13 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand StartProcMonitorCommand { get; set; }
 
-        public bool ProcMonitorStoppedButtonStatus { get; set; }
+        public IMvxCommand KillProcMonitorCommand { get; set; }
 
-        public bool ProcMonitorStartedButtonStatus { get; set; }
+        public bool ProcMonitorStopButtonStatus { get; set; }
+
+        public bool ProcMonitorStartButtonStatus { get; set; }
+
+        public bool ProcMonitorKillButtonStatus { get; set; }
 
         public ObservableCollection<ISeries> ThreadSeries { get; set; }
 
@@ -143,8 +160,6 @@ namespace PCController.Core.ViewModels
             _threadCount = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
             ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
             AddSeries();
-
-
         }
 
         public void AddMemoryChart()
@@ -191,7 +206,6 @@ namespace PCController.Core.ViewModels
                 _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
                 _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
             }
-
         }
 
         public void AddSeries()
@@ -201,6 +215,8 @@ namespace PCController.Core.ViewModels
                 return;
             }
             ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0 } });
+
+            
         }
 
         public void AddMemorySeries()
@@ -264,7 +280,7 @@ namespace PCController.Core.ViewModels
         {
             try
             {
-                //Create a userfile with a timestamp that will be accesible
+                // TODO chnage this to the Props settings file location, next to the log. Create a userfile with a timestamp that will be accesible
                 string filename = string.Format("{0}_{1}.txt", processName, DateTime.Now.ToString("yyyyMMdd-hhmmss"));
                 string filepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Watchdog", filename);
                 string filedir = Path.GetDirectoryName(filepath);
@@ -312,8 +328,9 @@ namespace PCController.Core.ViewModels
         private void OnProcessEvent(object? sender, ProcessEventArgs e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
-            ProcMonRealTimeCollection.Insert(0, "I think the process is frozen");
+            ProcMonRealTimeCollection.Insert(0, "Process Has Frozen");
             RaisePropertyChanged(() => ProcMonRealTimeCollection);
+            WriteErrorDataToDataBase("Process Has Frozen");
         }
 
         private void OnProcessExited(object? sender, EventArgs e)
@@ -397,11 +414,56 @@ namespace PCController.Core.ViewModels
 
         private void StartProcMonitor()
         {
+
+            lock (_processMonitorLock)
+            {
+                // setup info for the 3Byte watchdog/process monitor
+                string processName = Properties.Settings.Default.ProcessName;
+                string exeString = Properties.Settings.Default.ExecutionString;
+                _procMonitor = new ProcessMonitor(processName, exeString);
+                _procMonitor.ProcessEvent += OnProcessEvent;
+                _procMonitor.ProcessExited += OnProcessExited;
+                _procMonitor.ResourceEvent += OnResourceEvent;
+            }
+
+            ProcMonitorStartButtonStatus = false;
+            ProcMonitorStopButtonStatus = true;
+            ProcMonitorKillButtonStatus = true;
+
+            RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
         }
 
         private void StopProcMonitor()
         {
-            _procMonitor.Kill();
+            lock (_processMonitorLock)
+            {
+                if (_procMonitor != null)
+                {
+                    _procMonitor.Dispose();
+                    _procMonitor = null;
+                }
+            }
+
+            ProcMonitorStartButtonStatus = true;
+            ProcMonitorStopButtonStatus = false;
+            ProcMonitorKillButtonStatus = false;
+
+            RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
+            RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
+        }
+
+        private void KillProcess()
+        {
+            lock (_processMonitorLock)
+            {
+                if (_procMonitor != null)
+                {
+                    _procMonitor.Kill();
+                }
+            }
         }
     }
 }
