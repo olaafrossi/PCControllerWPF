@@ -297,9 +297,9 @@ namespace PCController.Core.ViewModels
                 _log.Error("User process file written to: {0}", filepath);
                 return filepath;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _log.Error("Could not dump to user file", ex);
+                _log.ErrorException("Could not dump to user file", e);
                 return null;
             }
         }
@@ -327,7 +327,7 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => DataBaseQueryTime);
         }
 
-        private void OnProcessEvent(object? sender, ProcessEventArgs e)
+        private void OnProcessEvent(object sender, ProcessEventArgs e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
             ProcMonRealTimeCollection.Insert(0, "Process Has Frozen");
@@ -335,7 +335,7 @@ namespace PCController.Core.ViewModels
             WriteErrorDataToDataBase("Process Has Frozen");
         }
 
-        private void OnProcessExited(object? sender, EventArgs e)
+        private void OnProcessExited(object sender, EventArgs e)
         {
             lock (_processMonitorLock)
             {
@@ -359,6 +359,7 @@ namespace PCController.Core.ViewModels
                     RaisePropertyChanged(() => ProcMonRealTimeCollection);
                     string userfile = DumpToUserFile(ProcessName, sb.ToString());
                     Console.WriteLine(userfile);
+                    _log.Error("Monitored Process Died");
                     WriteErrorDataToDataBase("Monitored Process Died");
                     //SetMessage(string.Format("File written to {0}", userfile));
                 }

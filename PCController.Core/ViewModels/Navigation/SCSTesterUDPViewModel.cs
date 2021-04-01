@@ -263,7 +263,7 @@ namespace PCController.Core.ViewModels
             }
             catch (Exception e)
             {
-                _log.Error("UDP driver was already open {e} but we are going to use the existing link", e);
+                _log.ErrorException("UDP driver was already open {e} but we are going to use the existing link", e);
                 UDPRealTimeCollection.Insert(0, $"UDP driver was already open {e} but we are going to use the existing link");
                 UDPDriverOpenButtonStatus = false;
                 UDPDriverClosedButtonStatus = true;
@@ -285,6 +285,7 @@ namespace PCController.Core.ViewModels
 
         private void DisposeUDPAsyncManager()
         {
+            _log.Info("Disposed UDP Manager (WIP)");
             UDPDriverOpenButtonStatus = true;
             UDPDriverClosedButtonStatus = false;
             UDPLinkAlive = false;

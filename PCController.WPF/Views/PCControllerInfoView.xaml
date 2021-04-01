@@ -285,6 +285,7 @@
                         MinHeight="200"
                         MaxWidth="1500"
                         MaxHeight="650"
+                        
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
@@ -307,6 +308,9 @@
                         <DataGrid.AlternatingRowBackground>
                             <SolidColorBrush Opacity="0.4" Color="DimGray" />
                         </DataGrid.AlternatingRowBackground>
+                        <DataGrid.Columns>
+
+                        </DataGrid.Columns>
                     </DataGrid>
 
 
