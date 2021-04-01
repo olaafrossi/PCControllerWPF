@@ -13,7 +13,7 @@ using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.Managers
 {
-    public class UdpShowControlManager : IDisposable
+    public class UdpShowControlManager
     {
         private readonly IAsyncUdpLink _asyncUdpLink;
 
@@ -28,12 +28,6 @@ namespace PCController.Core.Managers
         public string IncomingMessage { get; set; }
 
         public string UdpFrameCombined { get; set; }
-
-        public void Dispose()
-        {
-            ReleaseUnmanagedResources();
-            GC.SuppressFinalize(this);
-        }
 
         public void AddUdpFrame(string frame)
         {
@@ -173,22 +167,6 @@ namespace PCController.Core.Managers
 
             Log.Logger.Error("No network adapters with an IPv4 address in the system!");
             return "No network adapters with an IPv4 address in the system!";
-        }
-
-        private void ReleaseUnmanagedResources()
-        {
-            Log.Information("Locking the UDP Driver");
-            lock (_asyncUdpLink)
-            {
-                _asyncUdpLink.Enabled = false;
-                _asyncUdpLink.Dispose();
-                Log.Information("Set UDP Driver Enable to false, and called the dispose method on the library");
-            }
-        }
-
-        ~UdpShowControlManager()
-        {
-            ReleaseUnmanagedResources();
         }
     }
 }
