@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -29,19 +31,21 @@ namespace PCController.Core.ViewModels
         private bool _lineFeedTrue;
         private string _messageSent;
         private WindowChildParam _param;
-        private UdpShowControlManager _udpLink;
+        private static UdpShowControlManager _udpLink; //TODO how to dispose of a static field?
+        private IMvxNavigationService _navigationService;
+        private readonly IMvxLog _log;
 
         public SCSTesterUDPViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
-            Log.Info("SCSTesterUDPViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
-            
+            _log = logProvider.GetLogFor<SCSTesterUDPViewModel>();
+            _navigationService = navigationService;
+            _log.Info("SCSTesterUDPViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+
             // Setup UI Commands
             RefreshUdpMsgCommand = new MvxCommand(GetLogsFromManager);
             SendUdpCommand = new MvxCommand(SendUDPMessage);
             OpenUdpCommand = new MvxCommand(CreateUDPAsyncManager);
             CloseUdpCommand = new MvxCommand(DisposeUDPAsyncManager);
-            UDPDriverOpenButtonStatus = true;
-            UDPDriverClosedButtonStatus = false;
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -51,6 +55,16 @@ namespace PCController.Core.ViewModels
             IPAddress = Settings.Default.AsyncUdpIPAddress;
             PortNum = Settings.Default.AsyncUdpRemotePort;
             LocalPortNum = Settings.Default.AsyncUdpLocalPort;
+        }
+
+        public override void Prepare(WindowChildParam param)
+        {
+            _param = param;
+        }
+
+        public override async Task Initialize()
+        {
+            await base.Initialize();
         }
 
         public IMvxCommand OpenUdpCommand { get; set; }
@@ -220,32 +234,45 @@ namespace PCController.Core.ViewModels
             Settings.Default.AsyncUdpRemotePort = PortNum;
             Settings.Default.AsyncUdpLocalPort = LocalPortNum;
             Settings.Default.Save();
+            _log.Info("UDP settings have been saved");
 
-            UdpShowControlManager link = new(IPAddress, PortNum, LocalPortNum);
-            _udpLink = link;
+            try
+            {
+                UdpShowControlManager link = new(IPAddress, PortNum, LocalPortNum);
+                _udpLink = link;
+                _log.Info("UDP has been created {IPAddress} {PortNum} {LocalPortNum}", IPAddress, PortNum, LocalPortNum);
 
-            // set the UI
-            UDPDriverOpenButtonStatus = false;
-            UDPDriverClosedButtonStatus = true;
-            UDPLinkAlive = true;
-            RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
-            RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
-            RaisePropertyChanged(() => CanSendMsg);
-            RaisePropertyChanged(() => UDPLinkAlive);
+                // Setup the binding and thread safety when msg's come in from _asyncUdpLink
+                BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _udpLink);
+                _udpLink.UDPDataReceived += UDPOnDataReceived;
 
-            // Setup the binding and thread safety when msg's come in from _asyncUdpLink
-            BindingOperations.EnableCollectionSynchronization(UDPRealTimeCollection, _udpLink);
-            _udpLink.UDPDataReceived += UDPOnDataReceived;
-        }
-
-        public override void Prepare(WindowChildParam param)
-        {
-            _param = param;
+                // set the UI
+                UDPDriverOpenButtonStatus = false;
+                UDPDriverClosedButtonStatus = true;
+                UDPLinkAlive = true;
+                RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
+                RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
+                RaisePropertyChanged(() => CanSendMsg);
+                RaisePropertyChanged(() => UDPLinkAlive);
+            }
+            catch (Exception e)
+            {
+                _log.Error("UDP driver was already open {e} but we are going to use the existing link", e);
+                UDPRealTimeCollection.Insert(0, $"UDP driver was already open {e} but we are going to use the existing link");
+                UDPDriverOpenButtonStatus = false;
+                UDPDriverClosedButtonStatus = true;
+                UDPLinkAlive = true;
+                
+                RaisePropertyChanged(() => UDPDriverOpenButtonStatus);
+                RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
+                RaisePropertyChanged(() => CanSendMsg);
+                RaisePropertyChanged(() => UDPLinkAlive);
+            }
         }
 
         public void UDPOnDataReceived(object sender, EventArgs e)
         {
-            Log.Info("Message from Remote {e}", e);
+            _log.Info("Message from Remote {e}", e);
             string message = _udpLink.UdpFrameCombined;
             UDPRealTimeCollection.Insert(0, message);
         }
@@ -259,11 +286,6 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => UDPDriverClosedButtonStatus);
             RaisePropertyChanged(() => CanSendMsg);
             RaisePropertyChanged(() => UDPLinkAlive);
-
-            lock (_udpLink)
-            {
-                _udpLink.Dispose();
-            }
         }
 
         public void GetLogsFromManager()
@@ -275,15 +297,14 @@ namespace PCController.Core.ViewModels
 
             int numLogs = parser.GetLogs(NumberOfUdpMsgToFetch);
 
-            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
 
-            Log.Info("Getting Data Logs{numOfMsgs}", numLogs);
+            _log.Info("Getting Data Logs{numOfMsgs}", numLogs);
             IList<UdpSenderModel> rows = sql.GetSomeUdpData(numLogs);
             
             UdpGridRows = rows;
 
             _stopwatch.Stop();
-
             string timeToFetchFromDb = $" DB query time: {_stopwatch.ElapsedMilliseconds} ms";
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => UdpGridRows);
@@ -292,8 +313,14 @@ namespace PCController.Core.ViewModels
 
         private void SendUDPMessage()
         {
-            _udpLink.AddUdpFrame(FrameToSend);
-            UDPRealTimeCollection.Insert(0, _udpLink.UdpFrameCombined);
+            if (_udpLink is null)
+            {
+                _log.Error("UDP driver null so we are going to create a new one");
+                UDPRealTimeCollection.Insert(0, "UDP driver null so we are going to create a new one");
+                CreateUDPAsyncManager();
+            }
+            _udpLink?.AddUdpFrame(FrameToSend);
+            UDPRealTimeCollection.Insert(0, _udpLink?.UdpFrameCombined);
         }
     }
 }
