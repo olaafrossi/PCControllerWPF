@@ -420,7 +420,7 @@ namespace PCController.Core.ViewModels
                 // setup info for the 3Byte watchdog/process monitor
                 string processName = Properties.Settings.Default.ProcessName;
                 string exeString = Properties.Settings.Default.ExecutionString;
-                _procMonitor = new ProcessMonitor(processName, exeString);
+                _procMonitor = new ProcessMonitor(processName, exeString, 1 );
                 _procMonitor.ProcessEvent += OnProcessEvent;
                 _procMonitor.ProcessExited += OnProcessExited;
                 _procMonitor.ResourceEvent += OnResourceEvent;
