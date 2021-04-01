@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
@@ -238,7 +239,12 @@ namespace PCController.Core.ViewModels
 
             try
             {
-                UdpShowControlManager link = new(IPAddress, PortNum, LocalPortNum);
+                UdpShowControlManager link = new(IPAddress, PortNum, LocalPortNum, LogProvider);
+
+                //Mvx.IoCProvider.Resolve<UdpShowControlManager>() = _udpLink;
+
+                
+
                 _udpLink = link;
                 _log.Info("UDP has been created {IPAddress} {PortNum} {LocalPortNum}", IPAddress, PortNum, LocalPortNum);
 
