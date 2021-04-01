@@ -39,7 +39,8 @@ namespace PCController.Core
             // setup info for the 3Byte watchdog/process monitor
             string processName = Properties.Settings.Default.ProcessName;
             string exeString = Properties.Settings.Default.ExecutionString;
-            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IProcessMonitor>(new ProcessMonitor(processName, exeString));
+            
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IProcessMonitor>(new ProcessMonitor(processName, exeString, 60));
 
             // setup info for the 3Byte AsyncUDP Link for SCS Testing
 
