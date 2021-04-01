@@ -55,7 +55,7 @@ namespace PCController.Core.ViewModels
             StopProcMonitorCommand = new MvxCommand(StopProcMonitor);
             StartProcMonitorCommand = new MvxCommand(StartProcMonitor);
             KillProcMonitorCommand = new MvxCommand(KillProcess);
-            GetRegScriptCommand = new MvxCommand(GetRegistryScript);
+            OpenFolderCommand = new MvxCommand(OpenFolder);
 
             AddItemCommand = new MvxCommand(AddThreadToChart);
             RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
@@ -86,7 +86,16 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
         }
 
+        private void OpenFolder()
+        {
+            string path = Properties.Settings.Default.LocalDataFolder;
+            Process newProcess = new Process();
+            Process.Start("explorer.exe", path);
+        }
+
         public IMvxCommand AddItemCommand { get; set; }
+
+        public IMvxCommand OpenFolderCommand { get; set; }
 
         public IMvxCommand RemoveItemCommand { get; set; }
 
@@ -101,8 +110,6 @@ namespace PCController.Core.ViewModels
         public IMvxCommand StartProcMonitorCommand { get; set; }
 
         public IMvxCommand KillProcMonitorCommand { get; set; }
-
-        public IMvxCommand GetRegScriptCommand { get; set; }
 
         public bool ProcMonitorStopButtonStatus { get; set; }
 
@@ -153,8 +160,6 @@ namespace PCController.Core.ViewModels
             _threadCount = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
             ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
             AddSeries();
-
-
         }
 
         public void AddMemoryChart()
@@ -201,7 +206,6 @@ namespace PCController.Core.ViewModels
                 _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
                 _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
             }
-
         }
 
         public void AddSeries()
@@ -296,27 +300,6 @@ namespace PCController.Core.ViewModels
                 Log.Error("Could not dump to user file", ex);
                 return null;
             }
-        }
-
-        private void GetRegistryScript()
-        {
-            //Write file to a temporary directory and then open that
-            string regKeyFile = "WER_DontShowUI.reg";
-
-            string tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WER");
-            Directory.CreateDirectory(tempDir);
-            string regFilePath = System.IO.Path.Combine(tempDir, regKeyFile);
-            using (Stream regFileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(regKeyFile))
-            {
-                using (FileStream fs = new FileStream(regFilePath, FileMode.Create))
-                {
-                    regFileStream.CopyTo(fs);
-                }
-            }
-
-            Process newProcess = new Process();
-            newProcess.StartInfo = new ProcessStartInfo(tempDir);
-            newProcess.Start();
         }
 
         public void GetLogsFromManager()
