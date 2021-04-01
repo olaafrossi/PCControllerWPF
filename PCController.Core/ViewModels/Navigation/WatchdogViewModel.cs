@@ -38,6 +38,7 @@ namespace PCController.Core.ViewModels
         private IProcessMonitor _procMonitor;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
         private int _writeCountToDb = 0;
+        private readonly IMvxLog _log;
 
         // chart fields
         private int index;
@@ -48,7 +49,8 @@ namespace PCController.Core.ViewModels
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
-            Log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _log = logProvider.GetLogFor<WatchdogViewModel>();
+            _log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             // Setup UI Commands
             RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
@@ -292,12 +294,12 @@ namespace PCController.Core.ViewModels
                 }
 
                 File.WriteAllText(filepath, text);
-                Log.Error("User process file written to: {0}", filepath);
+                _log.Error("User process file written to: {0}", filepath);
                 return filepath;
             }
             catch (Exception ex)
             {
-                Log.Error("Could not dump to user file", ex);
+                _log.Error("Could not dump to user file", ex);
                 return null;
             }
         }
@@ -312,7 +314,7 @@ namespace PCController.Core.ViewModels
             
             int numLogs = parser.GetLogs(NumberOfProcLogsToFetch);
 
-            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
             IList<ProcMonitorModel> rows = sql.GetSomeProcData(numLogs);
             
             ProcGridRows = rows;

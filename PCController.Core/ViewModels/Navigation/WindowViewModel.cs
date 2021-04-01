@@ -36,7 +36,8 @@ namespace PCController.Core.ViewModels
         private bool _isItemSetting = true;
         private Modes _mode = Modes.Blue;
         private ObservableCollection<string> _realTimeLogCollection = new();
-        
+        private readonly IMvxLog _log;
+
 
         private void Sinky_LogString(object sender, string e)
         {
@@ -46,7 +47,7 @@ namespace PCController.Core.ViewModels
 
         public WindowViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
-
+            _log = logProvider.GetLogFor<WindowViewModel>();
             // get singleton and create event handler
             CollectionSink sink = Mvx.IoCProvider.Resolve<CollectionSink>();
             sink.LogString += Sinky_LogString;
@@ -55,7 +56,7 @@ namespace PCController.Core.ViewModels
             _count++;
             Count = _count;
 
-            Log.Info("WindowViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _log.Info("WindowViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
             RealTimeLogCollection.Insert(0, "Hello World");
             
 

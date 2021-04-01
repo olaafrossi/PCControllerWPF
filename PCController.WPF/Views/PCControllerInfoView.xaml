@@ -305,7 +305,7 @@
                         VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                         VirtualizingPanel.VirtualizationMode="Standard">
                         <DataGrid.AlternatingRowBackground>
-                        <SolidColorBrush Opacity="0.4" Color="DimGray" />
+                            <SolidColorBrush Opacity="0.4" Color="DimGray" />
                         </DataGrid.AlternatingRowBackground>
                     </DataGrid>
 

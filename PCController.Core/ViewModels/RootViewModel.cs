@@ -39,7 +39,8 @@ namespace PCController.Core.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                _log.ErrorException("could not resolve the Messenger", e);
+                _log.Error("could not resolve the Messenger", e);
             }
 
             //ShowChildCommand = new MvxAsyncCommand(async () =>
