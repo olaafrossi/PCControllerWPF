@@ -183,13 +183,13 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Setting {
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int AutoRefreshLogInterval {
             get {
-                return ((int)(this["Setting"]));
+                return ((int)(this["AutoRefreshLogInterval"]));
             }
             set {
-                this["Setting"] = value;
+                this["AutoRefreshLogInterval"] = value;
             }
         }
     }
