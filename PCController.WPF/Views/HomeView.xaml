@@ -9,6 +9,7 @@
     xmlns:ui="http://schemas.modernwpf.com/2019"
     xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
     xmlns:vm="clr-namespace:PCController.Core.ViewModels;assembly=PCController.Core"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     x:Name="MvxWView"
     d:DesignHeight="1120"
     d:DesignWidth="1410"
@@ -67,7 +68,7 @@
                         FontSize="24"
                         FontWeight="Normal"
                         Foreground="#FFDEA504"
-                        Text="Some Stuff" />
+                        Text="Help/How To" />
                     <ui:SimpleStackPanel
                         Grid.Row="1"
                         Grid.Column="0"
@@ -75,11 +76,17 @@
                         Margin="0,5,0,5"
                         Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
                         <TextBlock
-                            MinHeight="32"
-                            Margin="5,10,5,5"
+                            VerticalAlignment="Center"
+                            Margin="5,12,5,5"
                             Focusable="True"
                             ScrollViewer.CanContentScroll="True"
                             Text="Auto Refresh Interval (m/sec)" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Margin="5,22,5,5"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="Time to Next DB Query" />
                         <TextBlock
                             MinHeight="32"
                             MaxWidth="200"
@@ -93,8 +100,7 @@
                     <ui:SimpleStackPanel
                         Grid.Row="1"
                         Grid.Column="1"
-                        MinWidth="260"
-                        MaxWidth="300"
+                        Width="180"
                         Margin="0,5,2,5"
                         HorizontalAlignment="Left"
                         Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
@@ -115,23 +121,23 @@
                         <ui:SimpleStackPanel
                             Margin="5,0,5,0"
                             HorizontalAlignment="Center"
-                            Orientation="Horizontal">
+                            Orientation="Vertical">
                             <Button
                                 x:Name="StartAutoLog"
-                                Width="145"
+                                Width="165"
                                 MinHeight="40"
-                                Margin="0,5,5,5"
-                                HorizontalAlignment="Left"
+                                Margin="5"
+                                HorizontalAlignment="Center"
                                 mvx:Bi.nd="Command StartAutoLogRefreshCommand"
                                 Content="Start Auto Refresh"
                                 IsEnabled="{Binding AutoLogRefreshTrueButtonStatus}"
                                 Style="{StaticResource AccentButtonStyle}" />
                             <Button
                                 x:Name="StopAutoLog"
-                                Width="145"
+                                Width="165"
                                 MinHeight="40"
-                                Margin="0,5,0,5"
-                                HorizontalAlignment="Right"
+                                Margin="5"
+                                HorizontalAlignment="Center"
                                 mvx:Bi.nd="Command StopAutoLogRefreshCommand"
                                 Content="Stop Auto Refresh"
                                 IsEnabled="{Binding AutoLogRefreshFalseButtonStatus}"
@@ -148,29 +154,13 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
                         Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-                        <ListBox
-                            x:Name="RealTimeLog"
-                            MaxHeight="250"
-                            AlternationCount="2"
-                            BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
-                            BorderThickness="1"
-                            ScrollViewer.CanContentScroll="True"
-                            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                            ScrollViewer.VerticalScrollBarVisibility="Visible"
-                            UseLayoutRounding="True" />
+                        <wv2:WebView2
+                            Name="WebView"
+                            Width="Auto"
+                            Height="250"
+                            Source="https://www.microsoft.com" />
                     </ui:SimpleStackPanel>
-                    <Grid.Resources>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Style.Triggers>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                    <Setter Property="Foreground" Value="#CCF7FFFF" />
-                                </Trigger>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                    <Setter Property="Foreground" Value="#FFDEA504" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Resources>
+
                 </Grid>
                 <TextBlock
                     Grid.Row="2"
@@ -184,7 +174,7 @@
                     x:Name="LogGrid"
                     Grid.Row="3"
                     Grid.Column="0"
-                    Grid.ColumnSpan="1"
+                    Grid.ColumnSpan="2"
                     MinWidth="400"
                     MinHeight="100"
                     MaxWidth="1500"
@@ -215,7 +205,7 @@
                 </DataGrid>
                 <ui:SimpleStackPanel
                     Grid.Row="3"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Width="250"
                     MaxHeight="900"
                     Margin="0,0,0,15"
