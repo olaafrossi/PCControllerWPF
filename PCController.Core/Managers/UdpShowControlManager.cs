@@ -46,21 +46,21 @@ namespace PCController.Core.Managers
                     message = message.Replace("!0D!0A", "\r\n");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    _log.Info("Message contained <crlf>, replaced the hex with ASCII to sent properly {message}", message);
+                    _log.Info("Message contained <crlf>, replaced the hex with ASCII to be sent properly {message}", message);
                 }
                 else if (message.Contains("!0D"))
                 {
                     message = message.Replace("!0D", "\r");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    _log.Info("Message contained <cr>, replaced the hex with ASCII to sent properly {message}", message);
+                    _log.Info("Message contained <cr>, replaced the hex with ASCII to be sent properly {message}", message);
                 }
                 else if (message.Contains("!0A"))
                 {
                     message = message.Replace("!0A", "\n");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    _log.Info("Message contained <lf>, replaced the hex with ASCII to sent properly {message}", message);
+                    _log.Info("Message contained <lf>, replaced the hex with ASCII to be sent properly {message}", message);
                 }
                 else
                 {
