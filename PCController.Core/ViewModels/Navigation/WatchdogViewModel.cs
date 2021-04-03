@@ -159,7 +159,7 @@ namespace PCController.Core.ViewModels
 
             ThreadSeries = new ObservableCollection<ISeries>();
 
-            _threadCount = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            _threadCount = new ObservableCollection<ObservablePoint> {new(index++, 1)};
             ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
             AddSeries();
         }
@@ -169,13 +169,13 @@ namespace PCController.Core.ViewModels
 
             MemorySeries = new ObservableCollection<ISeries>();
 
-            _peakPagedMemorySize = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            _peakPagedMemorySize = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
             MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakPagedMemorySize });
 
-            _peakWorkingSet = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            _peakWorkingSet = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
             MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakWorkingSet });
 
-            _privateMemorySize = new ObservableCollection<ObservablePoint> { new(index++, 1), new(index++, 1) };
+            _privateMemorySize = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
             MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _privateMemorySize });
             
             AddMemorySeries();
@@ -204,9 +204,9 @@ namespace PCController.Core.ViewModels
             }
             else
             {
-                _peakPagedMemorySize.Add(new ObservablePoint(index++, PeakPagedMemorySize));
-                _peakWorkingSet.Add(new ObservablePoint(index++, PeakWorkingSet));
-                _privateMemorySize.Add(new ObservablePoint(index++, PrivateMemorySize));
+                _peakPagedMemorySize.Add(new ObservablePoint(index, PeakPagedMemorySize));
+                _peakWorkingSet.Add(new ObservablePoint(index, PeakWorkingSet));
+                _privateMemorySize.Add(new ObservablePoint(index, PrivateMemorySize));
             }
         }
 
@@ -216,7 +216,7 @@ namespace PCController.Core.ViewModels
             {
                 return;
             }
-            ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0 } });
+            ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0, 0 } });
 
             
         }
@@ -227,7 +227,7 @@ namespace PCController.Core.ViewModels
             {
                 return;
             }
-            MemorySeries.Add(new LineSeries<long> { Values = new List<long> { 0 } });
+            MemorySeries.Add(new LineSeries<long> { Values = new List<long> { 0, 0 } });
         }
 
         public void RemoveThreadFromChart()

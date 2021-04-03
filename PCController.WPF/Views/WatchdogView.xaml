@@ -73,14 +73,6 @@
                         FontSize="24"
                         FontWeight="Normal"
                         Foreground="#FFDEA504"
-                        Text="Frame Details" />
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="3"
-                        Margin="5"
-                        FontSize="24"
-                        FontWeight="Normal"
-                        Foreground="#FFDEA504"
                         Text="Realtime Log (This session only)" />
                     <ui:SimpleStackPanel
                         Grid.Row="1"
@@ -191,22 +183,7 @@
                     <ui:SimpleStackPanel
                         Grid.Row="1"
                         Grid.Column="2"
-                        Height="250"
-                        MinWidth="345"
-                        MaxWidth="350"
-                        Margin="0,5,0,5"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
-                        <TextBlock
-                            Margin="5"
-                            FontSize="20"
-                            Foreground="#CCF7FFFF"
-                            Text="Note: Writes to the DB are only ever 60 seconds" />
-                    </ui:SimpleStackPanel>
-                    <ui:SimpleStackPanel
-                        Grid.Row="1"
-                        Grid.Column="3"
+                        Grid.ColumnSpan="2"
                         Width="Auto"
                         Margin="0,5,0,5"
                         HorizontalAlignment="Stretch"
@@ -281,7 +258,7 @@
                         Foreground="#FFDEA504"
                         Text="Threads" />
                     <lvc:CartesianChart
-                        x:Name="cartesianChart"
+                        x:Name="ThreadChart"
                         Grid.Row="2"
                         Grid.Column="0"
                         Width="650"
@@ -291,32 +268,180 @@
                         VerticalAlignment="Top"
                         Series="{Binding ThreadSeries}"
                         UseLayoutRounding="True" />
-                    <lvc:DefaultLegend
-                        Grid.Row="3"
+                    <StackPanel
+                        Grid.Row="2"
                         Grid.Column="0"
-                        MinHeight="100"
-                        Background="GreenYellow"
-                        FontSize="14"
-                        Foreground="DimGray"
-                        Series="{Binding BindingGroup.Name, ElementName=cartesianChart}" />
+                        Margin="420,0,0,5"
+                        Orientation="Vertical">
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <Rectangle
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                VerticalAlignment="Top">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{DynamicResource SolidBlue}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock
+                                Margin="5"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="Threads">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource SolidBlue}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                            <Rectangle
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                VerticalAlignment="Top">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{DynamicResource SolidBlue}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock
+                                Margin="5"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="Threads">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource SolidBlue}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="5,365,0,5"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,5,5,5"
+                            FontSize="16"
+                            Text="Number of Snapshots">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FFDEA504" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </StackPanel>
+
                     <TextBlock
                         Grid.Row="1"
                         Grid.Column="1"
-                        Margin="-180,5,5,5"
+                        Margin="5,5,5,5"
                         FontSize="18"
                         FontWeight="Normal"
                         Foreground="#FFDEA504"
-                        Text="Memory" />
+                        Text="Memory (MB)" />
                     <lvc:CartesianChart
                         Grid.Row="2"
                         Grid.Column="1"
                         Width="650"
                         Height="550"
-                        Margin="-180,5,5,5"
+                        Margin="0,5,5,5"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Top"
                         Series="{Binding MemorySeries}"
                         UseLayoutRounding="True" />
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="420,0,0,5"
+                        Orientation="Vertical">
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <Rectangle
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                VerticalAlignment="Top">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{DynamicResource SolidRed}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock
+                                Margin="5"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="Peak Working Mem (MB)">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource SolidRed}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                            <Rectangle
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                VerticalAlignment="Top">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{DynamicResource SolidBlue}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock
+                                Margin="5"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="Peak Paged Mem (MB)">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource SolidBlue}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                            <Rectangle
+                                Width="20"
+                                Height="20"
+                                Margin="5"
+                                VerticalAlignment="Top">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{DynamicResource SolidGreen}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock
+                                Margin="5"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="Private Mem (MB)">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{DynamicResource SolidGreen}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Margin="5,365,0,5"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,5,5,5"
+                            FontSize="16"
+                            Text="Number of Snapshots">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FFDEA504" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="5,365,0,5"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,5,5,5"
+                            FontSize="16"
+                            Text="Number of Snapshots">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FFDEA504" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </StackPanel>
+
                 </Grid>
                 <TextBlock
                     Grid.Row="3"

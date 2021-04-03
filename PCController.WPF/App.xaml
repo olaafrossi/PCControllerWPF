@@ -17,6 +17,9 @@
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="SimpleStackPanelBackgroundDarkGrey" Color="#FF242424" />
             <converters:EnumValuesConverter x:Key="EnumValuesConverter" />
+            <Color x:Key="SolidBlue">#FF225D8B</Color>
+            <Color x:Key="SolidRed">#FF8C332D</Color>
+            <Color x:Key="SolidGreen">#FF577337</Color>
         </ResourceDictionary>
     </Application.Resources>
 
