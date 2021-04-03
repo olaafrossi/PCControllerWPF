@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Created by Three Byte Intemedia, Inc. | project: PCController |
+// Created: 2021 03 12
+// by Olaaf Rossi
+
+using System;
 using System.Threading.Tasks;
 using MvvmCross;
 using MvvmCross.Commands;
@@ -7,25 +11,19 @@ using MvvmCross.Logging;
 using MvvmCross.Navigation;
 using MvvmCross.Plugin.Messenger;
 using MvvmCross.ViewModels;
-using PCController.Core.Models;
-using PCController.Core.ViewModels;
 
 namespace PCController.Core.ViewModels
 {
     public class RootViewModel : MvxNavigationViewModel
     {
-        private readonly IMvxViewModelLoader _mvxViewModelLoader;
-
         private readonly IMvxLog _log;
+        private readonly IMvxViewModelLoader _mvxViewModelLoader;
 
         private int _counter = 2;
 
-        private string _welcomeText = "Default welcome";
+        private bool _isVisible;
 
-        public IMvxLanguageBinder TextSource
-        {
-            get { return new MvxLanguageBinder("Playground.Core", "Text"); }
-        }
+        private string _welcomeText = "Default welcome";
 
         public RootViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService, IMvxViewModelLoader mvxViewModelLoader) : base(logProvider, navigationService)
         {
@@ -39,7 +37,7 @@ namespace PCController.Core.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                _log.ErrorException("could not resolve the Messenger", e);
             }
 
             //ShowChildCommand = new MvxAsyncCommand(async () =>
@@ -103,6 +101,11 @@ namespace PCController.Core.ViewModels
             //ShowLocationCommand = new MvxAsyncCommand(() => NavigationService.Navigate<LocationViewModel>());
         }
 
+        public IMvxLanguageBinder TextSource
+        {
+            get { return new MvxLanguageBinder("Playground.Core", "Text"); }
+        }
+
         public MvxNotifyTask MyTask { get; set; }
 
         public IMvxAsyncCommand ShowChildCommand { get; }
@@ -164,8 +167,6 @@ namespace PCController.Core.ViewModels
         public IMvxCommand FragmentCloseCommand { get; }
         public IMvxAsyncCommand ShowLocationCommand { get; }
 
-        private bool _isVisible;
-
         public bool IsVisible
         {
             get => _isVisible;
@@ -222,18 +223,18 @@ namespace PCController.Core.ViewModels
                 }, exception => { });
         }
 
-        protected override void SaveStateToBundle(IMvxBundle bundle)
-        {
-            base.SaveStateToBundle(bundle);
-
-            bundle.Data["MyKey"] = _counter.ToString();
-        }
-
         protected override void ReloadFromBundle(IMvxBundle state)
         {
             base.ReloadFromBundle(state);
 
             _counter = int.Parse(state.Data["MyKey"]);
+        }
+
+        protected override void SaveStateToBundle(IMvxBundle bundle)
+        {
+            base.SaveStateToBundle(bundle);
+
+            bundle.Data["MyKey"] = _counter.ToString();
         }
 
         //private async Task Navigate()

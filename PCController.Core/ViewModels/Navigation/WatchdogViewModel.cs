@@ -38,6 +38,7 @@ namespace PCController.Core.ViewModels
         private IProcessMonitor _procMonitor;
         private ObservableCollection<string> _procMonRealTimeCollection = new();
         private int _writeCountToDb = 0;
+        private readonly IMvxLog _log;
 
         // chart fields
         private int index;
@@ -48,7 +49,8 @@ namespace PCController.Core.ViewModels
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
-            Log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _log = logProvider.GetLogFor<WatchdogViewModel>();
+            _log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             // Setup UI Commands
             RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
@@ -292,12 +294,12 @@ namespace PCController.Core.ViewModels
                 }
 
                 File.WriteAllText(filepath, text);
-                Log.Error("User process file written to: {0}", filepath);
+                _log.Error("User process file written to: {0}", filepath);
                 return filepath;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Error("Could not dump to user file", ex);
+                _log.ErrorException("Could not dump to user file", e);
                 return null;
             }
         }
@@ -312,7 +314,7 @@ namespace PCController.Core.ViewModels
             
             int numLogs = parser.GetLogs(NumberOfProcLogsToFetch);
 
-            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
             IList<ProcMonitorModel> rows = sql.GetSomeProcData(numLogs);
             
             ProcGridRows = rows;
@@ -325,7 +327,7 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => DataBaseQueryTime);
         }
 
-        private void OnProcessEvent(object? sender, ProcessEventArgs e)
+        private void OnProcessEvent(object sender, ProcessEventArgs e)
         {
             ProcMonRealTimeCollection.Insert(0, e.ToString());
             ProcMonRealTimeCollection.Insert(0, "Process Has Frozen");
@@ -333,7 +335,7 @@ namespace PCController.Core.ViewModels
             WriteErrorDataToDataBase("Process Has Frozen");
         }
 
-        private void OnProcessExited(object? sender, EventArgs e)
+        private void OnProcessExited(object sender, EventArgs e)
         {
             lock (_processMonitorLock)
             {
@@ -357,6 +359,7 @@ namespace PCController.Core.ViewModels
                     RaisePropertyChanged(() => ProcMonRealTimeCollection);
                     string userfile = DumpToUserFile(ProcessName, sb.ToString());
                     Console.WriteLine(userfile);
+                    _log.Error("Monitored Process Died");
                     WriteErrorDataToDataBase("Monitored Process Died");
                     //SetMessage(string.Format("File written to {0}", userfile));
                 }
@@ -420,7 +423,7 @@ namespace PCController.Core.ViewModels
                 // setup info for the 3Byte watchdog/process monitor
                 string processName = Properties.Settings.Default.ProcessName;
                 string exeString = Properties.Settings.Default.ExecutionString;
-                _procMonitor = new ProcessMonitor(processName, exeString);
+                _procMonitor = new ProcessMonitor(processName, exeString, 1 );
                 _procMonitor.ProcessEvent += OnProcessEvent;
                 _procMonitor.ProcessExited += OnProcessExited;
                 _procMonitor.ResourceEvent += OnResourceEvent;

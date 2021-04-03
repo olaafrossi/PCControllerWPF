@@ -26,10 +26,12 @@ namespace PCController.Core.ViewModels
     {
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
+        private readonly IMvxLog _log;
 
         public PCNetworkListenerViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
-            Log.Info("PCNetworkListenerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _log = logProvider.GetLogFor<PCNetworkListenerViewModel>();
+            _log.Info("PCNetworkListenerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             // Setup UI Commands
             RefreshNetMsgCommand = new MvxCommand(GetLogsFromManager);
@@ -108,7 +110,7 @@ namespace PCController.Core.ViewModels
 
             int numLogs = parser.GetLogs(NumberOfNetMsgToFetch);
 
-            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
             IList<NetworkMessageModel> rows = sql.GetSomeNetData(numLogs);
 
             NetGridRows = rows;
@@ -139,7 +141,7 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => RemoteControlTimeStamp);
             RaisePropertyChanged(() => RemoteControlLastMessage);
 
-            Log.Info("Message from PC network shutdown controller {sender} {e}", sender, e);
+            _log.Info("Message from PC network shutdown controller {sender} {e}", sender, e);
         }
 
         private void NetWorkTimer(bool run)

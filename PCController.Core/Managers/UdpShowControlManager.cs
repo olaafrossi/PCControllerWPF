@@ -6,6 +6,8 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using MvvmCross.Logging;
+using MvvmCross.Navigation;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using Serilog;
@@ -13,12 +15,14 @@ using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.Managers
 {
-    public class UdpShowControlManager : IDisposable
+    public class UdpShowControlManager
     {
         private readonly IAsyncUdpLink _asyncUdpLink;
+        private readonly IMvxLog _log;
 
-        public UdpShowControlManager(string ipAddress, int remotePort, int localPort)
+        public UdpShowControlManager(string ipAddress, int remotePort, int localPort, IMvxLogProvider logProvider)
         {
+            _log = logProvider.GetLogFor<UdpShowControlManager>();
             IAsyncUdpLink link = new AsyncUdpLink(ipAddress, remotePort, localPort);
             _asyncUdpLink = link;
             _asyncUdpLink.DataReceived += LinkOnDataReceived;
@@ -29,51 +33,45 @@ namespace PCController.Core.Managers
 
         public string UdpFrameCombined { get; set; }
 
-        public void Dispose()
-        {
-            ReleaseUnmanagedResources();
-            GC.SuppressFinalize(this);
-        }
-
         public void AddUdpFrame(string frame)
         {
             try
             {
                 string message = frame;
 
-                Log.Information("Going to send a message over the UDP driver {message}", message);
+                _log.Info("Going to send a message over the UDP driver {message}", message);
 
                 if (message.Contains("!0D!0A"))
                 {
                     message = message.Replace("!0D!0A", "\r\n");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    Log.Information("Message contained <crlf>, replaced the hex with ASCII to sent properly {message}", message);
+                    _log.Info("Message contained <crlf>, replaced the hex with ASCII to sent properly {message}", message);
                 }
                 else if (message.Contains("!0D"))
                 {
                     message = message.Replace("!0D", "\r");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    Log.Information("Message contained <cr>, replaced the hex with ASCII to sent properly {message}", message);
+                    _log.Info("Message contained <cr>, replaced the hex with ASCII to sent properly {message}", message);
                 }
                 else if (message.Contains("!0A"))
                 {
                     message = message.Replace("!0A", "\n");
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    Log.Information("Message contained <lf>, replaced the hex with ASCII to sent properly {message}", message);
+                    _log.Info("Message contained <lf>, replaced the hex with ASCII to sent properly {message}", message);
                 }
                 else
                 {
                     byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
                     _asyncUdpLink.SendMessage(inputBytes);
-                    Log.Information("Message did not contain any ending characters {message}", message);
+                    _log.Info("Message did not contain any ending characters {message}", message);
                 }
             }
             catch (Exception e)
             {
-                Log.Error("Parsing the FrameToSend has failed {e}", e);
+                _log.ErrorException("Parsing the FrameToSend has failed {e}", e);
             }
 
             WriteUDPDataToDataBase(frame, true);
@@ -83,7 +81,7 @@ namespace PCController.Core.Managers
         {
             byte[] dataBytes = _asyncUdpLink.GetMessage();
             string messageFromController = Encoding.ASCII.GetString(dataBytes); // new byte array and feed it the input string
-            Log.Information("Message from Remote {messageFromController}", messageFromController);
+            _log.Info("Message from Remote {messageFromController}", messageFromController);
             IncomingMessage = messageFromController;
             WriteUDPDataToDataBase(string.Empty, false);
             IncomingMessage = string.Empty; // clear the prop
@@ -100,7 +98,7 @@ namespace PCController.Core.Managers
 
             if (incomingMessage is null)
             {
-                Log.Error("Incoming Message is null{incomingMessage}", incomingMessage);
+                _log.Error("Incoming Message is null");
             }
             else
             {
@@ -173,22 +171,6 @@ namespace PCController.Core.Managers
 
             Log.Logger.Error("No network adapters with an IPv4 address in the system!");
             return "No network adapters with an IPv4 address in the system!";
-        }
-
-        private void ReleaseUnmanagedResources()
-        {
-            Log.Information("Locking the UDP Driver");
-            lock (_asyncUdpLink)
-            {
-                _asyncUdpLink.Enabled = false;
-                _asyncUdpLink.Dispose();
-                Log.Information("Set UDP Driver Enable to false, and called the dispose method on the library");
-            }
-        }
-
-        ~UdpShowControlManager()
-        {
-            ReleaseUnmanagedResources();
         }
     }
 }

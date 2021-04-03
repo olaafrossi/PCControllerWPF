@@ -11,10 +11,15 @@ namespace PCController.Core.ViewModels
     {
         private string _bindableText = "I'm bound!";
 
+        private readonly IMvxLog _log;
+
         private int _counter = 2;
 
         public MainViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
+            _log = logProvider.GetLogFor<MainViewModel>();
+
+            _log.Info("Main VM constrcuted");
             //ShowChildCommand = new MvxAsyncCommand(async () => await NavigationService.Navigate<ChildViewModel>());
 
             //ShowModalCommand = new MvxAsyncCommand(async () => await NavigationService.Navigate<ModalViewModel>());

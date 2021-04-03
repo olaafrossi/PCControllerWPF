@@ -23,12 +23,14 @@ namespace PCController.Core.ViewModels
 
         private WindowChildParam _param;
 
-        public PCControllerInfoViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) :
-            base(logProvider, navigationService)
+        private readonly IMvxLog _log;
+
+        public PCControllerInfoViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
+            _log = logProvider.GetLogFor<PCControllerInfoViewModel>();
             RefreshLogCommand = new MvxCommand(GetLogsFromManager);
 
-            Log.Info("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _log.Info("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             GetAppInfo();
             _stopwatch = new Stopwatch();
@@ -81,7 +83,7 @@ namespace PCController.Core.ViewModels
 
             int numLogs = parser.GetLogs(NumberOfLogsToFetch);
 
-            Log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
+            _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
 
             var rows = sql.GetSomeLogs(numLogs);
             LogGridRows = rows;

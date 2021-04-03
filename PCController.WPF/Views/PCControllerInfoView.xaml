@@ -275,7 +275,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <DataGrid
                         x:Name="LogGrid"
@@ -284,10 +284,11 @@
                         MinWidth="500"
                         MinHeight="200"
                         MaxWidth="1500"
+                        MaxHeight="650"
+                        
                         Margin="5,0,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        AutoGenerateColumns="True"
                         BorderBrush="Gray"
                         BorderThickness="1"
                         CanUserAddRows="False"
@@ -305,8 +306,11 @@
                         VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                         VirtualizingPanel.VirtualizationMode="Standard">
                         <DataGrid.AlternatingRowBackground>
-                        <SolidColorBrush Opacity="0.4" Color="DimGray" />
+                            <SolidColorBrush Opacity="0.4" Color="DimGray" />
                         </DataGrid.AlternatingRowBackground>
+                        <DataGrid.Columns>
+
+                        </DataGrid.Columns>
                     </DataGrid>
 
 
