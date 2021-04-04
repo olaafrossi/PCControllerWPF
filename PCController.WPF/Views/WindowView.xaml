@@ -95,6 +95,15 @@
                                 Margin="0,5,0,5"
                                 Padding="5"
                                 HorizontalAlignment="Center"
+                                Command="{Binding ShowHomeCommand}"
+                                CommandParameter="2"
+                                Content="Home"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
                                 Command="{Binding ShowPCControllerInfoCommand}"
                                 CommandParameter="2"
                                 Content="PC Controller"

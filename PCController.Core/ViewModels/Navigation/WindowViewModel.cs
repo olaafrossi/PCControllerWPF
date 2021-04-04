@@ -2,11 +2,9 @@
 // Created: 2021 03 12
 // by Olaaf Rossi
 
-using System;
-using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
@@ -14,7 +12,6 @@ using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using PCController.Core.Models;
 using PCController.Core.Services;
-using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 // ReSharper disable CheckNamespace
 // ReSharper disable once ArrangeModifiersOrder
@@ -61,6 +58,8 @@ namespace PCController.Core.ViewModels
             RealTimeLogCollection.Insert(0, "Hi");
 
 
+
+
             //ShowWindowChildCommand = new MvxAsyncCommand<int>(async no =>
             //{
             //    await NavigationService.Navigate<WindowChildViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
@@ -71,24 +70,32 @@ namespace PCController.Core.ViewModels
             //    await NavigationService.Navigate<NavBarViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
             //});
 
+
+
+            ShowHomeCommand = new MvxAsyncCommand<int>(async no =>
+                {
+                    await NavigationService.Navigate<HomeViewModel, WindowChildParam>(new WindowChildParam { ParentNo = Count, ChildNo = no });
+                });
+
+
             ShowPCControllerInfoCommand = new MvxAsyncCommand<int>(async no =>
             {
-                await NavigationService.Navigate<PCControllerInfoViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
+                await NavigationService.Navigate<PCControllerInfoViewModel, WindowChildParam>(new WindowChildParam { ParentNo = Count, ChildNo = no });
             });
 
             ShowWatchdogCommand = new MvxAsyncCommand<int>(async no =>
             {
-                await NavigationService.Navigate<WatchdogViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
+                await NavigationService.Navigate<WatchdogViewModel, WindowChildParam>(new WindowChildParam { ParentNo = Count, ChildNo = no });
             });
 
             ShowPCNetworkListenerCommand = new MvxAsyncCommand<int>(async no =>
             {
-                await NavigationService.Navigate<PCNetworkListenerViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
+                await NavigationService.Navigate<PCNetworkListenerViewModel, WindowChildParam>(new WindowChildParam { ParentNo = Count, ChildNo = no });
             });
 
             ShowSCSUDPTesterCommand = new MvxAsyncCommand<int>(async no =>
             {
-                await NavigationService.Navigate<SCSTesterUDPViewModel, WindowChildParam>(new WindowChildParam {ParentNo = Count, ChildNo = no});
+                await NavigationService.Navigate<SCSTesterUDPViewModel, WindowChildParam>(new WindowChildParam { ParentNo = Count, ChildNo = no });
             });
 
 
@@ -101,8 +108,17 @@ namespace PCController.Core.ViewModels
                     IsItemSetting = !IsItemSetting;
                 });
             });
+
+
+            //Thread.Sleep(50);
+            //OpenHomeView();
+
         }
 
+        private void OpenHomeView()
+        {
+            ShowHomeCommand.Execute(2);
+        }
 
 
         public IMvxAsyncCommand CloseCommand { get; }
@@ -110,6 +126,8 @@ namespace PCController.Core.ViewModels
         public IMvxAsyncCommand<int> ShowWindowChildCommand { get; }
 
         public IMvxAsyncCommand<int> ShowNavBarCommand { get; set; }
+
+        public IMvxAsyncCommand<int> ShowHomeCommand { get; set; }
 
         public IMvxAsyncCommand<int> ShowPCControllerInfoCommand { get; set; }
 

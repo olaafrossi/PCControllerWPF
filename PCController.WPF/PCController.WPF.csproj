@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.774.44" />
     <PackageReference Include="MvvmCross.Platforms.Wpf" Version="7.1.2" />
     <PackageReference Include="ModernWpfUI" Version="0.9.4" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
@@ -38,6 +39,16 @@
     <ProjectReference Include="..\LiveCharts2\src\LiveChartsCore\LiveChartsCore.csproj" />
     <ProjectReference Include="..\LiveCharts2\src\skiasharp\LiveChartsCore.SkiaSharp.WPF\LiveChartsCore.SkiaSharpView.WPF.csproj" />
     <ProjectReference Include="..\PCController.Core\PCController.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\HelpFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\HelpFiles\HomeViewHelp.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
