@@ -192,5 +192,17 @@ namespace PCController.Core.Properties {
                 this["AutoRefreshLogInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\PCController\\Scripts")]
+        public string LocalScriptsFolder {
+            get {
+                return ((string)(this["LocalScriptsFolder"]));
+            }
+            set {
+                this["LocalScriptsFolder"] = value;
+            }
+        }
     }
 }

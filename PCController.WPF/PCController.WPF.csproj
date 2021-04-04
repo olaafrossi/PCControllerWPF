@@ -41,4 +41,14 @@
     <ProjectReference Include="..\PCController.Core\PCController.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\HelpFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\HelpFiles\HomeViewHelp.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

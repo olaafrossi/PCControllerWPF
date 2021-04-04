@@ -40,6 +40,7 @@ namespace PCController.Core.ViewModels
             RefreshLogCommand = new MvxCommand(GetLogsFromManager);
             StartAutoLogRefreshCommand = new MvxCommand(StartLogLoop);
             StopAutoLogRefreshCommand = new MvxCommand(StopLogLoop);
+            OpenScriptsFolderCommand = new MvxCommand(OpenFolder);
 
             // set initial UI Fields
             LogRefreshInterval = Settings.Default.AutoRefreshLogInterval;
@@ -57,6 +58,8 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand RefreshLogCommand { get; set; }
 
+        public IMvxCommand OpenScriptsFolderCommand { get; set; }
+
         public IMvxCommand StartAutoLogRefreshCommand { get; set; }
 
         public IMvxCommand StopAutoLogRefreshCommand { get; set; }
@@ -70,7 +73,6 @@ namespace PCController.Core.ViewModels
             set
             {
                 SetProperty(ref _logRefreshInterval, value);
-                //Properties.Settings.Default.Save();
             }
         }
 
@@ -92,9 +94,9 @@ namespace PCController.Core.ViewModels
 
         public bool AutoLogRefreshFalseButtonStatus { get; set; }
 
-        public TimeSpan CountDownToRefresh { get; set; } = new TimeSpan(0, 0, 0, 0);
+        public TimeSpan CountDownToRefresh { get; set; } = new(0, 0, 0, 0);
 
-        public void GetLogsFromManager()
+        private void GetLogsFromManager()
         {
             _stopwatch.Start();
 
@@ -127,9 +129,10 @@ namespace PCController.Core.ViewModels
             _param = param;
         }
 
-        public void RunLoop(object state)
+        private void RunLoop(object state)
         {
-            _logRefreshInterval = LogRefreshInterval;
+            LogRefreshInterval = _logRefreshInterval;
+            //Properties.Settings.Default.Save();
 
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
             ProcMonitorModel procData = new();
@@ -167,6 +170,33 @@ namespace PCController.Core.ViewModels
             }
         }
 
+        private void OpenFolder()
+        {
+            string path = Settings.Default.LocalScriptsFolder;
+            Process newProcess = new();
+            Process.Start("explorer.exe", path);
+        }
+
+        private void RefreshTimer(bool run)
+        {
+            DispatcherTimer timer = new() {Interval = TimeSpan.FromSeconds(1)};
+
+            if (run is true)
+            {
+                timer.Tick += TimerOnTick;
+                timer.Start();
+            }
+            else
+            {
+                // stop the event handler to reset the property field
+                timer.Tick -= TimerOnTick;
+                timer.Stop();
+
+                CountDownToRefresh = timer.Interval;
+                RaisePropertyChanged(() => CountDownToRefresh);
+            }
+        }
+
         private void StartLogLoop()
         {
             _runLogLoop = true;
@@ -193,29 +223,9 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => AutoLogRefreshFalseButtonStatus);
         }
 
-        private void RefreshTimer(bool run)
-        {
-            DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
-
-            if (run is true)
-            {
-                timer.Tick += TimerOnTick;
-                timer.Start();
-            }
-            else
-            {
-                // stop the event handler to reset the property field
-                timer.Tick -= TimerOnTick;
-                timer.Stop();
-
-                CountDownToRefresh = timer.Interval;
-                RaisePropertyChanged(() => CountDownToRefresh);
-            }
-        }
-
         private void TimerOnTick(object sender, EventArgs e)
         {
-            TimeSpan timeTick = new TimeSpan(0, 0, 0, 1);
+            TimeSpan timeTick = new(0, 0, 0, 1);
             CountDownToRefresh = CountDownToRefresh.Add(timeTick);
             RaisePropertyChanged(() => CountDownToRefresh);
         }
