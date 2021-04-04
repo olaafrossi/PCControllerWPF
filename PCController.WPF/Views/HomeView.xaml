@@ -45,8 +45,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" MaxWidth="350" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -148,7 +148,7 @@
                     <ui:SimpleStackPanel
                         Grid.Row="1"
                         Grid.Column="2"
-                        Grid.ColumnSpan="2"
+                        Grid.ColumnSpan="1"
                         Width="Auto"
                         Margin="0,5,0,5"
                         HorizontalAlignment="Stretch"
@@ -158,7 +158,7 @@
                             Name="WebView"
                             Width="Auto"
                             Height="250"
-                            Source="https://www.microsoft.com" />
+                            Source="C:\dev\v2dev\PCController\PCController\PCController.WPF\Assets\HelpFiles\HomeViewHelp.md" />
                     </ui:SimpleStackPanel>
 
                 </Grid>
@@ -219,7 +219,7 @@
                         MinHeight="40"
                         Margin="5,10,5,5"
                         HorizontalAlignment="Left"
-                        mvx:Bi.nd="Command RefreshUdpMsgCommand"
+                        mvx:Bi.nd="Command RefreshLogCommand"
                         Content="Refresh App Log"
                         Style="{StaticResource AccentButtonStyle}" />
                     <TextBlock
