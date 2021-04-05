@@ -204,5 +204,53 @@ namespace PCController.Core.Properties {
                 this["LocalScriptsFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("olaafrossi")]
+        public string GitHubUser {
+            get {
+                return ((string)(this["GitHubUser"]));
+            }
+            set {
+                this["GitHubUser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Safron1234!!")]
+        public string GitHubPassword {
+            get {
+                return ((string)(this["GitHubPassword"]));
+            }
+            set {
+                this["GitHubPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3BytePCController")]
+        public string GitHubClientAppName {
+            get {
+                return ((string)(this["GitHubClientAppName"]));
+            }
+            set {
+                this["GitHubClientAppName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("olaafrossi")]
+        public string GitHubAccountOwner {
+            get {
+                return ((string)(this["GitHubAccountOwner"]));
+            }
+            set {
+                this["GitHubAccountOwner"] = value;
+            }
+        }
     }
 }
