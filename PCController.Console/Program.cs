@@ -1,20 +1,30 @@
-﻿using System;
+﻿// Copyright © 2019 Transeric Solutions. All rights reserved.
+// Author: Eric David Lynch
+using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using System.Reflection;
+using Octokit;
+// ReSharper disable CheckNamespace
+// ReSharper disable once ArrangeModifiersOrder
 
 namespace PCController.Console
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        //private static readonly string GitHubIdentity = Assembly
+        //    .GetEntryAssembly()
+        //    .GetCustomAttribute<AssemblyProductAttribute>()
+        //    .Product;
+
+        public static void Main(string[] args)
         {
-            System.Console.WriteLine("helloworld");
-            UDPManager happy = new UDPManager();
-            var happy2 = happy.GetUDPManager("127.0.0.1", 5000, 660);
-
-            string message = "happy\r";
-
-            byte[] inputBytes = Encoding.ASCII.GetBytes(message); // new byte array and feed it the input string
-            happy2.SendMessage(inputBytes);
+            GitHubManager manager = new GitHubManager();
+            
+            manager.GetRepo();
+            manager.GetLatestRelease();
+            manager.GetRelease();
         }
     }
 }

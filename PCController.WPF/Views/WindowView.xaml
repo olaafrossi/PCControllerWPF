@@ -113,6 +113,15 @@
                                 Margin="0,5,0,5"
                                 Padding="5"
                                 HorizontalAlignment="Center"
+                                Command="{Binding ShowAppDeployerCommand}"
+                                CommandParameter="2"
+                                Content="App Deploy (CD)"
+                                Style="{StaticResource AccentButtonStyle}" />
+                            <Button
+                                Width="200"
+                                Margin="0,5,0,5"
+                                Padding="5"
+                                HorizontalAlignment="Center"
                                 Command="{Binding ShowPCNetworkListenerCommand}"
                                 CommandParameter="2"
                                 Content="Network Shutdown Listener"

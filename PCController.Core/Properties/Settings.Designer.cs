@@ -204,5 +204,77 @@ namespace PCController.Core.Properties {
                 this["LocalScriptsFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Safron1234!!")]
+        public string GitHubPassword {
+            get {
+                return ((string)(this["GitHubPassword"]));
+            }
+            set {
+                this["GitHubPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("olaafrossi")]
+        public string GitHubAccountOwner {
+            get {
+                return ((string)(this["GitHubAccountOwner"]));
+            }
+            set {
+                this["GitHubAccountOwner"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CrestronNetworkMonitor")]
+        public string GitHubReleaseRepo {
+            get {
+                return ((string)(this["GitHubReleaseRepo"]));
+            }
+            set {
+                this["GitHubReleaseRepo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\")]
+        public string MonitoredAppPath {
+            get {
+                return ((string)(this["MonitoredAppPath"]));
+            }
+            set {
+                this["MonitoredAppPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Backups\\")]
+        public string MonitoredAppBackupPath {
+            get {
+                return ((string)(this["MonitoredAppBackupPath"]));
+            }
+            set {
+                this["MonitoredAppBackupPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Backups\\DownloadedGithubRelease\\")]
+        public string MonitoredAppTempPath {
+            get {
+                return ((string)(this["MonitoredAppTempPath"]));
+            }
+            set {
+                this["MonitoredAppTempPath"] = value;
+            }
+        }
     }
 }

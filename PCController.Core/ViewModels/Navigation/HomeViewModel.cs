@@ -96,6 +96,16 @@ namespace PCController.Core.ViewModels
 
         public TimeSpan CountDownToRefresh { get; set; } = new(0, 0, 0, 0);
 
+        public override async Task Initialize()
+        {
+            await base.Initialize();
+        }
+
+        public override void Prepare(WindowChildParam param)
+        {
+            _param = param;
+        }
+
         private void GetLogsFromManager()
         {
             _stopwatch.Start();
@@ -117,16 +127,6 @@ namespace PCController.Core.ViewModels
             DataBaseQueryTime = timeToFetchFromDb;
             RaisePropertyChanged(() => LogGridRows);
             RaisePropertyChanged(() => DataBaseQueryTime);
-        }
-
-        public override async Task Initialize()
-        {
-            await base.Initialize();
-        }
-
-        public override void Prepare(WindowChildParam param)
-        {
-            _param = param;
         }
 
         private void RunLoop(object state)
