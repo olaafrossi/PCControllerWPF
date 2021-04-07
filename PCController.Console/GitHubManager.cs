@@ -92,7 +92,7 @@ namespace PCController.Console
 
         public void GetRelease()
         {
-            DownloadLatestGithubRelease().GetAwaiter().GetResult();
+            DownloadLatestGithubReleaseAsync().GetAwaiter().GetResult();
         }
 
         private static GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
@@ -206,7 +206,7 @@ namespace PCController.Console
             return client != null;
         }
 
-        private static async Task<string> DownloadLatestGithubRelease()
+        private static async Task<string> DownloadLatestGithubReleaseAsync()
         {
             try
             {
@@ -222,6 +222,7 @@ namespace PCController.Console
 
                 byte[] bytes = (byte[]) response.HttpResponse.Body;
                 File.WriteAllBytes(assetFilePathName, bytes);
+                
                 //ExtractBuild(assetFilePathName, path, persisPath);
 
                 //update the current build number
