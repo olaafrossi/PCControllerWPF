@@ -3,6 +3,8 @@
 // by Olaaf Rossi
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using MvvmCross.Logging;
@@ -82,7 +84,7 @@ namespace PCController.Console
 
         private static GitHubClient AuthenticateToken(ProductHeaderValue productionInformation, string token)
         {
-
+            //_log.Info("trying to get a GitHub client {productInformation} with token {token}", productInformation, token);
             return GetClient(productionInformation, token);
         }
 
@@ -183,6 +185,35 @@ namespace PCController.Console
         {
             client = AuthenticateBasic(productInformation);
             return client != null;
+        }
+
+        private static async Task<string> DownloadLatestGithubRelease(string repo, string path, string[] persisPath)
+        {
+            try
+            {
+                var latestGitHubRelease = await GetGitHubReleaseAsync(repo);
+
+                string assetFilePath = $@"{path}\Temp\DownloadedGithubRelease";
+                string assetFilePathName = $"{assetFilePath}{latestGitHubRelease.LatestReleaseName}";
+
+                System.Console.WriteLine(assetFilePathName);
+
+                var singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, repo, latestGitHubRelease.LatestReleaseId);
+                var response = await GitHubClient.Connection.Get<object>(new Uri(singleRelease.Url), new Dictionary<string, string>(), "application/octet-stream");
+
+                byte[] bytes = (byte[]) response.HttpResponse.Body;
+                File.WriteAllBytes(assetFilePathName, bytes);
+                //ExtractBuild(assetFilePathName, path, persisPath);
+
+                //update the current build number
+                return latestGitHubRelease.LatestReleaseId.ToString();
+            }
+            catch (Exception e)
+            {
+                //_log.ErrorException("Getting the repo info from {client} failed", e);
+                //throw ex;
+                return null;
+            }
         }
     }
 }
