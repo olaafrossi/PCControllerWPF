@@ -14,33 +14,41 @@ namespace PCController.Console
     using System;
     public class Program
     {
-        private static readonly string GitHubIdentity = Assembly
-            .GetEntryAssembly()
-            .GetCustomAttribute<AssemblyProductAttribute>()
-            .Product;
+        //private static readonly string GitHubIdentity = Assembly
+        //    .GetEntryAssembly()
+        //    .GetCustomAttribute<AssemblyProductAttribute>()
+        //    .Product;
 
         public static void Main(string[] args)
         {
-            var productInformation = new ProductHeaderValue(GitHubIdentity);
-
-            if (!TryGetClient(args, productInformation, out GitHubClient client))
-                return;
-
-            TestFeature(client)
-                .GetAwaiter()
-                .GetResult();
+            GitHubManager manager = new GitHubManager();
+            
+            manager.GetRepo();
+            manager.GetLatestRelease();
         }
 
-        private static async Task<string> CreateOAuthToken(string clientId, string clientSecret, string authenticationCode)
-        {
-            var client = new GitHubClient(new ProductHeaderValue(GitHubIdentity));
+        //public static void Main(string[] args)
+        //{
+        //    var productInformation = new ProductHeaderValue(GitHubIdentity);
 
-            OauthToken tokenInfo = await client.Oauth.CreateAccessToken(
-                new OauthTokenRequest(clientId, clientSecret, authenticationCode));
+        //    if (!TryGetClient(args, productInformation, out GitHubClient client))
+        //        return;
 
-            string token = tokenInfo.AccessToken;
-            return token;
-        }
+        //    TestFeature(client)
+        //        .GetAwaiter()
+        //        .GetResult();
+        //}
+
+        //private static async Task<string> CreateOAuthToken(string clientId, string clientSecret, string authenticationCode)
+        //{
+        //    var client = new GitHubClient(new ProductHeaderValue(GitHubIdentity));
+
+        //    OauthToken tokenInfo = await client.Oauth.CreateAccessToken(
+        //        new OauthTokenRequest(clientId, clientSecret, authenticationCode));
+
+        //    string token = tokenInfo.AccessToken;
+        //    return token;
+        //}
 
         private static GitHubClient GetClient(ProductHeaderValue productInformation)
         {

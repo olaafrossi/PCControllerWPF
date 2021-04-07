@@ -47,17 +47,14 @@
     <Setting Name="LocalScriptsFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Scripts</Value>
     </Setting>
-    <Setting Name="GitHubUser" Type="System.String" Scope="User">
-      <Value Profile="(Default)">olaafrossi</Value>
-    </Setting>
     <Setting Name="GitHubPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">Safron1234!!</Value>
     </Setting>
-    <Setting Name="GitHubClientAppName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">3BytePCController</Value>
-    </Setting>
     <Setting Name="GitHubAccountOwner" Type="System.String" Scope="User">
       <Value Profile="(Default)">olaafrossi</Value>
+    </Setting>
+    <Setting Name="GitHubReleaseRepo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CrestronNetworkMonitor</Value>
     </Setting>
   </Settings>
 </SettingsFile>

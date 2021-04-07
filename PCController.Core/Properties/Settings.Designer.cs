@@ -207,18 +207,6 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("olaafrossi")]
-        public string GitHubUser {
-            get {
-                return ((string)(this["GitHubUser"]));
-            }
-            set {
-                this["GitHubUser"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Safron1234!!")]
         public string GitHubPassword {
             get {
@@ -231,18 +219,6 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3BytePCController")]
-        public string GitHubClientAppName {
-            get {
-                return ((string)(this["GitHubClientAppName"]));
-            }
-            set {
-                this["GitHubClientAppName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("olaafrossi")]
         public string GitHubAccountOwner {
             get {
@@ -250,6 +226,18 @@ namespace PCController.Core.Properties {
             }
             set {
                 this["GitHubAccountOwner"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CrestronNetworkMonitor")]
+        public string GitHubReleaseRepo {
+            get {
+                return ((string)(this["GitHubReleaseRepo"]));
+            }
+            set {
+                this["GitHubReleaseRepo"] = value;
             }
         }
     }
