@@ -24,6 +24,7 @@ namespace PCController.Console
             
             manager.GetRepo();
             manager.GetLatestRelease();
+            manager.GetRelease();
         }
     }
 }

@@ -240,5 +240,41 @@ namespace PCController.Core.Properties {
                 this["GitHubReleaseRepo"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\")]
+        public string MonitoredAppPath {
+            get {
+                return ((string)(this["MonitoredAppPath"]));
+            }
+            set {
+                this["MonitoredAppPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Backups\\")]
+        public string MonitoredAppBackupPath {
+            get {
+                return ((string)(this["MonitoredAppBackupPath"]));
+            }
+            set {
+                this["MonitoredAppBackupPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Backups\\DownloadedGithubRelease\\")]
+        public string MonitoredAppTempPath {
+            get {
+                return ((string)(this["MonitoredAppTempPath"]));
+            }
+            set {
+                this["MonitoredAppTempPath"] = value;
+            }
+        }
     }
 }

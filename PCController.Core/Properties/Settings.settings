@@ -56,5 +56,14 @@
     <Setting Name="GitHubReleaseRepo" Type="System.String" Scope="User">
       <Value Profile="(Default)">CrestronNetworkMonitor</Value>
     </Setting>
+    <Setting Name="MonitoredAppPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\</Value>
+    </Setting>
+    <Setting Name="MonitoredAppBackupPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\</Value>
+    </Setting>
+    <Setting Name="MonitoredAppTempPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\DownloadedGithubRelease\</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

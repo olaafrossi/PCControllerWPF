@@ -25,6 +25,9 @@ namespace PCController.Console
         private readonly static string _githubPassword = "Safron1234!!";
         private readonly static string _gitHubUser = "olaafrossi";
         private readonly static string _defaultRepo = "CrestronNetworkMonitor";
+        private static string _monitoredAppPath;
+        private static string _monitoredAppBackupPath;
+        private static string _monitoredAppTempPath;
         //private readonly static IMvxLog _log;
 
         public GitHubManager(IMvxLogProvider logProvider)
@@ -37,6 +40,13 @@ namespace PCController.Console
             //PCController.Core.Properties.Settings.Default.GitHubReleaseRepo
             //PCController.Core.Properties.Settings.Default.GitHubAccountOwner
             //PCController.Core.Properties.Settings.Default.GitHubAccountOwner
+            //PCController.Core.Properties.Settings.Default.MonitoredAppPath
+            //PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath
+            //PCController.Core.Properties.Settings.Default.MonitoredAppTempPath
+
+            _monitoredAppPath = PCController.Core.Properties.Settings.Default.MonitoredAppPath;
+            _monitoredAppBackupPath = PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath;
+            _monitoredAppTempPath = PCController.Core.Properties.Settings.Default.MonitoredAppTempPath;
 
             var productInformation = new ProductHeaderValue(GitHubIdentity);
 
@@ -52,6 +62,10 @@ namespace PCController.Console
         public GitHubManager()
         {
             // empty ctor just for local testing TODO delete me :)
+
+            _monitoredAppPath = PCController.Core.Properties.Settings.Default.MonitoredAppPath;
+            _monitoredAppBackupPath = PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath;
+            _monitoredAppTempPath = PCController.Core.Properties.Settings.Default.MonitoredAppTempPath;
 
             var productInformation = new ProductHeaderValue(GitHubIdentity);
 
@@ -74,6 +88,11 @@ namespace PCController.Console
         public void GetRepo()
         {
             GetGitHubRepoInfo(GitHubClient).GetAwaiter().GetResult();
+        }
+
+        public void GetRelease()
+        {
+            DownloadLatestGithubRelease().GetAwaiter().GetResult();
         }
 
         private static GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
@@ -187,18 +206,18 @@ namespace PCController.Console
             return client != null;
         }
 
-        private static async Task<string> DownloadLatestGithubRelease(string repo, string path, string[] persisPath)
+        private static async Task<string> DownloadLatestGithubRelease()
         {
             try
             {
-                var latestGitHubRelease = await GetGitHubReleaseAsync(repo);
+                var latestGitHubRelease = await GetGitHubReleaseAsync(_defaultRepo);
 
-                string assetFilePath = $@"{path}\Temp\DownloadedGithubRelease";
-                string assetFilePathName = $"{assetFilePath}{latestGitHubRelease.LatestReleaseName}";
+                string assetFilePath = $@"{_monitoredAppPath}Temp\DownloadedGithubRelease";
+                string assetFilePathName = $"{assetFilePath}{latestGitHubRelease.LatestReleaseAssets}";
 
                 System.Console.WriteLine(assetFilePathName);
 
-                var singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, repo, latestGitHubRelease.LatestReleaseId);
+                var singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, _defaultRepo, latestGitHubRelease.LatestReleaseId);
                 var response = await GitHubClient.Connection.Get<object>(new Uri(singleRelease.Url), new Dictionary<string, string>(), "application/octet-stream");
 
                 byte[] bytes = (byte[]) response.HttpResponse.Body;
