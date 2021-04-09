@@ -11,6 +11,8 @@ using Serilog;
 using Serilog.Core;
 using ThreeByteLibrary.Dotnet;
 using ThreeByteLibrary.Dotnet.NetworkUtils;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 namespace PCController.Core
 {
@@ -51,6 +53,14 @@ namespace PCController.Core
 
             // start the app
             RegisterAppStart<RootViewModel>();
+        }
+
+        private void GetAzureSecrets()
+        {
+            string keyVaultName = Environment.GetEnvironmentVariable("KEY_VAULT_NAME");
+            var kvUri = "https://" + keyVaultName + ".vault.azure.net";
+
+            var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
         }
         
         //public event EventHandler<NetworkMessagesEventArgs> MessageHit;

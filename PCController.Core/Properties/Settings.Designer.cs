@@ -276,5 +276,17 @@ namespace PCController.Core.Properties {
                 this["MonitoredAppTempPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pccontroller")]
+        public string AzureKeyVaultName {
+            get {
+                return ((string)(this["AzureKeyVaultName"]));
+            }
+            set {
+                this["AzureKeyVaultName"] = value;
+            }
+        }
     }
 }

@@ -5,26 +5,26 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Octokit;
-// ReSharper disable CheckNamespace
-// ReSharper disable once ArrangeModifiersOrder
+using System;
+using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
+
 
 namespace PCController.Console
 {
-    public class Program
+    class Program
     {
-        //private static readonly string GitHubIdentity = Assembly
-        //    .GetEntryAssembly()
-        //    .GetCustomAttribute<AssemblyProductAttribute>()
-        //    .Product;
-
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            GitHubManager manager = new GitHubManager();
-            
-            manager.GetRepo();
-            manager.GetLatestRelease();
-            manager.GetRelease();
+            System.Console.WriteLine(AzureKeyManager.GetPassword());
+
+
         }
     }
+
 }

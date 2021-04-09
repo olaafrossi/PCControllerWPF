@@ -46,6 +46,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\HelpFiles\HomeViewHelp.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\HelpFiles\HomeViewHelp.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

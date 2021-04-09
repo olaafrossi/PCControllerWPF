@@ -68,6 +68,21 @@ namespace PCController.Core.ViewModels
             await base.Initialize();
         }
 
+        public IMvxAsyncCommand CloseCommand
+        {
+            get
+            {
+                return new MvxAsyncCommand(Execute);
+            }
+        }
+
+        // TODO work on this method
+        private async Task Execute()
+        {
+            DisposeUDPAsyncManager();
+            await NavigationService.Close(this);
+        }
+
         public IMvxCommand OpenUdpCommand { get; set; }
 
         public IMvxCommand CloseUdpCommand { get; set; }
