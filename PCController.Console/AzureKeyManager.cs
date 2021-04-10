@@ -28,7 +28,7 @@ namespace PCController.Console
 
             //_log.Info("trying to get a GitHub client{productInformation}", productInformation);
             System.Console.WriteLine($"Retrieving your secret from {keyVaultName}.");
-            Response<KeyVaultSecret> secret = client.GetSecret("GitHubPassword");
+            Response<KeyVaultSecret> secret = client.GetSecret(PCController.Core.Properties.Settings.Default.AzureKeyVaultGitHubPassword);
 
             // async version- prob not a good idea
             //var secret = await client.GetSecretAsync(secretName);
