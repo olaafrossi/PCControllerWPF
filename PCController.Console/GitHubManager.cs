@@ -22,7 +22,7 @@ namespace PCController.Console
     public class GitHubManager
     {
         private static readonly string GitHubIdentity = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product;
-        private readonly static string _githubPassword; //TODO create an instance of the Azure class to ge the secret
+        //private readonly static string _githubPassword; //TODO create an instance of the Azure class to ge the secret
         private readonly static string _gitHubUser = "olaafrossi";
         private readonly static string _defaultRepo = "CrestronNetworkMonitor";
         private static string _monitoredAppPath;
@@ -97,8 +97,11 @@ namespace PCController.Console
 
         private static GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
         {
+
             //_log.Info("trying to get a GitHub client{productInformation}", productInformation);
-            return GetClient(productInformation, _gitHubUser, _githubPassword);
+            System.Console.WriteLine(AzureKeyManager.GetPassword());
+            return GetClient(productInformation, _gitHubUser, AzureKeyManager.GetPassword());
+            
         }
 
         private static GitHubClient AuthenticateToken(ProductHeaderValue productionInformation, string token)
