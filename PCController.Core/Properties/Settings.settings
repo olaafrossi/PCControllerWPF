@@ -60,7 +60,7 @@
       <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\</Value>
     </Setting>
     <Setting Name="MonitoredAppTempPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\DownloadedGithubRelease\</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Temp\DownloadedGitHubRelease\</Value>
     </Setting>
     <Setting Name="AzureKeyVaultName" Type="System.String" Scope="User">
       <Value Profile="(Default)">pccontroller</Value>

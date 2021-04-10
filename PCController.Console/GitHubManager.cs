@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using MvvmCross.Logging;
 using Octokit;
 using PCController.Core.Models;
+using PCController.Core.Properties;
 
 // ReSharper disable CheckNamespace
 // ReSharper disable once ArrangeModifiersOrder
@@ -22,12 +23,15 @@ namespace PCController.Console
     public class GitHubManager
     {
         private static readonly string GitHubIdentity = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product;
+
         //private readonly static string _githubPassword; //TODO create an instance of the Azure class to ge the secret
         private readonly static string _gitHubUser = "olaafrossi";
         private readonly static string _defaultRepo = "CrestronNetworkMonitor";
         private static string _monitoredAppPath;
         private static string _monitoredAppBackupPath;
         private static string _monitoredAppTempPath;
+        public static event EventHandler OnGoodDownload;
+        private static bool _goodDownload;
         //private readonly static IMvxLog _log;
 
         public GitHubManager(IMvxLogProvider logProvider)
@@ -44,9 +48,9 @@ namespace PCController.Console
             //PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath
             //PCController.Core.Properties.Settings.Default.MonitoredAppTempPath
 
-            _monitoredAppPath = PCController.Core.Properties.Settings.Default.MonitoredAppPath;
-            _monitoredAppBackupPath = PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath;
-            _monitoredAppTempPath = PCController.Core.Properties.Settings.Default.MonitoredAppTempPath;
+            _monitoredAppPath = Settings.Default.MonitoredAppPath;
+            _monitoredAppBackupPath = Settings.Default.MonitoredAppBackupPath;
+            _monitoredAppTempPath = Settings.Default.MonitoredAppTempPath;
 
             var productInformation = new ProductHeaderValue(GitHubIdentity);
 
@@ -63,9 +67,9 @@ namespace PCController.Console
         {
             // empty ctor just for local testing TODO delete me :)
 
-            _monitoredAppPath = PCController.Core.Properties.Settings.Default.MonitoredAppPath;
-            _monitoredAppBackupPath = PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath;
-            _monitoredAppTempPath = PCController.Core.Properties.Settings.Default.MonitoredAppTempPath;
+            _monitoredAppPath = Settings.Default.MonitoredAppPath;
+            _monitoredAppBackupPath = Settings.Default.MonitoredAppBackupPath;
+            _monitoredAppTempPath = Settings.Default.MonitoredAppTempPath;
 
             var productInformation = new ProductHeaderValue(GitHubIdentity);
 
@@ -80,14 +84,11 @@ namespace PCController.Console
 
         private static GitHubClient GitHubClient { get; set; }
 
+        public bool HasDownLoadedLatestRelease { get; set; }
+
         public void GetLatestRelease()
         {
             GetGitHubReleaseAsync(_defaultRepo).GetAwaiter().GetResult();
-        }
-
-        public void GetRepo()
-        {
-            GetGitHubRepoInfo(GitHubClient).GetAwaiter().GetResult();
         }
 
         public void GetRelease()
@@ -95,13 +96,16 @@ namespace PCController.Console
             DownloadLatestGithubReleaseAsync().GetAwaiter().GetResult();
         }
 
+        public void GetRepo()
+        {
+            GetGitHubRepoInfo(GitHubClient).GetAwaiter().GetResult();
+        }
+
         private static GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
         {
-
             //_log.Info("trying to get a GitHub client{productInformation}", productInformation);
             System.Console.WriteLine(AzureKeyManager.GetPassword());
             return GetClient(productInformation, _gitHubUser, AzureKeyManager.GetPassword());
-            
         }
 
         private static GitHubClient AuthenticateToken(ProductHeaderValue productionInformation, string token)
@@ -110,11 +114,57 @@ namespace PCController.Console
             return GetClient(productionInformation, token);
         }
 
+        private static async Task<string> DownloadLatestGithubReleaseAsync()
+        {
+            try
+            {
+                var latestGitHubRelease = await GetGitHubReleaseAsync(_defaultRepo);
+
+                string assetFilePath = $"{_monitoredAppTempPath}";
+                string assetFilePathName = $"{assetFilePath}{latestGitHubRelease.ReleaseName}.zip";
+
+                System.Console.WriteLine(assetFilePathName);
+
+                var singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, _defaultRepo, latestGitHubRelease.ReleaseAssetDownloadId);
+                var response = await GitHubClient.Connection.Get<object>(new Uri(singleRelease.Url), new Dictionary<string, string>(), "application/octet-stream");
+
+                byte[] bytes = (byte[]) response.HttpResponse.Body;
+
+                try
+                {
+                    File.WriteAllBytes(assetFilePathName, bytes);
+                    // TODO check for a way to make sure the download worked and has a file size
+                    if (assetFilePathName is not null)
+                    {
+                        _goodDownload = true;
+                        //_goodDownload.Equals(true) += OnGoodDownload;
+                        // TODO create event handler to set the prop so the releaseFile manager can take over
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine(e);
+                    //_log
+                }
+
+                //ExtractBuild(assetFilePathName, path, persisPath);
+
+                //update the current build number
+                return latestGitHubRelease.ReleaseId.ToString();
+            }
+            catch (Exception e)
+            {
+                //_log.ErrorException("Getting the repo info from {client} failed", e);
+                //throw ex;
+                return null;
+            }
+        }
+
         private static GitHubClient GetClient(ProductHeaderValue productInformation, string username, string password)
         {
             // the basic auth- not working
             var credentials = new Credentials(username, password, AuthenticationType.Basic);
-            var client = new GitHubClient(productInformation) { Credentials = credentials };
+            var client = new GitHubClient(productInformation) {Credentials = credentials};
             return client;
         }
 
@@ -122,7 +172,7 @@ namespace PCController.Console
         {
             // the Oauth- reccomended
             var credentials = new Credentials(token);
-            var client = new GitHubClient(productInformation) { Credentials = credentials };
+            var client = new GitHubClient(productInformation) {Credentials = credentials};
             return client;
         }
 
@@ -138,29 +188,31 @@ namespace PCController.Console
             try
             {
                 //_log.Info("Getting the latest release from {repo} and mapping to our model", repo);
-                var latestRelease = await GitHubClient.Repository.Release.GetLatest(_gitHubUser, _defaultRepo);
-                var output = new GitHubReleaseModel
-                {
-                    LatestReleaseName = latestRelease.Name,
-                    LatestReleaseNameTagName = latestRelease.TagName,
-                    LatestReleaseBody = latestRelease.Body,
-                    LatestReleaseAssets = latestRelease.Assets,
-                    LatestReleaseAssetsUrl = latestRelease.AssetsUrl,
-                    LatestReleaseAuthor = latestRelease.Author,
-                    LatestReleaseCreatedAt = latestRelease.CreatedAt,
-                    LatestReleaseIsDraft = latestRelease.Draft,
-                    LatestReleaseHtmlUrl = latestRelease.HtmlUrl,
-                    LatestReleaseId = latestRelease.Id,
-                    LatestReleaseNodeId = latestRelease.NodeId,
-                    LatestReleaseIsPreRelease = latestRelease.Prerelease,
-                    LatestReleasePublishedAt = latestRelease.PublishedAt,
-                    LatestReleaseZipBallUrl = latestRelease.ZipballUrl,
-                    LatestReleaseUrl = latestRelease.Url
+                Release latestRelease = await GitHubClient.Repository.Release.GetLatest(_gitHubUser, _defaultRepo);
+                GitHubReleaseModel output = new() {
+                    ReleaseName = latestRelease.Name,
+                    ReleaseNameTagName = latestRelease.TagName,
+                    ReleaseBody = latestRelease.Body,
+                    ReleaseAssets = latestRelease.Assets,
+                    ReleaseAssetsUrl = latestRelease.AssetsUrl,
+                    ReleaseAuthor = latestRelease.Author,
+                    ReleaseCreatedAt = latestRelease.CreatedAt,
+                    ReleaseIsDraft = latestRelease.Draft,
+                    ReleaseHtmlUrl = latestRelease.HtmlUrl,
+                    ReleaseId = latestRelease.Id,
+                    ReleaseNodeId = latestRelease.NodeId,
+                    ReleaseIsPreRelease = latestRelease.Prerelease,
+                    ReleasePublishedAt = latestRelease.PublishedAt,
+                    ReleaseZipBallUrl = latestRelease.ZipballUrl,
+                    ReleaseUrl = latestRelease.Url,
+                    ReleaseAssetDownloadUrl = latestRelease.Assets[0].BrowserDownloadUrl,
+                    ReleaseAssetDownloadId = latestRelease.Assets[0].Id
                 };
 
-                System.Console.WriteLine(output.LatestReleaseName);
-                System.Console.WriteLine(output.LatestReleaseAuthor);
-                System.Console.WriteLine(output.LatestReleaseAssetsUrl);
+                System.Console.WriteLine(output.ReleaseName);
+                System.Console.WriteLine(output.ReleaseAuthor);
+                System.Console.WriteLine(output.ReleaseAssetsUrl);
+                System.Console.WriteLine(latestRelease.Assets[0].BrowserDownloadUrl);
                 return output;
             }
             catch (Exception e)
@@ -176,8 +228,7 @@ namespace PCController.Console
             {
                 //_log.Info("Getting the latest info from {client} and mapping to our model", client);
                 var repoInfo = await GitHubClient.Repository.Get(_gitHubUser, _defaultRepo);
-                var output = new GitHubRepoModel
-                {
+                var output = new GitHubRepoModel {
                     RepoName = repoInfo.Name,
                     RepoGitUrl = repoInfo.GitUrl,
                     Description = repoInfo.Description,
@@ -194,7 +245,6 @@ namespace PCController.Console
                 System.Console.WriteLine(output.HasPages.ToString());
                 System.Console.WriteLine(output.HasWiki.ToString());
                 return output;
-
             }
             catch (Exception e)
             {
@@ -207,36 +257,6 @@ namespace PCController.Console
         {
             client = AuthenticateBasic(productInformation);
             return client != null;
-        }
-
-        private static async Task<string> DownloadLatestGithubReleaseAsync()
-        {
-            try
-            {
-                var latestGitHubRelease = await GetGitHubReleaseAsync(_defaultRepo);
-
-                string assetFilePath = $@"{_monitoredAppPath}Temp\DownloadedGithubRelease";
-                string assetFilePathName = $"{assetFilePath}{latestGitHubRelease.LatestReleaseAssets}";
-
-                System.Console.WriteLine(assetFilePathName);
-
-                var singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, _defaultRepo, latestGitHubRelease.LatestReleaseId);
-                var response = await GitHubClient.Connection.Get<object>(new Uri(singleRelease.Url), new Dictionary<string, string>(), "application/octet-stream");
-
-                byte[] bytes = (byte[]) response.HttpResponse.Body;
-                File.WriteAllBytes(assetFilePathName, bytes);
-                
-                //ExtractBuild(assetFilePathName, path, persisPath);
-
-                //update the current build number
-                return latestGitHubRelease.LatestReleaseId.ToString();
-            }
-            catch (Exception e)
-            {
-                //_log.ErrorException("Getting the repo info from {client} failed", e);
-                //throw ex;
-                return null;
-            }
         }
     }
 }

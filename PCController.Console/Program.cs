@@ -21,10 +21,10 @@ namespace PCController.Console
     {
         static void Main(string[] args)
         {
-
             GitHubManager manager = new GitHubManager();
+            manager.GetRelease();
 
-            System.Console.WriteLine(AzureKeyManager.GetPassword());
+            //System.Console.WriteLine(AzureKeyManager.GetPassword());
 
 
         }

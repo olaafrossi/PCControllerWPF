@@ -255,7 +255,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Backups\\DownloadedGithubRelease\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Temp\\DownloadedGitHubRelease\\")]
         public string MonitoredAppTempPath {
             get {
                 return ((string)(this["MonitoredAppTempPath"]));
