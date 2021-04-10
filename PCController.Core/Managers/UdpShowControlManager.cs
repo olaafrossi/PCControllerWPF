@@ -15,7 +15,7 @@ using ThreeByteLibrary.Dotnet.NetworkUtils;
 
 namespace PCController.Core.Managers
 {
-    public class UdpShowControlManager
+    public class UdpShowControlManager : IDisposable
     {
         private readonly IAsyncUdpLink _asyncUdpLink;
         private readonly IMvxLog _log;
@@ -171,6 +171,11 @@ namespace PCController.Core.Managers
 
             Log.Logger.Error("No network adapters with an IPv4 address in the system!");
             return "No network adapters with an IPv4 address in the system!";
+        }
+
+        public void Dispose()
+        {
+            _asyncUdpLink.Dispose();
         }
     }
 }

@@ -185,7 +185,7 @@
                             Name="WebView"
                             Width="Auto"
                             Height="250"
-                            Source="C:\ThreeByteIntermedia\PCController\Logs\PCControllerLogs.json" />
+                            Source="C:\dev\v2dev\PCController\PCController\PCController.WPF\Assets\HelpFiles\HomeViewHelp.html" />
                     </ui:SimpleStackPanel>
 
                 </Grid>

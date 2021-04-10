@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.774.44" />
     <PackageReference Include="MvvmCross.Platforms.Wpf" Version="7.1.2" />
     <PackageReference Include="ModernWpfUI" Version="0.9.4" />
-    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0-eap01" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
     <PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
     <PackageReference Include="Serilog.Enrichers.Context" Version="4.2.0" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.3" />
@@ -46,6 +46,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\HelpFiles\HomeViewHelp.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\HelpFiles\HomeViewHelp.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

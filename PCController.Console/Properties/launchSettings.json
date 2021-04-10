@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "PCController.Console": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -207,18 +207,6 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Safron1234!!")]
-        public string GitHubPassword {
-            get {
-                return ((string)(this["GitHubPassword"]));
-            }
-            set {
-                this["GitHubPassword"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("olaafrossi")]
         public string GitHubAccountOwner {
             get {
@@ -274,6 +262,30 @@ namespace PCController.Core.Properties {
             }
             set {
                 this["MonitoredAppTempPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pccontroller")]
+        public string AzureKeyVaultName {
+            get {
+                return ((string)(this["AzureKeyVaultName"]));
+            }
+            set {
+                this["AzureKeyVaultName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("GitHubPassword")]
+        public string AzureKeyVaultGitHubPassword {
+            get {
+                return ((string)(this["AzureKeyVaultGitHubPassword"]));
+            }
+            set {
+                this["AzureKeyVaultGitHubPassword"] = value;
             }
         }
     }

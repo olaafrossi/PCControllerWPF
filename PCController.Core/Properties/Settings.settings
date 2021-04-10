@@ -47,9 +47,6 @@
     <Setting Name="LocalScriptsFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\PCController\Scripts</Value>
     </Setting>
-    <Setting Name="GitHubPassword" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Safron1234!!</Value>
-    </Setting>
     <Setting Name="GitHubAccountOwner" Type="System.String" Scope="User">
       <Value Profile="(Default)">olaafrossi</Value>
     </Setting>
@@ -64,6 +61,12 @@
     </Setting>
     <Setting Name="MonitoredAppTempPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\DownloadedGithubRelease\</Value>
+    </Setting>
+    <Setting Name="AzureKeyVaultName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pccontroller</Value>
+    </Setting>
+    <Setting Name="AzureKeyVaultGitHubPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">GitHubPassword</Value>
     </Setting>
   </Settings>
 </SettingsFile>
