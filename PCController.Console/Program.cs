@@ -21,8 +21,8 @@ namespace PCController.Console
     {
         static void Main(string[] args)
         {
-            GitHubManager manager = new GitHubManager();
-            manager.GetRelease();
+            ReleaseFileManager releaseManager = new ReleaseFileManager();
+
 
             //System.Console.WriteLine(AzureKeyManager.GetPassword());
 

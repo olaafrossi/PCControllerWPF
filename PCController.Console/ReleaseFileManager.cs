@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -12,13 +13,39 @@ namespace PCController.Console
     {
         //_log
         private bool _success;
-        private string _zippedRelease;
-        private readonly string _appPath;
-        private readonly List<string> _preserveList;
+        private readonly static string _appPath = PCController.Core.Properties.Settings.Default.MonitoredAppPath;
+        private readonly StringCollection _preserveList = PCController.Core.Properties.Settings.Default.MonitoredAppPreserveList;
+        private readonly string _zippedRelease;
 
         public ReleaseFileManager()
         {
             //_log
+            GitHubManager gitManager = new GitHubManager();
+            System.Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
+            gitManager.GetRelease();
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+            System.Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
+            System.Console.WriteLine();
+            System.Console.WriteLine();
+
+            System.Console.WriteLine(gitManager.DownloadedLatestReleaseFileAttributes);
+            _zippedRelease = gitManager.DownloadedLatestReleaseFilePath;
+            ExtractArchive(_zippedRelease);
+        }
+
+        public bool CleanTempPath(string path)
+        {
+            bool output = false;
+
+            return output;
+        }
+
+        public bool BackupExisting(string path)
+        {
+            bool output = false;
+
+            return output;
         }
 
         public bool ExtractArchive(string zippedFile)
@@ -28,7 +55,7 @@ namespace PCController.Console
             try
             {
                 using var archive = ZipFile.OpenRead(_zippedRelease);
-                foreach (var entry in archive.Entries)
+                foreach (ZipArchiveEntry entry in archive.Entries)
                 {
                     var fullPath = Path.Combine(_appPath, entry.FullName);
 
@@ -40,9 +67,18 @@ namespace PCController.Console
 
                     bool shouldPreserve = false;
 
-                    foreach (var x in _preserveList)
+                    foreach (string s in _preserveList)
                     {
-                        if (string.IsNullOrEmpty(x) == false && entry.FullName.StartsWith(x) && File.Exists(fullPath))
+                        if (string.IsNullOrEmpty(s) == false && entry.FullName.StartsWith(s) && File.Exists(fullPath))
+                        {
+                            shouldPreserve = true;
+                            break;
+                        }
+                    }
+
+                    foreach (string s in _preserveList)
+                    {
+                        if (string.IsNullOrEmpty(s) == false && entry.FullName.StartsWith(s) && Directory.Exists(fullPath))
                         {
                             shouldPreserve = true;
                             break;
@@ -51,8 +87,12 @@ namespace PCController.Console
 
                     if (shouldPreserve)
                     {
-                       // Log.Information($"Preserving file: {entry.FullName}");
+                        // Log.Information($"Preserving file: {entry.FullName}");
+                        System.Console.WriteLine($"Preserving file: {entry.FullName}");
                     }
+
+
+
                     else
                     {
                         if (fullPath.EndsWith(@"/") == false && fullPath.EndsWith(@"\") == false)

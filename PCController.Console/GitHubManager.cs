@@ -30,8 +30,7 @@ namespace PCController.Console
         private static string _monitoredAppPath;
         private static string _monitoredAppBackupPath;
         private static string _monitoredAppTempPath;
-        public static event EventHandler OnGoodDownload;
-        private static bool _goodDownload;
+
         //private readonly static IMvxLog _log;
 
         public GitHubManager(IMvxLogProvider logProvider)
@@ -86,6 +85,10 @@ namespace PCController.Console
 
         public bool HasDownLoadedLatestRelease { get; set; }
 
+        public string DownloadedLatestReleaseFileAttributes { get; set; }
+
+        public string DownloadedLatestReleaseFilePath { get; set; }
+
         public void GetLatestRelease()
         {
             GetGitHubReleaseAsync(_defaultRepo).GetAwaiter().GetResult();
@@ -114,7 +117,7 @@ namespace PCController.Console
             return GetClient(productionInformation, token);
         }
 
-        private static async Task<string> DownloadLatestGithubReleaseAsync()
+        private async Task<string> DownloadLatestGithubReleaseAsync()
         {
             try
             {
@@ -133,11 +136,23 @@ namespace PCController.Console
                 try
                 {
                     File.WriteAllBytes(assetFilePathName, bytes);
-                    // TODO check for a way to make sure the download worked and has a file size
-                    if (assetFilePathName is not null)
+                    bool fileExists = File.Exists(assetFilePathName);
+
+                    try
                     {
-                        _goodDownload = true;
-                        //_goodDownload.Equals(true) += OnGoodDownload;
+                        System.Console.WriteLine(File.GetAttributes(assetFilePathName));
+                        DownloadedLatestReleaseFileAttributes = File.GetAttributes(assetFilePathName).ToString();
+                        System.Console.WriteLine(DownloadedLatestReleaseFilePath);
+                    }
+                    catch (Exception e)
+                    {
+                        System.Console.WriteLine(e);
+                    }
+
+                    if (fileExists is true)
+                    {
+                        HasDownLoadedLatestRelease = true;
+                        DownloadedLatestReleaseFilePath = assetFilePathName;
                         // TODO create event handler to set the prop so the releaseFile manager can take over
                     }
                 }
