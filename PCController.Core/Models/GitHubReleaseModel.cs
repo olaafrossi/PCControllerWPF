@@ -10,20 +10,22 @@ namespace PCController.Core.Models
 {
     public class GitHubReleaseModel
     {
-        public string LatestReleaseName { get; set; }
-        public string LatestReleaseNameTagName { get; set; }
-        public string LatestReleaseBody { get; set; }
-        public IReadOnlyList<ReleaseAsset> LatestReleaseAssets { get; set; }
-        public string LatestReleaseAssetsUrl { get; set; }
-        public Author LatestReleaseAuthor { get; set; }
-        public DateTimeOffset LatestReleaseCreatedAt { get; set; }
-        public bool LatestReleaseIsDraft { get; set; }
-        public string LatestReleaseHtmlUrl { get; set; }
-        public int LatestReleaseId { get; set; }
-        public string LatestReleaseNodeId { get; set; }
-        public bool LatestReleaseIsPreRelease { get; set; }
-        public DateTimeOffset? LatestReleasePublishedAt { get; set; }
-        public string LatestReleaseZipBallUrl { get; set; }
-        public string LatestReleaseUrl { get; set; }
+        public string ReleaseName { get; set; }
+        public string ReleaseNameTagName { get; set; }
+        public string ReleaseBody { get; set; }
+        public IReadOnlyList<ReleaseAsset> ReleaseAssets { get; set; }
+        public string ReleaseAssetsUrl { get; set; }
+        public Author ReleaseAuthor { get; set; }
+        public DateTimeOffset ReleaseCreatedAt { get; set; }
+        public bool ReleaseIsDraft { get; set; }
+        public string ReleaseHtmlUrl { get; set; }
+        public int ReleaseId { get; set; }
+        public string ReleaseNodeId { get; set; }
+        public bool ReleaseIsPreRelease { get; set; }
+        public DateTimeOffset? ReleasePublishedAt { get; set; }
+        public string ReleaseZipBallUrl { get; set; }
+        public string ReleaseUrl { get; set; }
+        public string ReleaseAssetDownloadUrl { get; set; }
+        public int ReleaseAssetDownloadId { get; set; }
     }
 }

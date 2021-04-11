@@ -255,7 +255,7 @@ namespace PCController.Core.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Backups\\DownloadedGithubRelease\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\ThreeByteIntermedia\\App\\Temp\\DownloadedGitHubRelease\\")]
         public string MonitoredAppTempPath {
             get {
                 return ((string)(this["MonitoredAppTempPath"]));
@@ -286,6 +286,23 @@ namespace PCController.Core.Properties {
             }
             set {
                 this["AzureKeyVaultGitHubPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <string>Assets</string>
+  <string>Fonts</string>
+  <string>Screenshots</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection MonitoredAppPreserveList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["MonitoredAppPreserveList"]));
+            }
+            set {
+                this["MonitoredAppPreserveList"] = value;
             }
         }
     }

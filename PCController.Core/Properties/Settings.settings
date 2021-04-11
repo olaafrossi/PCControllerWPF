@@ -60,13 +60,21 @@
       <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\</Value>
     </Setting>
     <Setting Name="MonitoredAppTempPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Backups\DownloadedGithubRelease\</Value>
+      <Value Profile="(Default)">C:\ThreeByteIntermedia\App\Temp\DownloadedGitHubRelease\</Value>
     </Setting>
     <Setting Name="AzureKeyVaultName" Type="System.String" Scope="User">
       <Value Profile="(Default)">pccontroller</Value>
     </Setting>
     <Setting Name="AzureKeyVaultGitHubPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">GitHubPassword</Value>
+    </Setting>
+    <Setting Name="MonitoredAppPreserveList" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Assets&lt;/string&gt;
+  &lt;string&gt;Fonts&lt;/string&gt;
+  &lt;string&gt;Screenshots&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>
