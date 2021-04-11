@@ -24,6 +24,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveChartsCore.SkiaSharpVie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiveChartsCore.SkiaSharpView.WPF", "LiveCharts2\src\skiasharp\LiveChartsCore.SkiaSharp.WPF\LiveChartsCore.SkiaSharpView.WPF.csproj", "{46CE5B16-B972-4099-971E-84326E9D665A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCController.Test", "PCController.Test\PCController.Test.csproj", "{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,18 @@ Global
 		{46CE5B16-B972-4099-971E-84326E9D665A}.Release|x64.Build.0 = Release|Any CPU
 		{46CE5B16-B972-4099-971E-84326E9D665A}.Release|x86.ActiveCfg = Release|Any CPU
 		{46CE5B16-B972-4099-971E-84326E9D665A}.Release|x86.Build.0 = Release|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Debug|x64.Build.0 = Debug|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Debug|x86.Build.0 = Debug|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Release|x64.ActiveCfg = Release|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Release|x64.Build.0 = Release|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Release|x86.ActiveCfg = Release|Any CPU
+		{F8E4B5E2-8ACB-4750-A2F7-553E82E07086}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
