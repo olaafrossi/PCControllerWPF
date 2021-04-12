@@ -54,7 +54,8 @@ namespace PCController.Console
 
             try
             {
-                using var archive = ZipFile.OpenRead(_zippedRelease);
+                using ZipArchive archive = ZipFile.OpenRead(_zippedRelease);
+
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
                     var fullPath = Path.Combine(_appPath, entry.FullName);
@@ -89,6 +90,8 @@ namespace PCController.Console
                     {
                         // Log.Information($"Preserving file: {entry.FullName}");
                         System.Console.WriteLine($"Preserving file: {entry.FullName}");
+
+                        // log this one day
                     }
 
 
