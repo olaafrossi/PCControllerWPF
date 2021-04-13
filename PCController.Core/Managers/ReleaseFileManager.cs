@@ -21,14 +21,15 @@ namespace PCController.Core.Managers
         public ReleaseFileManager(IMvxLogProvider logProvider)
         {
             _log = logProvider.GetLogFor<ReleaseFileManager>();
+
             GitHubManager gitManager = new GitHubManager(logProvider);
+
             Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
+            
             gitManager.GetRelease();
-            Console.WriteLine();
-            Console.WriteLine();
+
             Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
-            Console.WriteLine();
-            Console.WriteLine();
+
 
             Console.WriteLine(gitManager.DownloadedLatestReleaseFileAttributes);
             _zippedRelease = gitManager.DownloadedLatestReleaseFilePath;

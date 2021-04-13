@@ -23,11 +23,7 @@ namespace PCController.Console
         static void Main(string[] args)
         {
             //ReleaseFileManager releaseManager = new ReleaseFileManager(IMvxLogProvider logProvider);
-
-
             //System.Console.WriteLine(AzureKeyManager.GetPassword());
-
-
         }
     }
 
