@@ -7,29 +7,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PCController.Console
+namespace PCController.Core.Managers
 {
     public class ReleaseFileManager
     {
-        //_log
+        //private readonly IMvxLog _log;
         private bool _success;
-        private readonly static string _appPath = PCController.Core.Properties.Settings.Default.MonitoredAppPath;
-        private readonly StringCollection _preserveList = PCController.Core.Properties.Settings.Default.MonitoredAppPreserveList;
+        private readonly static string _appPath = Properties.Settings.Default.MonitoredAppPath;
+        private readonly StringCollection _preserveList = Properties.Settings.Default.MonitoredAppPreserveList;
         private readonly string _zippedRelease;
 
         public ReleaseFileManager()
         {
-            //_log
+            //_log = logProvider.GetLogFor<ReleaseFileManager>();
             GitHubManager gitManager = new GitHubManager();
-            System.Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
+            Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
             gitManager.GetRelease();
-            System.Console.WriteLine();
-            System.Console.WriteLine();
-            System.Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
-            System.Console.WriteLine();
-            System.Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
+            Console.WriteLine();
+            Console.WriteLine();
 
-            System.Console.WriteLine(gitManager.DownloadedLatestReleaseFileAttributes);
+            Console.WriteLine(gitManager.DownloadedLatestReleaseFileAttributes);
             _zippedRelease = gitManager.DownloadedLatestReleaseFilePath;
             ExtractArchive(_zippedRelease);
         }
@@ -89,7 +89,7 @@ namespace PCController.Console
                     if (shouldPreserve)
                     {
                         // Log.Information($"Preserving file: {entry.FullName}");
-                        System.Console.WriteLine($"Preserving file: {entry.FullName}");
+                        Console.WriteLine($"Preserving file: {entry.FullName}");
 
                         // log this one day
                     }
