@@ -315,7 +315,7 @@ namespace PCController.Core.ViewModels
             _stopwatch.Start();
 
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
-            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
+            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager(LogProvider);
 
             int numLogs = parser.GetLogs(NumberOfUdpMsgToFetch);
 
