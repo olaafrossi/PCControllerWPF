@@ -24,58 +24,40 @@ namespace PCController.Console
     {
         private static readonly string GitHubIdentity = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product;
 
-        //private readonly static string _githubPassword; //TODO create an instance of the Azure class to ge the secret
-        private readonly static string _gitHubUser = "olaafrossi";
-        private readonly static string _defaultRepo = "CrestronNetworkMonitor";
+        private readonly string _githubPassword; //TODO create an instance of the Azure class to ge the secret
+        private readonly string _gitHubUser;
+        private readonly string _defaultRepo;
         private static string _monitoredAppPath;
         private static string _monitoredAppBackupPath;
         private static string _monitoredAppTempPath;
+        private readonly IMvxLog _log;
 
-        //private readonly static IMvxLog _log;
-
-        public GitHubManager(IMvxLogProvider logProvider)
-        {
-            //_log = logProvider.GetLogFor<GitHubManager>();
-            //_log.Info("GitHubManager has been constructed");
-
-            // setup fields from System settings to local variables
-
-            //PCController.Core.Properties.Settings.Default.GitHubReleaseRepo
-            //PCController.Core.Properties.Settings.Default.GitHubAccountOwner
-            //PCController.Core.Properties.Settings.Default.GitHubAccountOwner
-            //PCController.Core.Properties.Settings.Default.MonitoredAppPath
-            //PCController.Core.Properties.Settings.Default.MonitoredAppBackupPath
-            //PCController.Core.Properties.Settings.Default.MonitoredAppTempPath
-
-            _monitoredAppPath = Settings.Default.MonitoredAppPath;
-            _monitoredAppBackupPath = Settings.Default.MonitoredAppBackupPath;
-            _monitoredAppTempPath = Settings.Default.MonitoredAppTempPath;
-
-            var productInformation = new ProductHeaderValue(GitHubIdentity);
-
-            if (!TryGetClient(productInformation, out GitHubClient client))
-            {
-                return;
-            }
-
-            GetClient(productInformation);
-            GitHubClient = client;
-        }
 
         public GitHubManager()
         {
-            // empty ctor just for local testing TODO delete me :)
+            // empty ctor just for local testing TODO add Imvx log provider
+            //_log = logProvider.GetLogFor<GitHubTHISXXXX>();
 
+            _log.Info("GitHubManager has been constructed");
+            _log.Info("Calling AzureKeyManager for GitHubAuth(Password/Token)");
+            _githubPassword = AzureKeyManager.GetPassword();
+
+            // setting private variables
+            
             _monitoredAppPath = Settings.Default.MonitoredAppPath;
             _monitoredAppBackupPath = Settings.Default.MonitoredAppBackupPath;
             _monitoredAppTempPath = Settings.Default.MonitoredAppTempPath;
+            _defaultRepo = Settings.Default.GitHubReleaseRepo;
+            _gitHubUser = Settings.Default.GitHubAccountOwner;
 
-            var productInformation = new ProductHeaderValue(GitHubIdentity);
+            ProductHeaderValue productInformation = new ProductHeaderValue(GitHubIdentity);
 
             if (!TryGetClient(productInformation, out GitHubClient client))
             {
                 return;
             }
+
+            
 
             GetClient(productInformation);
             GitHubClient = client;
@@ -179,7 +161,7 @@ namespace PCController.Console
         {
             // the basic auth- not working
             var credentials = new Credentials(username, password, AuthenticationType.Basic);
-            var client = new GitHubClient(productInformation) {Credentials = credentials};
+            var client = new GitHubClient(productInformation) { Credentials = credentials };
             return client;
         }
 
@@ -187,7 +169,7 @@ namespace PCController.Console
         {
             // the Oauth- reccomended
             var credentials = new Credentials(token);
-            var client = new GitHubClient(productInformation) {Credentials = credentials};
+            var client = new GitHubClient(productInformation) { Credentials = credentials };
             return client;
         }
 
@@ -204,7 +186,8 @@ namespace PCController.Console
             {
                 //_log.Info("Getting the latest release from {repo} and mapping to our model", repo);
                 Release latestRelease = await GitHubClient.Repository.Release.GetLatest(_gitHubUser, _defaultRepo);
-                GitHubReleaseModel output = new() {
+                GitHubReleaseModel output = new()
+                {
                     ReleaseName = latestRelease.Name,
                     ReleaseNameTagName = latestRelease.TagName,
                     ReleaseBody = latestRelease.Body,
@@ -243,7 +226,8 @@ namespace PCController.Console
             {
                 //_log.Info("Getting the latest info from {client} and mapping to our model", client);
                 var repoInfo = await GitHubClient.Repository.Get(_gitHubUser, _defaultRepo);
-                var output = new GitHubRepoModel {
+                var output = new GitHubRepoModel
+                {
                     RepoName = repoInfo.Name,
                     RepoGitUrl = repoInfo.GitUrl,
                     Description = repoInfo.Description,
