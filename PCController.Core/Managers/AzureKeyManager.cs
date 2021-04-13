@@ -8,7 +8,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using PCController.Core.Properties;
 
-namespace PCController.Console
+namespace PCController.Core.Managers
 {
     public static class AzureKeyManager
     {
