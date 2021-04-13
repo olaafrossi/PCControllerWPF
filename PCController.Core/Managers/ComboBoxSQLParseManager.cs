@@ -3,12 +3,19 @@
 // by Olaaf Rossi
 
 using System;
-using Serilog;
+using MvvmCross.Logging;
 
 namespace PCController.Core.Managers
 {
     public class ComboBoxSQLParseManager
     {
+        private readonly IMvxLog _log;
+
+        public ComboBoxSQLParseManager(IMvxLogProvider logProvider)
+        {
+            _log = logProvider.GetLogFor<ComboBoxSQLParseManager>();
+        }
+
         public int GetLogs(string numOfItems)
         {
             int numOfMsgs = 20;
@@ -44,7 +51,7 @@ namespace PCController.Core.Managers
             }
             catch (Exception e)
             {
-                Log.Error("Didn't parse the number in the ComboBox {numOfMsgs}", numOfMsgs, e);
+                _log.ErrorException("Didn't parse the number in the ComboBox {e}", e);
             }
 
             return numOfMsgs;
