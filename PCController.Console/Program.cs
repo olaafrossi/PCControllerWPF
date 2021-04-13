@@ -12,6 +12,7 @@ using System;
 using System.Threading.Tasks;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using MvvmCross.Logging;
 using PCController.Core.Managers;
 
 
@@ -21,7 +22,7 @@ namespace PCController.Console
     {
         static void Main(string[] args)
         {
-            ReleaseFileManager releaseManager = new ReleaseFileManager();
+            //ReleaseFileManager releaseManager = new ReleaseFileManager(IMvxLogProvider logProvider);
 
 
             //System.Console.WriteLine(AzureKeyManager.GetPassword());

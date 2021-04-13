@@ -6,21 +6,22 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MvvmCross.Logging;
 
 namespace PCController.Core.Managers
 {
     public class ReleaseFileManager
     {
-        //private readonly IMvxLog _log;
+        private readonly IMvxLog _log;
         private bool _success;
         private readonly static string _appPath = Properties.Settings.Default.MonitoredAppPath;
         private readonly StringCollection _preserveList = Properties.Settings.Default.MonitoredAppPreserveList;
         private readonly string _zippedRelease;
 
-        public ReleaseFileManager()
+        public ReleaseFileManager(IMvxLogProvider logProvider)
         {
-            //_log = logProvider.GetLogFor<ReleaseFileManager>();
-            GitHubManager gitManager = new GitHubManager();
+            _log = logProvider.GetLogFor<ReleaseFileManager>();
+            GitHubManager gitManager = new GitHubManager(logProvider);
             Console.WriteLine(gitManager.HasDownLoadedLatestRelease.ToString());
             gitManager.GetRelease();
             Console.WriteLine();

@@ -6,23 +6,25 @@ using System;
 using Azure;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using MvvmCross.Logging;
 using PCController.Core.Properties;
 
 namespace PCController.Core.Managers
 {
-    public static class AzureKeyManager
+    public class AzureKeyManager
     {
-        //private readonly static IMvxLog _log;
-        // TODO add the MvX Log provider
-        // TODO move to core project
+        private readonly IMvxLog _log;
 
-        public static string GetPassword()
+        public AzureKeyManager(IMvxLogProvider logProvider)
         {
-            //_log = logProvider.GetLogFor<GitHubManager>();
+            _log = logProvider.GetLogFor<AzureKeyManager>();
+        }
 
+        public string GetPassword()
+        {
             string keyVaultName = Settings.Default.AzureKeyVaultName;
             string kvUri = $"https://{keyVaultName}.vault.azure.net";
-            //_log.Info("Getting Secret from {kvUri}", kvUri);
+            _log.Info("Getting Secret from {kvUri}", kvUri);
 
             //_log.Info("Have logged something"):
             SecretClient client = new(new Uri(kvUri), new DefaultAzureCredential());
