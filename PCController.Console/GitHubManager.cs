@@ -23,7 +23,6 @@ namespace PCController.Console
     public class GitHubManager
     {
         private static readonly string GitHubIdentity = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product;
-
         private readonly string _githubPassword; //TODO create an instance of the Azure class to ge the secret
         private readonly string _gitHubUser;
         private readonly string _defaultRepo;
@@ -49,15 +48,12 @@ namespace PCController.Console
             _monitoredAppTempPath = Settings.Default.MonitoredAppTempPath;
             _defaultRepo = Settings.Default.GitHubReleaseRepo;
             _gitHubUser = Settings.Default.GitHubAccountOwner;
-
             ProductHeaderValue productInformation = new ProductHeaderValue(GitHubIdentity);
 
             if (!TryGetClient(productInformation, out GitHubClient client))
             {
                 return;
             }
-
-            
 
             GetClient(productInformation);
             GitHubClient = client;
@@ -86,14 +82,14 @@ namespace PCController.Console
             GetGitHubRepoInfo(GitHubClient).GetAwaiter().GetResult();
         }
 
-        private static GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
+        private GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
         {
             //_log.Info("trying to get a GitHub client{productInformation}", productInformation);
             System.Console.WriteLine(AzureKeyManager.GetPassword());
             return GetClient(productInformation, _gitHubUser, AzureKeyManager.GetPassword());
         }
 
-        private static GitHubClient AuthenticateToken(ProductHeaderValue productionInformation, string token)
+        private GitHubClient AuthenticateToken(ProductHeaderValue productionInformation, string token)
         {
             //_log.Info("trying to get a GitHub client {productInformation} with token {token}", productInformation, token);
             return GetClient(productionInformation, token);
@@ -103,15 +99,15 @@ namespace PCController.Console
         {
             try
             {
-                var latestGitHubRelease = await GetGitHubReleaseAsync(_defaultRepo);
+                GitHubReleaseModel latestGitHubRelease = await GetGitHubReleaseAsync(_defaultRepo);
 
                 string assetFilePath = $"{_monitoredAppTempPath}";
                 string assetFilePathName = $"{assetFilePath}{latestGitHubRelease.ReleaseName}.zip";
 
                 System.Console.WriteLine(assetFilePathName);
 
-                var singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, _defaultRepo, latestGitHubRelease.ReleaseAssetDownloadId);
-                var response = await GitHubClient.Connection.Get<object>(new Uri(singleRelease.Url), new Dictionary<string, string>(), "application/octet-stream");
+                ReleaseAsset singleRelease = await GitHubClient.Repository.Release.GetAsset(_gitHubUser, _defaultRepo, latestGitHubRelease.ReleaseAssetDownloadId);
+                IApiResponse<object> response = await GitHubClient.Connection.Get<object>(new Uri(singleRelease.Url), new Dictionary<string, string>(), "application/octet-stream");
 
                 byte[] bytes = (byte[]) response.HttpResponse.Body;
 
@@ -160,27 +156,27 @@ namespace PCController.Console
         private static GitHubClient GetClient(ProductHeaderValue productInformation, string username, string password)
         {
             // the basic auth- not working
-            var credentials = new Credentials(username, password, AuthenticationType.Basic);
-            var client = new GitHubClient(productInformation) { Credentials = credentials };
+            Credentials credentials = new Credentials(username, password, AuthenticationType.Basic);
+            GitHubClient client = new GitHubClient(productInformation) { Credentials = credentials };
             return client;
         }
 
         private static GitHubClient GetClient(ProductHeaderValue productInformation, string token)
         {
             // the Oauth- reccomended
-            var credentials = new Credentials(token);
-            var client = new GitHubClient(productInformation) { Credentials = credentials };
+            Credentials credentials = new Credentials(token);
+            GitHubClient client = new GitHubClient(productInformation) { Credentials = credentials };
             return client;
         }
 
         private static GitHubClient GetClient(ProductHeaderValue productInformation)
         {
             //unauthenticated- only for private repo's
-            var client = new GitHubClient(productInformation);
+            GitHubClient client = new GitHubClient(productInformation);
             return client;
         }
 
-        private static async Task<GitHubReleaseModel> GetGitHubReleaseAsync(string repo)
+        private async Task<GitHubReleaseModel> GetGitHubReleaseAsync(string repo)
         {
             try
             {
@@ -220,13 +216,13 @@ namespace PCController.Console
             }
         }
 
-        private static async Task<GitHubRepoModel> GetGitHubRepoInfo(GitHubClient client)
+        private async Task<GitHubRepoModel> GetGitHubRepoInfo(GitHubClient client)
         {
             try
             {
                 //_log.Info("Getting the latest info from {client} and mapping to our model", client);
-                var repoInfo = await GitHubClient.Repository.Get(_gitHubUser, _defaultRepo);
-                var output = new GitHubRepoModel
+                Repository repoInfo = await GitHubClient.Repository.Get(_gitHubUser, _defaultRepo);
+                GitHubRepoModel output = new GitHubRepoModel
                 {
                     RepoName = repoInfo.Name,
                     RepoGitUrl = repoInfo.GitUrl,
@@ -252,7 +248,7 @@ namespace PCController.Console
             }
         }
 
-        private static bool TryGetClient(ProductHeaderValue productInformation, out GitHubClient client)
+        private bool TryGetClient(ProductHeaderValue productInformation, out GitHubClient client)
         {
             client = AuthenticateBasic(productInformation);
             return client != null;
