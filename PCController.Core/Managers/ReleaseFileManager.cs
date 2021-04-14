@@ -95,9 +95,6 @@ namespace PCController.Core.Managers
 
                         // log this one day
                     }
-
-
-
                     else
                     {
                         if (fullPath.EndsWith(@"/") == false && fullPath.EndsWith(@"\") == false)
