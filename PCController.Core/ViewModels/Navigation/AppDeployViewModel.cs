@@ -31,6 +31,8 @@ namespace PCController.Core.ViewModels
             _stopwatch = new Stopwatch();
 
             // Setup UI Commands
+            CheckForAppUpdateCommand = new MvxCommand(CheckAppUpdate);
+            CheckAppVersionCommand = new MvxCommand(CheckAppVersion);
 
             // set initial UI Fields
 
@@ -38,9 +40,22 @@ namespace PCController.Core.ViewModels
 
         }
 
+        private void CheckAppVersion()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void CheckAppUpdate()
+        {
+            throw new NotImplementedException();
+        }
+
         public override async Task Initialize()
         {
             await base.Initialize();
+
+            ApplicationName = PCController.Core.Properties.Settings.Default.ProcessName;
+            RaisePropertyChanged(() => ApplicationName);
         }
 
         public override void Prepare(WindowChildParam param)
@@ -50,6 +65,15 @@ namespace PCController.Core.ViewModels
 
         public int ParentNo => _param.ParentNo;
         public string Text => $"I'm No.{_param.ChildNo}. My parent is No.{_param.ParentNo}";
+
+
+        public IMvxCommand CheckForAppUpdateCommand { get; set; }
+        public IMvxCommand CheckAppVersionCommand { get; set; }
+        public string ApplicationName { get; set; }
+        public string ApplicationVersion { get; set; }
+        public string ApplicationVersionCheckMethod { get; set; }
+        public string VersionOnCDPlatform { get; set; }
+        public string CDPlatform { get; set; }
 
 
     }
