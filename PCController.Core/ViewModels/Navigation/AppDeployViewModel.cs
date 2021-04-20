@@ -53,9 +53,14 @@ namespace PCController.Core.ViewModels
         public override async Task Initialize()
         {
             await base.Initialize();
+            ExeVersionManager versionManager = new ExeVersionManager();
+            string version = versionManager.GetVersion();
 
+            ApplicationVersion = version;
             ApplicationName = PCController.Core.Properties.Settings.Default.ProcessName;
             RaisePropertyChanged(() => ApplicationName);
+            RaisePropertyChanged(() => ApplicationVersion);
+
         }
 
         public override void Prepare(WindowChildParam param)
