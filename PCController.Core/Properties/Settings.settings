@@ -76,5 +76,8 @@
   &lt;string&gt;Screenshots&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="AzureFallBackLocalSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Password1234</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

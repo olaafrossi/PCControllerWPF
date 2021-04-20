@@ -51,15 +51,24 @@ namespace PCController.Core.Managers
             _log.Info("Calling AzureKeyManager for GitHubAuth(Password/Token)");
 
             AzureKeyManager keyManager = new AzureKeyManager(logProvider);
+
             _githubPassword = keyManager.GetPassword();
 
-            if (!TryGetClient(productInformation, out GitHubClient client))
+            if (_githubPassword != null)
             {
-                return;
-            }
+                if (!TryGetClient(productInformation, out GitHubClient client))
+                {
+                    return;
+                }
 
-            GetClient(productInformation, _gitHubUser, _githubPassword);
-            GitHubClient = client;
+                GetClient(productInformation, _gitHubUser, _githubPassword);
+                GitHubClient = client;
+            }
+            else //TODO make sure this code is reachable
+            {
+                _githubPassword = PCController.Core.Properties.Settings.Default.AzureFallBackLocalSecret;
+                _log.Info("using the fallback string {_githubPassword}", _githubPassword);
+            }
         }
 
         private static GitHubClient GitHubClient { get; set; }
