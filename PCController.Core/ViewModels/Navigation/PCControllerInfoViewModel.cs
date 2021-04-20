@@ -20,16 +20,15 @@ namespace PCController.Core.ViewModels
     public sealed class PCControllerInfoViewModel : MvxNavigationViewModel<WindowChildParam>
     {
         private readonly Stopwatch _stopwatch;
-
         private WindowChildParam _param;
-
         private readonly IMvxLog _log;
+        private ComboBoxSQLParseManager _parser;
 
         public PCControllerInfoViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
             _log = logProvider.GetLogFor<PCControllerInfoViewModel>();
             RefreshLogCommand = new MvxCommand(GetLogsFromManager);
-
+            _parser = new ComboBoxSQLParseManager(logProvider);
             _log.Info("PCControllerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
 
             GetAppInfo();
@@ -79,9 +78,8 @@ namespace PCController.Core.ViewModels
 
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
             ProcMonitorModel procData = new();
-            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
 
-            int numLogs = parser.GetLogs(NumberOfLogsToFetch);
+            int numLogs = _parser.GetLogs(NumberOfLogsToFetch);
 
             _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
 

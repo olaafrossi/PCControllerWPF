@@ -23,7 +23,7 @@ namespace PCController.Core.Managers
     public class GitHubManager
     {
         private static readonly string GitHubIdentity = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyProductAttribute>().Product;
-        private readonly string _githubPassword; //TODO create an instance of the Azure class to ge the secret
+        private readonly string _githubPassword;
         private readonly string _gitHubUser;
         private readonly string _defaultRepo;
         private static string _monitoredAppPath;
@@ -32,17 +32,15 @@ namespace PCController.Core.Managers
         private readonly IMvxLog _log;
 
 
-        public GitHubManager()
+        public GitHubManager(IMvxLogProvider logProvider)
         {
-            // empty ctor just for local testing TODO add Imvx log provider
-            //_log = logProvider.GetLogFor<GitHubTHISXXXX>();
+            
+            _log = logProvider.GetLogFor<GitHubManager>();
 
-            //_log.Info("GitHubManager has been constructed");
-            //_log.Info("Calling AzureKeyManager for GitHubAuth(Password/Token)");
-            _githubPassword = AzureKeyManager.GetPassword();
+            _log.Info("GitHubManager has been constructed");
 
             // setting private variables
-            
+
             _monitoredAppPath = Settings.Default.MonitoredAppPath;
             _monitoredAppBackupPath = Settings.Default.MonitoredAppBackupPath;
             _monitoredAppTempPath = Settings.Default.MonitoredAppTempPath;
@@ -50,13 +48,27 @@ namespace PCController.Core.Managers
             _gitHubUser = Settings.Default.GitHubAccountOwner;
             ProductHeaderValue productInformation = new ProductHeaderValue(GitHubIdentity);
 
-            if (!TryGetClient(productInformation, out GitHubClient client))
-            {
-                return;
-            }
+            _log.Info("Calling AzureKeyManager for GitHubAuth(Password/Token)");
 
-            GetClient(productInformation, _gitHubUser, _githubPassword);
-            GitHubClient = client;
+            AzureKeyManager keyManager = new AzureKeyManager(logProvider);
+
+            _githubPassword = keyManager.GetPassword();
+
+            if (_githubPassword != null)
+            {
+                if (!TryGetClient(productInformation, out GitHubClient client))
+                {
+                    return;
+                }
+
+                GetClient(productInformation, _gitHubUser, _githubPassword);
+                GitHubClient = client;
+            }
+            else //TODO make sure this code is reachable
+            {
+                _githubPassword = PCController.Core.Properties.Settings.Default.AzureFallBackLocalSecret;
+                _log.Info("using the fallback string {_githubPassword}", _githubPassword);
+            }
         }
 
         private static GitHubClient GitHubClient { get; set; }
@@ -82,11 +94,11 @@ namespace PCController.Core.Managers
             GetGitHubRepoInfo(GitHubClient).GetAwaiter().GetResult();
         }
 
-        private GitHubClient AuthenticateBasic(ProductHeaderValue productInformation)
+        private GitHubClient AuthenticateBasic(ProductHeaderValue productInformation, string user, string pass)
         {
             //_log.Info("trying to get a GitHub client{productInformation}", productInformation);
-            System.Console.WriteLine(AzureKeyManager.GetPassword());
-            return GetClient(productInformation, _gitHubUser, AzureKeyManager.GetPassword());
+            
+            return GetClient(productInformation, user, pass);
         }
 
         private GitHubClient AuthenticateToken(ProductHeaderValue productionInformation, string token)
@@ -251,7 +263,7 @@ namespace PCController.Core.Managers
 
         private bool TryGetClient(ProductHeaderValue productInformation, out GitHubClient client)
         {
-            client = AuthenticateBasic(productInformation);
+            client = AuthenticateBasic(productInformation, _gitHubUser, _githubPassword);
             return client != null;
         }
     }

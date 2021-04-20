@@ -27,11 +27,13 @@ namespace PCController.Core.ViewModels
         private readonly Stopwatch _stopwatch;
         private WindowChildParam _param;
         private readonly IMvxLog _log;
+        private ComboBoxSQLParseManager _parser;
 
         public PCNetworkListenerViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
             _log = logProvider.GetLogFor<PCNetworkListenerViewModel>();
             _log.Info("PCNetworkListenerViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _parser = new ComboBoxSQLParseManager(logProvider);
 
             // Setup UI Commands
             RefreshNetMsgCommand = new MvxCommand(GetLogsFromManager);
@@ -106,9 +108,8 @@ namespace PCController.Core.ViewModels
 
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
-            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
 
-            int numLogs = parser.GetLogs(NumberOfNetMsgToFetch);
+            int numLogs = _parser.GetLogs(NumberOfNetMsgToFetch);
 
             _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
             IList<NetworkMessageModel> rows = sql.GetSomeNetData(numLogs);

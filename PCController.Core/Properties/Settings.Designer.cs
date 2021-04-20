@@ -305,5 +305,17 @@ namespace PCController.Core.Properties {
                 this["MonitoredAppPreserveList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Password1234")]
+        public string AzureFallBackLocalSecret {
+            get {
+                return ((string)(this["AzureFallBackLocalSecret"]));
+            }
+            set {
+                this["AzureFallBackLocalSecret"] = value;
+            }
+        }
     }
 }

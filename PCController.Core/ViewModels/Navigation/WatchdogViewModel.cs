@@ -39,6 +39,7 @@ namespace PCController.Core.ViewModels
         private ObservableCollection<string> _procMonRealTimeCollection = new();
         private int _writeCountToDb = 0;
         private readonly IMvxLog _log;
+        private ComboBoxSQLParseManager _parser;
 
         // chart fields
         private int index;
@@ -51,6 +52,7 @@ namespace PCController.Core.ViewModels
         {
             _log = logProvider.GetLogFor<WatchdogViewModel>();
             _log.Info("WatchdogViewModel has been constructed {logProvider} {navigationService}", logProvider, navigationService);
+            _parser = new ComboBoxSQLParseManager(logProvider);
 
             // Setup UI Commands
             RefreshProcLogsCommand = new MvxCommand(GetLogsFromManager);
@@ -310,9 +312,8 @@ namespace PCController.Core.ViewModels
             
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.PCControllerDB));
             ProcMonitorModel procData = new();
-            ComboBoxSQLParseManager parser = new ComboBoxSQLParseManager();
-            
-            int numLogs = parser.GetLogs(NumberOfProcLogsToFetch);
+
+            int numLogs = _parser.GetLogs(NumberOfProcLogsToFetch);
 
             _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
             IList<ProcMonitorModel> rows = sql.GetSomeProcData(numLogs);

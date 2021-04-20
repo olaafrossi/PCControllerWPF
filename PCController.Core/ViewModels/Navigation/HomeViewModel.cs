@@ -112,7 +112,8 @@ namespace PCController.Core.ViewModels
 
             SQLiteCRUD sql = new(ConnectionStringManager.GetConnectionString(ConnectionStringManager.DataBases.Logs));
             ProcMonitorModel procData = new();
-            ComboBoxSQLParseManager parser = new();
+            IMvxLogProvider comLogProvider;
+            ComboBoxSQLParseManager parser = new(LogProvider);
 
             int numLogs = parser.GetLogs(NumberOfLogsToFetch);
 
