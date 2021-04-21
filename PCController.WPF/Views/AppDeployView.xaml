@@ -105,6 +105,18 @@
                             Focusable="True"
                             ScrollViewer.CanContentScroll="False"
                             Text="CD Platform" />
+                        <TextBlock
+                            Margin="5,22,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="Date/Time of last check of CD PLatform" />
+                        <TextBlock
+                            Margin="5,22,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="AutoDeploy Enabled" />
                     </ui:SimpleStackPanel>
                     <ui:SimpleStackPanel
                         Grid.Row="1"
@@ -148,6 +160,18 @@
                             MaxLines="1"
                             ScrollViewer.CanContentScroll="True"
                             Text="{Binding CDPlatform}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="True"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding LastCheckedDateTime}" />
+                        <CheckBox
+                            Margin="5"
+                            HorizontalAlignment="Center"
+                            Focusable="True"
+                            IsEnabled="{Binding AutoDownload}" />
                         <ui:SimpleStackPanel
                             Margin="5,0,5,0"
                             HorizontalAlignment="Center"
@@ -175,37 +199,61 @@
                     <ui:SimpleStackPanel
                         Grid.Row="1"
                         Grid.Column="2"
-                        Width="Auto"
-                        MinWidth="300"
+                        MinWidth="200"
                         Margin="0,5,0,5"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
                         Background="{DynamicResource SimpleStackPanelBackgroundDarkGrey}">
+                        <TextBlock
+                            Margin="5,12,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="CD Platform Connection String" />
+                        <TextBlock
+                            Margin="5,22,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="CD Platform Path" />
+                        <TextBlock
+                            Margin="5,22,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="CD PLatform Username" />
+                        <TextBlock
+                            Margin="5,22,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="CD Platform Password" />
+                        <TextBlock
+                            Margin="5,22,5,5"
+                            VerticalAlignment="Center"
+                            Focusable="True"
+                            ScrollViewer.CanContentScroll="False"
+                            Text="CD PLatform Token" />
                         <Button
-                            x:Name="OpenFolder"
+                            x:Name="SaveSettings"
                             Width="165"
                             MinHeight="40"
                             Margin="5"
                             HorizontalAlignment="Center"
-                            mvx:Bi.nd="Command OpenScriptsFolderCommand"
-                            Content="Open Scripts Folder"
+                            mvx:Bi.nd="Command SaveSettingsCommand"
+                            Content="Save Settings"
+                            IsEnabled="{Binding SettingHaveChanged}"
                             Style="{StaticResource AccentButtonStyle}" />
-                        <TextBox
-                            Margin="5"
-                            Focusable="True"
-                            IsReadOnly="False"
-                            MaxLines="1"
-                            ScrollViewer.CanContentScroll="True"
-                            Text="{Binding LogRefreshInterval, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBox
-                            Margin="5"
-                            Focusable="True"
-                            IsReadOnly="False"
-                            MaxLines="1"
-                            ScrollViewer.CanContentScroll="True"
-                            Text="{Binding LogRefreshInterval, UpdateSourceTrigger=PropertyChanged}" />
 
+                        <Button
+                            x:Name="CheckSettings"
+                            Width="165"
+                            MinHeight="40"
+                            Margin="5"
+                            HorizontalAlignment="Center"
+                            mvx:Bi.nd="Command CheckSettingsCommand"
+                            Content="Check Settings"
+                            Style="{StaticResource AccentButtonStyle}" />
                     </ui:SimpleStackPanel>
+
                     <ui:SimpleStackPanel
                         Grid.Row="1"
                         Grid.Column="3"
@@ -221,15 +269,42 @@
                             IsReadOnly="False"
                             MaxLines="1"
                             ScrollViewer.CanContentScroll="True"
-                            Text="{Binding LogRefreshInterval, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding CDPlatformConnectionString, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBox
                             Margin="5"
                             Focusable="True"
                             IsReadOnly="False"
                             MaxLines="1"
                             ScrollViewer.CanContentScroll="True"
-                            Text="{Binding LogRefreshInterval, UpdateSourceTrigger=PropertyChanged}" />
-
+                            Text="{Binding CDPlatformPath, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding CDPlatformPath, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding CDPlatformUsername, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding CDPlatformPassword, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Margin="5"
+                            Focusable="True"
+                            IsReadOnly="False"
+                            MaxLines="1"
+                            ScrollViewer.CanContentScroll="True"
+                            Text="{Binding CDPlatformToken, UpdateSourceTrigger=PropertyChanged}" />
                     </ui:SimpleStackPanel>
 
                 </Grid>

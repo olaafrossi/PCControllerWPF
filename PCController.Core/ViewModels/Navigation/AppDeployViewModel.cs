@@ -33,11 +33,23 @@ namespace PCController.Core.ViewModels
             // Setup UI Commands
             CheckForAppUpdateCommand = new MvxCommand(CheckAppUpdate);
             CheckAppVersionCommand = new MvxCommand(CheckAppVersion);
+            SaveSettingsCommand = new MvxCommand(SaveCDSettings);
+            CheckSettingsCommand = new MvxCommand(CheckCDConnectionSettings);
 
             // set initial UI Fields
 
             // Fetch Initial Data
 
+        }
+
+        private void CheckCDConnectionSettings()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SaveCDSettings()
+        {
+            throw new NotImplementedException();
         }
 
         private void CheckAppVersion()
@@ -74,11 +86,23 @@ namespace PCController.Core.ViewModels
 
         public IMvxCommand CheckForAppUpdateCommand { get; set; }
         public IMvxCommand CheckAppVersionCommand { get; set; }
+        public IMvxCommand SaveSettingsCommand { get; set; }
+        public IMvxCommand CheckSettingsCommand { get; set; }
+        public bool SettingHaveChanged { get; set; }
         public string ApplicationName { get; set; }
         public string ApplicationVersion { get; set; }
         public string ApplicationVersionCheckMethod { get; set; }
         public string VersionOnCDPlatform { get; set; }
+        public bool AutoDownload { get; set; }
+        public DateTime LastCheckedDateTime { get; set; }
         public string CDPlatform { get; set; }
+        public string CDPlatformConnectionString { get; set; }
+        public string CDPlatformPath { get; set; }
+        public string CDPlatformUsername { get; set; }
+        public string CDPlatformPassword { get; set; }
+        public string CDPlatformToken { get; set; }
+
+ 
 
 
     }
