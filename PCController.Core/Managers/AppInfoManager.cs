@@ -33,11 +33,14 @@ namespace PCController.Core.Managers
         {
             string result;
 
-            if (!WindowsVersionHelper.HasPackageIdentity) return "Not packaged";
+            if (!WindowsVersionHelper.HasPackageIdentity)
+            {
+                return "Not packaged";
+            }
 
             if (ApiInformation.IsMethodPresent("Windows.ApplicationModel.Package", "GetAppInstallerInfo"))
             {
-                var aiUri = GetAppInstallerInfoUri(Package.Current);
+                Uri aiUri = GetAppInstallerInfoUri(Package.Current);
                 if (aiUri != null)
                 {
                     result = $"MSIX Installer URL: {aiUri}";

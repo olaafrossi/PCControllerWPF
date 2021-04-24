@@ -72,11 +72,8 @@ namespace PCController.Core.Managers
         }
 
         private static GitHubClient GitHubClient { get; set; }
-
         public bool HasDownLoadedLatestRelease { get; set; }
-
         public string DownloadedLatestReleaseFileAttributes { get; set; }
-
         public string DownloadedLatestReleaseFilePath { get; set; }
 
         public void GetLatestRelease()
