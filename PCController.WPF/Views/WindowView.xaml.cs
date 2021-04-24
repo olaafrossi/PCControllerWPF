@@ -18,8 +18,8 @@ namespace PCController.WPF.Views
 
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
         {
-            var instanceRequest = request as MvxViewModelInstanceRequest;
-            var viewModel = instanceRequest?.ViewModelInstance as WindowViewModel;
+            MvxViewModelInstanceRequest instanceRequest = request as MvxViewModelInstanceRequest;
+            WindowViewModel viewModel = instanceRequest?.ViewModelInstance as WindowViewModel;
 
             return new MvxWindowPresentationAttribute
             {

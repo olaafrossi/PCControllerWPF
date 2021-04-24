@@ -60,7 +60,7 @@ namespace PCController.Core.Managers
 
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    var fullPath = Path.Combine(_appPath, entry.FullName);
+                    string fullPath = Path.Combine(_appPath, entry.FullName);
 
                     if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
                     {

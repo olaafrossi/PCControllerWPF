@@ -31,8 +31,8 @@ namespace PCController.WPF.Views
         }
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
         {
-            var instanceRequest = request as MvxViewModelInstanceRequest;
-            var viewModel = instanceRequest?.ViewModelInstance as AppDeployViewModel;
+            MvxViewModelInstanceRequest instanceRequest = request as MvxViewModelInstanceRequest;
+            AppDeployViewModel viewModel = instanceRequest?.ViewModelInstance as AppDeployViewModel;
             return new MvxContentPresentationAttribute
             {
                 WindowIdentifier = $"{nameof(RootView)}.{viewModel?.ParentNo}",

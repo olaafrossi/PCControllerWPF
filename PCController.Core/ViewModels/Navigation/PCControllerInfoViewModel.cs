@@ -83,7 +83,7 @@ namespace PCController.Core.ViewModels
 
             _log.Info("Getting Data Logs from {sql} number: {numOfMsgs}", sql, numLogs);
 
-            var rows = sql.GetSomeLogs(numLogs);
+            IList<LogModel> rows = sql.GetSomeLogs(numLogs);
             LogGridRows = rows;
 
             _stopwatch.Stop();

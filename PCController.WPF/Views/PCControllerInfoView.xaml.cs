@@ -22,8 +22,8 @@ namespace PCController.WPF.Views
         }
         public MvxBasePresentationAttribute PresentationAttribute(MvxViewModelRequest request)
         {
-            var instanceRequest = request as MvxViewModelInstanceRequest;
-            var viewModel = instanceRequest?.ViewModelInstance as PCControllerInfoViewModel;
+            MvxViewModelInstanceRequest instanceRequest = request as MvxViewModelInstanceRequest;
+            PCControllerInfoViewModel viewModel = instanceRequest?.ViewModelInstance as PCControllerInfoViewModel;
             return new MvxContentPresentationAttribute
             {
                 WindowIdentifier = $"{nameof(RootView)}.{viewModel?.ParentNo}",
@@ -34,24 +34,24 @@ namespace PCController.WPF.Views
         private void LinkTo3ByteOnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Log.Logger.Information("User clicked {sender} {e}", sender, e);
-            var destURL = "https://www.3-byte.com.com/";
-            var sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
+            string destURL = "https://www.3-byte.com.com/";
+            ProcessStartInfo sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
             Process.Start(sInfo);
         }
 
         private void LinkToGitHubProjectOnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Log.Logger.Information("User clicked {sender} {e}", sender, e);
-            var destURL = "https://www.google.com/";
-            var sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
+            string destURL = "https://www.google.com/";
+            ProcessStartInfo sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
             Process.Start(sInfo);
         }
 
         private void LinkToProjectInstallerOnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Log.Logger.Information("User clicked {sender} {e}", sender, e);
-            var destURL = "https://www.github.com/";
-            var sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
+            string destURL = "https://www.github.com/";
+            ProcessStartInfo sInfo = new ProcessStartInfo(destURL) { UseShellExecute = true };
             Process.Start(sInfo);
         }
     }

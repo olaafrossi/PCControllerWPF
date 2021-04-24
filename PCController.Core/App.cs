@@ -58,9 +58,9 @@ namespace PCController.Core
         private void GetAzureSecrets()
         {
             string keyVaultName = Environment.GetEnvironmentVariable("KEY_VAULT_NAME");
-            var kvUri = "https://" + keyVaultName + ".vault.azure.net";
+            string kvUri = "https://" + keyVaultName + ".vault.azure.net";
 
-            var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+            SecretClient client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
         }
         
         //public event EventHandler<NetworkMessagesEventArgs> MessageHit;

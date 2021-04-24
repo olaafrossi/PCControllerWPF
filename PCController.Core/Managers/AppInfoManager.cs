@@ -20,7 +20,7 @@ namespace PCController.Core.Managers
         [MethodImpl(MethodImplOptions.NoInlining)]
         public Uri GetAppInstallerInfoUri(Package p)
         {
-            var aiInfo = p.GetAppInstallerInfo();
+            AppInstallerInfo aiInfo = p.GetAppInstallerInfo();
             if (aiInfo != null)
             {
                 return aiInfo.Uri;
@@ -60,8 +60,8 @@ namespace PCController.Core.Managers
 
         public string GetAssemblyFileVersion()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             string output = fileVersionInfo.FileVersion;
             
             return $"{output}";
@@ -71,7 +71,7 @@ namespace PCController.Core.Managers
         {
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
+                Assembly assembly = Assembly.GetExecutingAssembly();
                 string output = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
                 
                 return $"{output}";
@@ -85,8 +85,8 @@ namespace PCController.Core.Managers
 
         public string GetAssemblyVersion()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var assemblyVersion = assembly.GetName().Version;
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Version? assemblyVersion = assembly.GetName().Version;
             string output = assemblyVersion.ToString();
 
             return $"{output}";
@@ -104,12 +104,12 @@ namespace PCController.Core.Managers
 
         public string GetDotNetInfo()
         {
-            var runTimeDir = new FileInfo(typeof(string).Assembly.Location);
-            var entryDir = new FileInfo(Assembly.GetEntryAssembly().Location);
-            var isSelfContaied = runTimeDir.DirectoryName == entryDir.DirectoryName;
+            FileInfo runTimeDir = new FileInfo(typeof(string).Assembly.Location);
+            FileInfo entryDir = new FileInfo(Assembly.GetEntryAssembly().Location);
+            bool selfContained = runTimeDir.DirectoryName == entryDir.DirectoryName;
 
-            var result = ".NET Framework Install Type - ";
-            if (isSelfContaied)
+            string result = ".NET Framework Install Type - ";
+            if (selfContained)
             {
                 result += "Self Contained Deployment";
             }
@@ -128,11 +128,11 @@ namespace PCController.Core.Managers
 
         public Version GetMsixPackageVersion()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var manifestPath = assembly.Location.Replace(assembly.ManifestModule.Name, string.Empty) + @"..\AppxManifest.xml";
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string manifestPath = assembly.Location.Replace(assembly.ManifestModule.Name, string.Empty) + @"..\AppxManifest.xml";
             if (File.Exists(manifestPath))
             {
-                var xDoc = XDocument.Load(manifestPath);
+                XDocument xDoc = XDocument.Load(manifestPath);
                 return new Version(xDoc.Descendants().First(e => e.Name.LocalName == "Identity").Attributes().First(a => a.Name.LocalName == "Version").Value);
             }
 
