@@ -43,7 +43,7 @@ namespace PCController.Core.Managers
             // async version- prob not a good idea
             //var secret = await client.GetSecretAsync(secretName);
 
-            return secret.Value.Value;
+            return secret?.Value.Value;
         }
     }
 }
