@@ -16,7 +16,7 @@ namespace PCController.Core.Services
         {
             get
             {
-                var dictionary = GetType().GetTypeInfo()
+                Dictionary<string, string> dictionary = GetType().GetTypeInfo()
                     .Assembly
                     .CreatableTypes()
                     .Where(t => t.Name.EndsWith("ViewModel"))

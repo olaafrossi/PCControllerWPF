@@ -31,8 +31,8 @@ namespace PCController.Core.ViewModels
             _log = logProvider.GetLogFor<RootViewModel>();
             try
             {
-                var messenger = Mvx.IoCProvider.Resolve<IMvxMessenger>();
-                var str = messenger.ToString();
+                IMvxMessenger messenger = Mvx.IoCProvider.Resolve<IMvxMessenger>();
+                string? str = messenger.ToString();
                 _log.InfoFormat("Creating the Root View Model via the MVX IOC provider {messenger}", messenger);
             }
             catch (Exception e)
