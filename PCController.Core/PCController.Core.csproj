@@ -30,8 +30,8 @@
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" Version="0.1.0-preview1" />
     <PackageReference Include="Serilog.Sinks.SQLite" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Trace" Version="2.1.0" />
-    <PackageReference Include="SkiaSharp.Views" Version="2.80.2" />
-    <PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.2" />
+    <PackageReference Include="Syncfusion.Chart.WPF" Version="19.1.0.65" />
+    <PackageReference Include="Syncfusion.SfChart.WPF" Version="19.1.0.65" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,8 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiveCharts2\src\LiveChartsCore\LiveChartsCore.csproj" />
-    <ProjectReference Include="..\LiveCharts2\src\skiasharp\LiveChartsCore.SkiaSharp\LiveChartsCore.SkiaSharpView.csproj" />
     <ProjectReference Include="..\PCController.DataAccess\PCController.DataAccess.csproj" />
     <ProjectReference Include="..\ThreeByteLibrary\ThreeByteLibrary.Dotnet\ThreeByteLibrary.Dotnet.csproj" />
   </ItemGroup>

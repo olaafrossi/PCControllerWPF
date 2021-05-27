@@ -12,15 +12,14 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
+using System.Windows.Threading;
 using MvvmCross;
 using MvvmCross.Commands;
 using MvvmCross.Logging;
 using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using PCController.Core.Managers;
+using PCController.Core.Models;
 using PCController.DataAccess;
 using PCController.DataAccess.Models;
 using ThreeByteLibrary.Dotnet;
@@ -41,12 +40,21 @@ namespace PCController.Core.ViewModels
         private readonly IMvxLog _log;
         private ComboBoxSQLParseManager _parser;
 
+        // chart bootstraping
+
+        public int DataCount = 50000;
+        private int RateOfData = 5;
+        private ObservableCollection<RealTimeChartModel> Data;
+        private Random randomNumber;
+        int myindex = 0;
+        DispatcherTimer timer;
+
         // chart fields
         private int index;
-        private ObservableCollection<ObservablePoint> _threadCount;
-        private ObservableCollection<ObservablePoint> _peakPagedMemorySize;
-        private ObservableCollection<ObservablePoint> _peakWorkingSet;
-        private ObservableCollection<ObservablePoint> _privateMemorySize;
+        //private ObservableCollection<ObservablePoint> _threadCount;
+        //private ObservableCollection<ObservablePoint> _peakPagedMemorySize;
+        //private ObservableCollection<ObservablePoint> _peakWorkingSet;
+        //private ObservableCollection<ObservablePoint> _privateMemorySize;
 
         public WatchdogViewModel(IMvxLogProvider logProvider, IMvxNavigationService navigationService) : base(logProvider, navigationService)
         {
@@ -61,10 +69,10 @@ namespace PCController.Core.ViewModels
             KillProcMonitorCommand = new MvxCommand(KillProcess);
             OpenFolderCommand = new MvxCommand(OpenFolder);
 
-            AddItemCommand = new MvxCommand(AddThreadToChart);
-            RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
+            //AddItemCommand = new MvxCommand(AddThreadToChart);
+            //RemoveItemCommand = new MvxCommand(RemoveThreadFromChart);
             //AddSeriesCommand = new MvxCommand(AddSeries);
-            RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
+            //RemoveSeriesCommand = new MvxCommand(RemoveLastSeries);
 
             // Fetch Initial Data
             _stopwatch = new Stopwatch();
@@ -82,12 +90,24 @@ namespace PCController.Core.ViewModels
             ProcMonitorStartButtonStatus = false;
             ProcMonitorKillButtonStatus = true;
 
-            AddChart();
-            AddMemoryChart();
+            //AddChart();
+            //AddMemoryChart();
 
             RaisePropertyChanged(() => ProcMonitorStopButtonStatus);
             RaisePropertyChanged(() => ProcMonitorStartButtonStatus);
             RaisePropertyChanged(() => ProcMonitorKillButtonStatus);
+
+            // chart bootsrapping
+            randomNumber = new Random();
+            DynamicData = new ObservableCollection<RealTimeChartModel>();
+            Data = new ObservableCollection<RealTimeChartModel>();
+            Data = GenerateData();
+            LoadData();
+
+            timer = new DispatcherTimer();
+            timer.Tick += timer_Tick;
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            timer.Start();
         }
 
         private void OpenFolder()
@@ -121,9 +141,9 @@ namespace PCController.Core.ViewModels
 
         public bool ProcMonitorKillButtonStatus { get; set; }
 
-        public ObservableCollection<ISeries> ThreadSeries { get; set; }
+        //public ObservableCollection<ISeries> ThreadSeries { get; set; }
 
-        public ObservableCollection<ISeries> MemorySeries { get; set; }
+        //public ObservableCollection<ISeries> MemorySeries { get; set; }
 
         public string ProcessName { get; set; }
 
@@ -156,102 +176,181 @@ namespace PCController.Core.ViewModels
 
         public long PrivateMemorySize { get; set; }
 
-        public void AddChart()
+        public ObservableCollection<RealTimeChartModel> DynamicData { get; set; }
+
+        public ObservableCollection<RealTimeChartModel> GenerateData()
         {
+            ObservableCollection<RealTimeChartModel> datas = new ObservableCollection<RealTimeChartModel>();
 
-            ThreadSeries = new ObservableCollection<ISeries>();
-
-            _threadCount = new ObservableCollection<ObservablePoint> {new(index++, 1)};
-            ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
-            AddSeries();
-        }
-
-        public void AddMemoryChart()
-        {
-
-            MemorySeries = new ObservableCollection<ISeries>();
-
-            _peakPagedMemorySize = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
-            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakPagedMemorySize });
-
-            _peakWorkingSet = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
-            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakWorkingSet });
-
-            _privateMemorySize = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
-            MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _privateMemorySize });
-            
-            AddMemorySeries();
-
-
-        }
-
-        public void AddThreadToChart()
-        {
-            if (_threadCount.Count > 120)
+            DateTime date = new DateTime(2009, 1, 1);
+            double value = 1000;
+            double value1 = 1001;
+            double value2 = 1002;
+            for (int i = 0; i < this.DataCount; i++)
             {
-                RemoveThreadFromChart();
+                datas.Add(new RealTimeChartModel(date, value, value1, value2));
+                date = date.Add(TimeSpan.FromSeconds(5));
+
+                if ((randomNumber.NextDouble() + value2) < 1004.85)
+                {
+                    double random = randomNumber.NextDouble();
+                    value += random;
+                    value1 += random;
+                    value2 += random;
+                }
+                else
+                {
+                    double random = randomNumber.NextDouble();
+                    value -= random;
+                    value1 -= random;
+                    value2 -= random;
+                }
             }
-            else
-            {
-                _threadCount.Add(new ObservablePoint(index++, ProcessThreadCount));
-            }
+
+            return datas;
         }
-
-        public void AddMemToChart()
+        public void Dispose()
         {
-
-            if (_peakPagedMemorySize.Count > 120)
+            if (timer != null)
             {
-                RemoveMemFromChart();
-            }
-            else
-            {
-                _peakPagedMemorySize.Add(new ObservablePoint(index, PeakPagedMemorySize));
-                _peakWorkingSet.Add(new ObservablePoint(index, PeakWorkingSet));
-                _privateMemorySize.Add(new ObservablePoint(index, PrivateMemorySize));
+                timer.Stop();
+                timer.Tick -= timer_Tick;
+                timer = null;
             }
         }
 
-        public void AddSeries()
+        public void AddData()
         {
-            if (ThreadSeries.Count == 5)
+            for (int i = 0; i < RateOfData; i++)
             {
-                return;
+                myindex++;
+                if (myindex < 100)
+                {
+                    DynamicData.Add(this.Data[myindex]);
+                }
+                else if (myindex > 100)
+                {
+                    DynamicData.RemoveAt(0);
+                    DynamicData.Add(this.Data[(myindex % (this.Data.Count - 1))]);
+                }
             }
-            ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0, 0 } });
 
-            
         }
 
-        public void AddMemorySeries()
+        public void LoadData()
         {
-            if (MemorySeries.Count == 5)
+            for (int i = 0; i < 10; i++)
             {
-                return;
+                myindex++;
+                if (myindex < Data.Count)
+                {
+                    DynamicData.Add(this.Data[myindex]);
+                }
             }
-            MemorySeries.Add(new LineSeries<long> { Values = new List<long> { 0, 0 } });
+
         }
 
-        public void RemoveThreadFromChart()
+        private void timer_Tick(object sender, EventArgs e)
         {
-            if (_threadCount.Count < 2) return;
-
-            _threadCount.RemoveAt(0);
+            AddData();
         }
 
-        public void RemoveMemFromChart()
-        {
-            if (_peakPagedMemorySize.Count < 2) return;
+        //public void AddChart()
+        //{
 
-            _peakPagedMemorySize.RemoveAt(0);
-        }
+        //    ThreadSeries = new ObservableCollection<ISeries>();
 
-        public void RemoveLastSeries()
-        {
-            if (ThreadSeries.Count == 1) return;
+        //    _threadCount = new ObservableCollection<ObservablePoint> { new(index++, 1) };
+        //    ThreadSeries.Add(new LineSeries<ObservablePoint> { Values = _threadCount });
+        //    AddSeries();
+        //}
 
-            ThreadSeries.RemoveAt(ThreadSeries.Count - 1);
-        }
+        //public void AddMemoryChart()
+        //{
+
+        //    MemorySeries = new ObservableCollection<ISeries>();
+
+        //    _peakPagedMemorySize = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
+        //    MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakPagedMemorySize });
+
+        //    _peakWorkingSet = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
+        //    MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _peakWorkingSet });
+
+        //    _privateMemorySize = new ObservableCollection<ObservablePoint> { new(index, 1), new(index++, 1) };
+        //    MemorySeries.Add(new LineSeries<ObservablePoint> { Values = _privateMemorySize });
+
+        //    AddMemorySeries();
+
+
+        //}
+
+        //public void AddThreadToChart()
+        //{
+        //    if (_threadCount.Count > 120)
+        //    {
+        //        RemoveThreadFromChart();
+        //    }
+        //    else
+        //    {
+        //        _threadCount.Add(new ObservablePoint(index++, ProcessThreadCount));
+        //    }
+        //}
+
+        //public void AddMemToChart()
+        //{
+
+        //    if (_peakPagedMemorySize.Count > 120)
+        //    {
+        //        RemoveMemFromChart();
+        //    }
+        //    else
+        //    {
+        //        _peakPagedMemorySize.Add(new ObservablePoint(index, PeakPagedMemorySize));
+        //        _peakWorkingSet.Add(new ObservablePoint(index, PeakWorkingSet));
+        //        _privateMemorySize.Add(new ObservablePoint(index, PrivateMemorySize));
+        //    }
+        //}
+
+        //public void AddSeries()
+        //{
+        //    if (ThreadSeries.Count == 5)
+        //    {
+        //        return;
+        //    }
+        //    ThreadSeries.Add(new LineSeries<int> { Values = new List<int> { 0, 0 } });
+
+
+        //}
+
+        //public void AddMemorySeries()
+        //{
+        //    if (MemorySeries.Count == 5)
+        //    {
+        //        return;
+        //    }
+        //    MemorySeries.Add(new LineSeries<long> { Values = new List<long> { 0, 0 } });
+        //}
+
+        //public void RemoveThreadFromChart()
+        //{
+        //    if (_threadCount.Count < 2) return;
+
+        //    _threadCount.RemoveAt(0);
+        //}
+
+        //public void RemoveMemFromChart()
+        //{
+        //    if (_peakPagedMemorySize.Count < 2) return;
+
+        //    _peakPagedMemorySize.RemoveAt(0);
+        //}
+
+        //public void RemoveLastSeries()
+        //{
+        //    if (ThreadSeries.Count == 1) return;
+
+        //    ThreadSeries.RemoveAt(ThreadSeries.Count - 1);
+        //}
 
         public override void Prepare(WindowChildParam param) => _param = param;
 
@@ -391,14 +490,14 @@ namespace PCController.Core.ViewModels
             RaisePropertyChanged(() => PeakPagedMemorySize);
             RaisePropertyChanged(() => PrivateMemorySize);
             RaisePropertyChanged(() => PeakWorkingSet);
-            RaisePropertyChanged(() => ThreadSeries);
-            RaisePropertyChanged(() => MemorySeries);
+            //RaisePropertyChanged(() => ThreadSeries);
+            //RaisePropertyChanged(() => MemorySeries);
 
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                AddThreadToChart();
-                AddMemToChart();
-            });
+            //Application.Current.Dispatcher.Invoke(() =>
+            //{
+            //    AddThreadToChart();
+            //    AddMemToChart();
+            //});
         }
 
         private void ResolveAndStartProcMon()

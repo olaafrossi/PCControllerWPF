@@ -13,6 +13,12 @@ using ThreeByteLibrary.Dotnet;
 using ThreeByteLibrary.Dotnet.NetworkUtils;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using MvvmCross.Logging;
+using MvvmCross.Logging.LogProviders;
+using PCController.Core.Managers;
+using PCController.Core.Properties;
+using Syncfusion;
+
 
 namespace PCController.Core
 {
@@ -24,25 +30,35 @@ namespace PCController.Core
         /// </summary>
         public override void Initialize()
         {
-            CreatableTypes()
-                .EndingWith("Service")
-                .AsInterfaces()
-                .RegisterAsLazySingleton();
+            // Licensing key for chart elements
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDUyMjM0QDMxMzkyZTMxMmUzMFFwc0pqdHQ2cVFmY1Y4NGJaK1NpYzFRV2xlMWcwMktFRHpiL1JkV29vTlU9");
 
+            // is this needed just yet?
+            CreatableTypes().EndingWith("Service").AsInterfaces().RegisterAsLazySingleton();
+
+            // will i need this?
             Mvx.IoCProvider.RegisterSingleton<IMvxTextProvider>(new TextProviderBuilder().TextProvider);
 
+            // will i need this?
             Mvx.IoCProvider.RegisterSingleton<CollectionSink>(new CollectionSink());
 
+            //TODO move these settings to SQLite
             // setup info for the 3Byte network listener
             int portNum = Properties.Settings.Default.PCListenerUDPPort;
-            ILogger netLogger = Log.Logger;
-            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.NetworkUtils.IPcNetworkListener>(new PcNetworkListener(netLogger, portNum));
+            ILogger logger = Log.Logger;
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.NetworkUtils.IPcNetworkListener>(new PcNetworkListener(logger, portNum));
 
             // setup info for the 3Byte watchdog/process monitor
             string processName = Properties.Settings.Default.ProcessName;
             string exeString = Properties.Settings.Default.ExecutionString;
             
-            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IProcessMonitor>(new ProcessMonitor(processName, exeString, 60));
+            Mvx.IoCProvider.RegisterSingleton<ThreeByteLibrary.Dotnet.IProcessMonitor>(new ProcessMonitor(processName, exeString, 1));
+
+            //IMvxLogProvider log = new MvvmCross.Logging.LogProviders.Logger(new Logger());
+
+            //set up the CD singleton
+            Mvx.IoCProvider.RegisterSingleton<PCController.Core.Managers.IContinuousDeploymentManager>(new ContinuousDeploymentManager(logger));
+
 
             // setup info for the 3Byte AsyncUDP Link for SCS Testing
 
@@ -62,7 +78,7 @@ namespace PCController.Core
 
             SecretClient client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
         }
-        
+
         //public event EventHandler<NetworkMessagesEventArgs> MessageHit;
 
         /// <summary>

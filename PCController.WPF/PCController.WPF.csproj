@@ -30,14 +30,12 @@
     <PackageReference Include="OSVersionHelper" Version="1.1.24" />
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.17.1" />
     <PackageReference Include="Serilog.Sinks.RichTextBox.Wpf" Version="0.1.0-preview1" />
-    <PackageReference Include="SkiaSharp" Version="2.80.2" />
-    <PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.2" />
+    <PackageReference Include="Syncfusion.Chart.WPF" Version="19.1.0.65" />
+    <PackageReference Include="Syncfusion.SfChart.WPF" Version="19.1.0.65" />
 
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiveCharts2\src\LiveChartsCore\LiveChartsCore.csproj" />
-    <ProjectReference Include="..\LiveCharts2\src\skiasharp\LiveChartsCore.SkiaSharp.WPF\LiveChartsCore.SkiaSharpView.WPF.csproj" />
     <ProjectReference Include="..\PCController.Core\PCController.Core.csproj" />
   </ItemGroup>
 

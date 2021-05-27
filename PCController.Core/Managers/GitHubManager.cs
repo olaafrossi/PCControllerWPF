@@ -15,8 +15,6 @@ using PCController.Core.Properties;
 // ReSharper disable CheckNamespace
 // ReSharper disable once ArrangeModifiersOrder
 
-// using code from Copyright © 2019 Transeric Solutions. All rights reserved.
-// Author: Eric David Lynch
 
 namespace PCController.Core.Managers
 {
@@ -36,7 +34,6 @@ namespace PCController.Core.Managers
         {
             
             _log = logProvider.GetLogFor<GitHubManager>();
-
             _log.Info("GitHubManager has been constructed");
 
             // setting private variables
